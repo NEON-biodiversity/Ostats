@@ -4,9 +4,8 @@
 \alias{Ostats}
 \title{Calculate O-statistics (community-level pairwise niche overlap statistics)}
 \usage{
-Ostats(traits, plots, sp, reg_pool_traits, reg_pool_sp, nperm = 99,
-  nullqs = c(0.025, 0.975), stat = "median", shuffle_weights = FALSE,
-  swap_means = FALSE)
+Ostats(traits, plots, sp, nperm = 99, nullqs = c(0.025, 0.975),
+  shuffle_weights = FALSE, swap_means = FALSE)
 }
 \description{
 This is the primary function in the Ostats package. It evaluates the
