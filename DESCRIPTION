@@ -15,3 +15,4 @@ LazyData: true
 Imports: 
     sfsmisc,
     matrixStats
+RoxygenNote: 6.1.1
