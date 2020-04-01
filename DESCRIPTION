@@ -1,0 +1,17 @@
+Package: Ostats
+Type: Package
+Title: O-stats, or pairwise community-level niche overlap statistics
+Version: 0.1.0
+Authors@R: c(person(c('Quentin', 'D.'), 'Read', role = c('aut', 'cre'), email = 'qread@sesync.org'),
+             person(c('John', 'M.'), 'Grady', role = 'aut'),
+             person('Sydne', 'Record', role = 'aut'),
+             person(c('Phoebe', 'L.'), 'Zarnetske', role = 'aut')
+             )
+Description: This is a placeholder for later.
+    Use four spaces when indenting paragraphs within the Description. Later, we will put some nice content here.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    sfsmisc,
+    matrixStats
