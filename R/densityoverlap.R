@@ -32,7 +32,7 @@ pairwise_overlap <- function(a, b, norm=TRUE, bw = NULL, n = NULL) {
   d$w <- pmin(d$a, d$b)
 
   # integrate areas under curves
-  total <- sfsmisc::integrate.xy(d$x, d$a) + integrate.xy(d$x, d$b)
+  total <- sfsmisc::integrate.xy(d$x, d$a) + sfsmisc::integrate.xy(d$x, d$b)
   intersection <- sfsmisc::integrate.xy(d$x, d$w)
 
   # compute overlap coefficient
