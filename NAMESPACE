@@ -2,8 +2,13 @@
 
 export(Ostat2longform)
 export(Ostats)
+export(Ostats2)
+export(Ostats_circular)
 export(Ostats_regional)
+export(circular_overlap)
+export(circular_overlap_24hour)
 export(community_overlap)
+export(community_overlap_circular)
 export(community_overlap_distributions)
 export(community_overlap_harmonicwmedian)
 export(community_overlap_noitv)

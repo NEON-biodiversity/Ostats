@@ -14,5 +14,6 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     sfsmisc,
-    matrixStats
+    matrixStats,
+    circular
 RoxygenNote: 6.1.1

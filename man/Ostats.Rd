@@ -13,4 +13,6 @@ O-statistics against a local null model.
 }
 \seealso{
 \code{\link{Ostats_regional}} to evaluate against a regional null model.
+
+\code{\link{Ostats_circular}} for circular distributions.
 }
