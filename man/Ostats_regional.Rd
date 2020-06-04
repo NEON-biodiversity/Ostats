@@ -4,8 +4,15 @@
 \alias{Ostats_regional}
 \title{Calculate O-statistics (community-level pairwise niche overlap statistics) evaluated against regional null model}
 \usage{
-Ostats_regional(traits, plots, sp, reg_pool_traits, reg_pool_sp,
-  nperm = 99, nullqs = c(0.025, 0.975))
+Ostats_regional(
+  traits,
+  plots,
+  sp,
+  reg_pool_traits,
+  reg_pool_sp,
+  nperm = 99,
+  nullqs = c(0.025, 0.975)
+)
 }
 \description{
 This function evaluates the O-statistics against a regional null model.

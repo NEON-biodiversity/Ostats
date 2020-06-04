@@ -4,11 +4,19 @@
 \alias{Ostats2}
 \title{Calculate O-statistics (community-level pairwise niche overlap statistics)}
 \usage{
-Ostats2(traits, plots, sp, overlap_function = pairwise_overlap,
-  central_tendency = c("median", "mean"), abundance_weighted = TRUE,
-  weighting_type = c("harmonic", "arithmetic"), nperm = 99,
-  nullqs = c(0.025, 0.975), shuffle_weights = FALSE,
-  swap_means = FALSE)
+Ostats2(
+  traits,
+  plots,
+  sp,
+  overlap_function = pairwise_overlap,
+  central_tendency = c("median", "mean"),
+  abundance_weighted = TRUE,
+  weighting_type = c("harmonic", "arithmetic"),
+  nperm = 99,
+  nullqs = c(0.025, 0.975),
+  shuffle_weights = FALSE,
+  swap_means = FALSE
+)
 }
 \description{
 This is the primary function in the Ostats package. It evaluates the

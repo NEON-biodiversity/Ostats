@@ -4,8 +4,14 @@
 \alias{community_overlap_harmonicwmedian}
 \title{Abundance-weighted (harmonic) median pairwise overlap across all species in a community}
 \usage{
-community_overlap_harmonicwmedian(traits, sp, norm = TRUE, bw = NULL,
-  n = NULL, randomize_weights = FALSE)
+community_overlap_harmonicwmedian(
+  traits,
+  sp,
+  norm = TRUE,
+  bw = NULL,
+  n = NULL,
+  randomize_weights = FALSE
+)
 }
 \description{
 Input: vector of traits, vector of species identities

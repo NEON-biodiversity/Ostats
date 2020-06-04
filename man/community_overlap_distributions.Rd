@@ -4,8 +4,7 @@
 \alias{community_overlap_distributions}
 \title{All pairwise overlap values between pairs of species in a community}
 \usage{
-community_overlap_distributions(traits, sp, norm = TRUE, bw = NULL,
-  n = NULL)
+community_overlap_distributions(traits, sp, norm = TRUE, bw = NULL, n = NULL)
 }
 \description{
 Input: vector of traits, vector of species identities

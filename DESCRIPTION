@@ -16,4 +16,4 @@ Imports:
     sfsmisc,
     matrixStats,
     circular
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0

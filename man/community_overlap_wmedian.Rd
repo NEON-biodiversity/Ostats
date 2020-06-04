@@ -4,8 +4,7 @@
 \alias{community_overlap_wmedian}
 \title{Abundance-weighted median pairwise overlap across all species in a community}
 \usage{
-community_overlap_wmedian(traits, sp, norm = TRUE, bw = NULL,
-  n = NULL)
+community_overlap_wmedian(traits, sp, norm = TRUE, bw = NULL, n = NULL)
 }
 \description{
 Input: vector of traits, vector of species identities

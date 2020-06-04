@@ -4,8 +4,15 @@
 \alias{Ostats_circular}
 \title{Calculate O-statistics using circular distributions}
 \usage{
-Ostats_circular(traits, plots, sp, nperm = 99, nullqs = c(0.025,
-  0.975), shuffle_weights = FALSE, swap_means = FALSE)
+Ostats_circular(
+  traits,
+  plots,
+  sp,
+  nperm = 99,
+  nullqs = c(0.025, 0.975),
+  shuffle_weights = FALSE,
+  swap_means = FALSE
+)
 }
 \description{
 This is a version of the O-statistics function that works with circular distributions.

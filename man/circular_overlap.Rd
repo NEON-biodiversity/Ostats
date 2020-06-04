@@ -4,8 +4,15 @@
 \alias{circular_overlap}
 \title{Overlap of two circular distributions}
 \usage{
-circular_overlap(a, b, circular_units, circular_template, norm = TRUE,
-  bw, n = NULL)
+circular_overlap(
+  a,
+  b,
+  circular_units,
+  circular_template,
+  norm = TRUE,
+  bw,
+  n = NULL
+)
 }
 \description{
 This function converts the input vectors to circular objects, calculates empirical densities,
