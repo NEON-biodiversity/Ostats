@@ -34,13 +34,15 @@
 #'   and the null model.
 
 #'
-#' @return The funtion returns a list containing 4 objects: overlaps_norm, which
-#'   is the median of weighted pairwise overlaps of trait distributions of all
-#'   species in each community, assuming normal distribution. overlaps_unnorm,
-#'   the medians calculated assuming kernel densities are not normalized.
-#'   overlaps_norm_ses, effect size statistics against a null model assuming
-#'   normal distribution, and overlaps_unnorm_ses, effect size statistics with
-#'   the additional normalization step.
+#' @return The funtion returns a list containing 4 objects: 
+#' \item{overlaps_norm}{the median of weighted pairwise overlaps of trait 
+#'   distributions of all species in each community, assuming normal distribution.}
+#' \item{overlaps_unnorm}{the medians calculated assuming kernel densities are 
+#'   not normalized.}
+#' \item{overlaps_norm_ses}{effect size statistics against a null model assuming
+#'   normal distribution.}
+#' \item{overlaps_unnorm_ses}{effect size statistics with the additional 
+#'  normalization step.}
 #'
 #' @references Read, Q. D. et al. Among-species overlap in rodent body size
 #'   distributions predicts species richness along a temperature gradient.
