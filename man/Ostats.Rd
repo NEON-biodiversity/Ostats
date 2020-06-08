@@ -102,4 +102,14 @@ Read, Q. D. et al. Among-species overlap in rodent body size
   model.
 
 \code{\link{Ostats_circular}} for circular distributions.
+
+\code{\link{community_overlap_harmonicwmedian}} for median of 
+pairwise overlaps of species trait distributions within a community.
+
+\code{\link{get_ses}} for standardized effect sizes from null 
+model values.
+}
+\author{
+Quentin Read, John Grady, Arya Y. Yue, Isadora Fluck E., Ben Baiser, 
+Angela Strecker, Phoebe Zarnetske, and Sydne Record
 }

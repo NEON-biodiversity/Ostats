@@ -48,11 +48,17 @@
 #'   
 #' @note The function so far only supports overlap statistics for one trait.
 #'
+#'@author Quentin Read, John Grady, Arya Y. Yue, Isadora Fluck E., Ben Baiser, 
+#'Angela Strecker, Phoebe Zarnetske, and Sydne Record
+#'
 #' @seealso \code{\link{Ostats_regional}} to evaluate against a regional null
 #'   model.
 #'
 #' @seealso \code{\link{Ostats_circular}} for circular distributions.
-#'
+#' @seealso \code{\link{community_overlap_harmonicwmedian}} for median of 
+#' pairwise overlaps of species trait distributions within a community.
+#' @seealso \code{\link{get_ses}} for standardized effect sizes from null 
+#' model values.
 #' @examples
 #' # overlap statistics for body weights of species in NEON sites
 #' library(tidyverse)

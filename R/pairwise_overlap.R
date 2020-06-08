@@ -3,7 +3,7 @@
 #' This function generates kernel density estimates for two datasets on a common
 #' grid to calculate the area of overlap between the two estimates.
 #'
-#' @param a a matrix dataset with nrows= n individuals, with a column containging 
+#' @param a a matrix dataset with nrows= n individuals, with a column containing 
 #'   one measurement of a certain trait.
 #' @param b another matrix dataset with the same trait measurements to be compared 
 #'   against a.

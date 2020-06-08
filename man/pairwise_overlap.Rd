@@ -9,7 +9,7 @@ pairwise_overlap(a, b, norm = TRUE, bw = NULL, n = NULL)
 pairwise_overlap(a, b, norm = TRUE, bw = NULL, n = NULL)
 }
 \arguments{
-\item{a}{a matrix dataset with nrows= n individuals, with a column containging 
+\item{a}{a matrix dataset with nrows= n individuals, with a column containing 
 one measurement of a certain trait.}
 
 \item{b}{another matrix dataset with the same trait measurements to be compared 
