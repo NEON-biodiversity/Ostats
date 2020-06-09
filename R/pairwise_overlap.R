@@ -2,6 +2,9 @@
 #'
 #' This function generates kernel density estimates for two datasets on a common
 #' grid to calculate the area of overlap between the two estimates.
+#' See \url{http://stats.stackexchange.com/questions/97596/how-to-calculate-overlap-between-empirical-probability-densities},
+#' this function is derived from code posted in the answer by user mmk.
+#'
 #'
 #' @param a a matrix dataset with nrows= n individuals, with a column containing 
 #'   one measurement of a certain trait.
