@@ -26,10 +26,13 @@ that this is the standard deviation of the smoothing kernel.}
 estimated.}
 }
 \value{
-The funtion returns a vector of three values: overlap, the 
-overlap area *2 divided by the sum of areas under the two functions; overlap_a, 
-the overlap area divided by area under the function generated from a; and overlap_b,
-the overlap area diveided by area under the function generated from b.
+The funtion returns a vector of three values: 
+\item{overlap}{the overlap area *2 divided by the sum of areas under the two 
+functions.} 
+\item{overlap_a}{the overlap area divided by area under the function generated from 
+a.}
+\item{overlap_b}{the overlap area diveided by area under the function generated 
+from b.}
 }
 \description{
 See \url{http://stats.stackexchange.com/questions/97596/how-to-calculate-overlap-between-empirical-probability-densities},
