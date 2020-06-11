@@ -2,10 +2,23 @@
 % Please edit documentation in R/Ostat2longform.R
 \name{Ostat2longform}
 \alias{Ostat2longform}
-\title{Convert O-stats output to long form}
+\title{Convert O-stats Output to Long Form}
 \usage{
 Ostat2longform(o)
 }
+\arguments{
+\item{o}{the output of a call to \code{Ostats}.}
+}
+\value{
+a dataframe with nrows = the names of communities and ncol =
+outputs from Ostats function.
+}
 \description{
-o is the output of a call to \code{Ostats}.
+This function converts the output of Ostats to long form.
+}
+\examples{
+# taking the output generated in the example of the Ostats funtion
+
+Ostat2longform(Ostats_example)
+
 }

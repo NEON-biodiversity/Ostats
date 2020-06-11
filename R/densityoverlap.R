@@ -91,13 +91,60 @@ community_overlap_wmedian <- function(traits, sp, norm = TRUE, bw = NULL, n = NU
 
 }
 
-#' Abundance-weighted (harmonic) median pairwise overlap across all species in a community
+#' Median Pairwise Overlap of Species Trait Distributions in a Community
 #'
-#' Input: vector of traits, vector of species identities
+#' This function calculates the median of pairwise overlaps between density 
+#' estimates of trait distributions of all species within a community, weighted 
+#' by the harmonic mean of the abundances of each species pair.
 #'
-#' This version uses the harmonic mean of abundances in each species pair as weights.
+#' @param traits a matrix dataset with nrows = n individuals, ncols = n traits.
+#' @param sp a factor with length equal to nrow(traits) that indicates the taxon
+#'   of each individual.
+#' @param norm If TRUE, assume data are normally distributed; if FALSE,
+#'   additional normalization step is carried out by multiplying each density 
+#'   entry by the length of each vector.
+#' @param bw the smoothing bandwidth to be used. The kernels are scaled such
+#'   that this is the standard deviation of the smoothing kernel.
+#' @param n the number of equally spaced points at which the density is to be
+#'   estimated.
+#' @param randomize_weights If TRUE, randomize weights given to pairwise overlaps
+#'   within a community. This can be used to generate null models.
 #'
+#' @details The funtion evaluates pairwise overlaps of density estimates of all 
+#' species in a community taking complete cases with species abundances greater 
+#' than 1 from the original dataset. The median of pairwise overlaps is calculated 
+#' for the whole community using the harmonic means of abundances of the species 
+#' pairs as weights.
+#'
+#' @return The function returns a median of pairwise overlaps weighted by harmonic 
+#' means of abundances for the community.
+#'
+#' @references Read, Q. D. et al. Among-species overlap in rodent body size
+#'   distributions predicts species richness along a temperature gradient.
+#'   Ecography 41, 1718-1727 (2018).
+#'   
+#' @note The function so far only supports overlap statistics for one trait.
+#'
+#' @seealso \code{\link{pairwise_overlap}} to calculate overlap between two empirical 
+#' density estimates.
+#'
+#' @examples
+#' 
+#' library(tidyverse)
+#' library(Ostats)
+#' 
+#' # Load data from web archive and Keep only the relevant part of data
+#' dat <- read_csv('https://ndownloader.figshare.com/files/9167548') %>%
+#'    filter(siteID %in% 'HARV') %>%
+#'    select(siteID, taxonID, weight) %>%
+#'    filter(!is.na(weight)) %>%
+#'    mutate(log_weight = log10(weight))
+#' 
+#' # Calculate median of pairwise overlaps for the community
+#' community_overlap_harmonicwmedian(traits = as.matrix(dat$log_weight), 
+#' sp = factor(dat$taxonID))
 #' @export
+#'
 community_overlap_harmonicwmedian <- function(traits, sp, norm = TRUE, bw = NULL, n = NULL, randomize_weights = FALSE) {
   sp <- as.character(sp)
   dat <- data.frame(traits=traits, sp=sp, stringsAsFactors = FALSE)

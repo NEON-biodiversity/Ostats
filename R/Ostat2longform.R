@@ -1,8 +1,19 @@
-#' Convert O-stats output to long form
+#' Convert O-stats Output to Long Form
 #'
-#' o is the output of a call to \code{Ostats}.
+#' This function converts the output of Ostats to long form.
+#'
+#' @param o the output of a call to \code{Ostats}.
+#'
+#' @return a dataframe with nrows = the names of communities and ncol =
+#' outputs from Ostats function.
+#'
+#' @examples 
+#' # taking the output generated in the example of the Ostats funtion
+#' 
+#' Ostat2longform(Ostats_example)
 #'
 #' @export
+#' 
 Ostat2longform <- function(o) {
   result_names <- c('site','trait','ostat_norm','ostat_norm_localnull_lower','ostat_norm_localnull_upper','ostat_norm_localnull_ses','ostat_norm_localnull_seslower','ostat_norm_localnull_sesupper','ostat_unnorm','ostat_unnorm_localnull_lower','ostat_unnorm_localnull_upper','ostat_unnorm_localnull_ses','ostat_unnorm_localnull_seslower','ostat_unnorm_localnull_sesupper')
 
