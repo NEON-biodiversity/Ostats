@@ -2,7 +2,8 @@
 % Please edit documentation in R/densityoverlap.R
 \name{community_overlap_harmonicwmedian}
 \alias{community_overlap_harmonicwmedian}
-\title{Median Pairwise Overlap of Species Trait Distributions in a Community}
+\title{Abundance-weighted Median of Pairwise Overlap of Species Trait Distributions 
+in a Community}
 \usage{
 community_overlap_harmonicwmedian(
   traits,
@@ -14,10 +15,10 @@ community_overlap_harmonicwmedian(
 )
 }
 \arguments{
-\item{traits}{a matrix dataset with nrows = n individuals, ncols = n traits.}
+\item{traits}{a vector of trait measurement.}
 
-\item{sp}{a factor with length equal to nrow(traits) that indicates the taxon
-of each individual.}
+\item{sp}{a vector with length equal to length(traits) that indicates the
+taxon of each individual.}
 
 \item{norm}{If TRUE, assume data are normally distributed; if FALSE,
 additional normalization step is carried out by multiplying each density 
@@ -42,7 +43,7 @@ estimates of trait distributions of all species within a community, weighted
 by the harmonic mean of the abundances of each species pair.
 }
 \details{
-The funtion evaluates pairwise overlaps of density estimates of all 
+The funtion evaluates weighted pairwise overlaps of density estimates of all 
 species in a community taking complete cases with species abundances greater 
 than 1 from the original dataset. The median of pairwise overlaps is calculated 
 for the whole community using the harmonic means of abundances of the species 

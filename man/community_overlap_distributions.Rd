@@ -2,10 +2,44 @@
 % Please edit documentation in R/densityoverlap.R
 \name{community_overlap_distributions}
 \alias{community_overlap_distributions}
-\title{All pairwise overlap values between pairs of species in a community}
+\title{Display All Pairwise Overlap Values}
 \usage{
 community_overlap_distributions(traits, sp, norm = TRUE, bw = NULL, n = NULL)
 }
+\arguments{
+\item{traits}{a vector of trait measurement.}
+
+\item{sp}{a vector with length equal to length(traits) that indicates the
+taxon of each individual.}
+
+\item{norm}{If TRUE, assume data are normally distributed; if FALSE,
+additional normalization step is carried out by multiplying each density 
+entry by the length of each vector.}
+
+\item{bw}{the smoothing bandwidth to be used. The kernels are scaled such
+that this is the standard deviation of the smoothing kernel.}
+
+\item{n}{the number of equally spaced points at which the density is to be
+estimated.}
+}
+\value{
+The function returns all pairwise overlap values of trait distributions
+of all species in the community.
+}
 \description{
-Input: vector of traits, vector of species identities
+This function displays all pairwise overlap between species pairs in a community.
+}
+\details{
+The funtion evaluates pairwise overlaps of density estimates of all 
+species in a community taking complete cases with species abundances greater 
+than 1 from the original dataset, and displays all pairwise overlap values
+within the community.
+}
+\seealso{
+\code{\link{pairwise_overlap}} to calculate overlap between two empirical 
+density estimates.
+
+\code{\link{community_overlap_harmonicwmedian}} to see a function that
+uses harmonic means of abundances of species pairs as weights to calculate median 
+of overlaps.
 }

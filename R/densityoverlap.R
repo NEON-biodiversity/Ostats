@@ -1,7 +1,31 @@
-#' Median pairwise overlap across all species in a community
+#' Median Pairwise Overlap across All Species in a Community
+#' 
+#' This function calculates the median of pairwise overlaps between density 
+#' estimates of trait distributions of all species within a community.
 #'
-#' Input: vector of traits, vector of species identities
-#'
+#' @param traits a vector of trait measurement.
+#' @param sp a vector with length equal to length(traits) that indicates the
+#'   taxon of each individual.
+#' @param norm If TRUE, assume data are normally distributed; if FALSE,
+#'   additional normalization step is carried out by multiplying each density 
+#'   entry by the length of each vector.
+#' @param bw the smoothing bandwidth to be used. The kernels are scaled such
+#'   that this is the standard deviation of the smoothing kernel.
+#' @param n the number of equally spaced points at which the density is to be
+#'   estimated.
+#' 
+#' @details The funtion evaluates pairwise overlaps of density estimates of all 
+#' species in a community taking complete cases with species abundances greater 
+#' than 1 from the original dataset to calculate the median for the community.
+#' 
+#' @return The function returns a median of pairwise overlaps of all species in 
+#' the community.
+#' 
+#' @seealso \code{\link{pairwise_overlap}} to calculate overlap between two empirical 
+#' density estimates.
+#' @seealso \code{\link{community_overlap_harmonicwmedian}} to see a function that
+#' uses harmonic means of abundances of species pairs as weights to calculate median.
+#' 
 #' @export
 community_overlap <- function(traits, sp, norm = TRUE, bw = NULL, n = NULL) {
   sp <- as.character(sp)
@@ -27,10 +51,37 @@ community_overlap <- function(traits, sp, norm = TRUE, bw = NULL, n = NULL) {
 
 }
 
-#' Abundance-weighted mean pairwise overlap across all species in a community
+#' Abundance-weighted Mean of Pairwise Overlaps across All Species in a Community
+#' 
+#' This function calculates the mean of pairwise overlaps between density 
+#' estimates of trait distributions of all species within a community, weighted by 
+#' the mean of abundances of the species pairs.
 #'
-#' Input: vector of traits, vector of species identities
-#'
+#' @param traits a vector of trait measurement.
+#' @param sp a vector with length equal to length(traits) that indicates the
+#'   taxon of each individual.
+#' @param norm If TRUE, assume data are normally distributed; if FALSE,
+#'   additional normalization step is carried out by multiplying each density 
+#'   entry by the length of each vector.
+#' @param bw the smoothing bandwidth to be used. The kernels are scaled such
+#'   that this is the standard deviation of the smoothing kernel.
+#' @param n the number of equally spaced points at which the density is to be
+#'   estimated.
+#' 
+#' @details The funtion evaluates pairwise overlaps of density estimates of all 
+#' species in a community taking complete cases with species abundances greater 
+#' than 1 from the original dataset, using the mean of abundances of species 
+#' pairs as weights to calculate the weighted mean of overlaps for the community.
+#' 
+#' @return The function returns a mean of pairwise overlaps of all species in 
+#' the community, weighted by means of abundances of species pairs.
+#' 
+#' @seealso \code{\link{pairwise_overlap}} to calculate overlap between two empirical 
+#' density estimates.
+#' @seealso \code{\link{community_overlap_harmonicwmedian}} to see a function that
+#' uses harmonic means of abundances of species pairs as weights to calculate median 
+#' of overlaps.
+#' 
 #' @export
 community_overlap_wm <- function(traits, sp, norm = TRUE, bw = NULL, n = NULL) {
   sp <- as.character(sp)
@@ -59,10 +110,37 @@ community_overlap_wm <- function(traits, sp, norm = TRUE, bw = NULL, n = NULL) {
 
 }
 
-#' Abundance-weighted median pairwise overlap across all species in a community
+#' Abundance-weighted Median of Pairwise Overlaps across All species in a Community
+#' 
+#' This function calculates the median of pairwise overlaps between density 
+#' estimates of trait distributions of all species within a community, weighted by 
+#' the mean of abundances of the species pairs.
 #'
-#' Input: vector of traits, vector of species identities
-#'
+#' @param traits a vector of trait measurement.
+#' @param sp a vector with length equal to length(traits) that indicates the
+#'   taxon of each individual.
+#' @param norm If TRUE, assume data are normally distributed; if FALSE,
+#'   additional normalization step is carried out by multiplying each density 
+#'   entry by the length of each vector.
+#' @param bw the smoothing bandwidth to be used. The kernels are scaled such
+#'   that this is the standard deviation of the smoothing kernel.
+#' @param n the number of equally spaced points at which the density is to be
+#'   estimated.
+#' 
+#' @details The funtion evaluates pairwise overlaps of density estimates of all 
+#' species in a community taking complete cases with species abundances greater 
+#' than 1 from the original dataset, using the mean of abundances of species 
+#' pairs as weights to calculate the weighted median of overlaps for the community.
+#' 
+#' @return The function returns a median of pairwise overlaps of all species in 
+#' the community, weighted by means of abundances of species pairs.
+#' 
+#' @seealso \code{\link{pairwise_overlap}} to calculate overlap between two empirical 
+#' density estimates.
+#' @seealso \code{\link{community_overlap_harmonicwmedian}} to see a function that
+#' uses harmonic means of abundances of species pairs as weights to calculate median 
+#' of overlaps.
+#' 
 #' @export
 community_overlap_wmedian <- function(traits, sp, norm = TRUE, bw = NULL, n = NULL) {
   sp <- as.character(sp)
@@ -91,15 +169,16 @@ community_overlap_wmedian <- function(traits, sp, norm = TRUE, bw = NULL, n = NU
 
 }
 
-#' Median Pairwise Overlap of Species Trait Distributions in a Community
+#' Abundance-weighted Median of Pairwise Overlap of Species Trait Distributions 
+#' in a Community
 #'
 #' This function calculates the median of pairwise overlaps between density 
 #' estimates of trait distributions of all species within a community, weighted 
 #' by the harmonic mean of the abundances of each species pair.
 #'
-#' @param traits a matrix dataset with nrows = n individuals, ncols = n traits.
-#' @param sp a factor with length equal to nrow(traits) that indicates the taxon
-#'   of each individual.
+#' @param traits a vector of trait measurement.
+#' @param sp a vector with length equal to length(traits) that indicates the
+#'taxon of each individual.
 #' @param norm If TRUE, assume data are normally distributed; if FALSE,
 #'   additional normalization step is carried out by multiplying each density 
 #'   entry by the length of each vector.
@@ -110,7 +189,7 @@ community_overlap_wmedian <- function(traits, sp, norm = TRUE, bw = NULL, n = NU
 #' @param randomize_weights If TRUE, randomize weights given to pairwise overlaps
 #'   within a community. This can be used to generate null models.
 #'
-#' @details The funtion evaluates pairwise overlaps of density estimates of all 
+#' @details The funtion evaluates weighted pairwise overlaps of density estimates of all 
 #' species in a community taking complete cases with species abundances greater 
 #' than 1 from the original dataset. The median of pairwise overlaps is calculated 
 #' for the whole community using the harmonic means of abundances of the species 
@@ -175,13 +254,40 @@ community_overlap_harmonicwmedian <- function(traits, sp, norm = TRUE, bw = NULL
 
 }
 
-#' Abundance-weighted median pairwise distance between species trait means in a community
+#' Abundance-weighted Median of Pairwise Distance between Species Trait Means 
+#' in a Community
+#' 
+#' This function calculates the median of pairwise distances between species 
+#' trait means within a community, weighted by the mean of abundances of the 
+#' species pairs. This reduces each species to a trait mean and the intraspecific 
+#' trait variation (ITV) is ignored.
 #'
-#' Input: vector of traits, vector of species identities
-#'
-#' This reduces each species to a trait mean so that you can compare the inference from overlap to a
-#' situation where intraspecific trait variation (ITV) is ignored.
-#'
+#' @param traits a vector of trait measurement.
+#' @param sp a vector with length equal to length(traits) that indicates the
+#'   taxon of each individual.
+#' @param norm If TRUE, assume data are normally distributed; if FALSE,
+#'   additional normalization step is carried out by multiplying each density 
+#'   entry by the length of each vector.
+#' @param bw the smoothing bandwidth to be used. The kernels are scaled such
+#'   that this is the standard deviation of the smoothing kernel.
+#' @param n the number of equally spaced points at which the density is to be
+#'   estimated.
+#' 
+#' @details The funtion evaluates means of trait measurements of each 
+#' species in a community taking complete cases with species abundances greater 
+#' than 1 from the original dataset, using the mean of abundances of species 
+#' pairs as weights to calculate the weighted median of pairwise distances between
+#' species for the community.
+#' 
+#' @return The function returns a median of pairwise distances of all species in 
+#' the community, weighted by means of abundances of species pairs.
+#' 
+#' @seealso \code{\link{pairwise_overlap}} to calculate overlap between two empirical 
+#' density estimates.
+#' @seealso \code{\link{community_overlap_harmonicwmedian}} to see a function that
+#' uses harmonic means of abundances of species pairs as weights to calculate median 
+#' of overlaps.
+#' 
 #' @export
 community_overlap_noitv <- function(traits, sp, norm = TRUE, bw = NULL, n = NULL) {
   sp <- as.character(sp)
@@ -210,11 +316,37 @@ community_overlap_noitv <- function(traits, sp, norm = TRUE, bw = NULL, n = NULL
 
 }
 
-#' All pairwise overlap values between pairs of species in a community
+#' Display All Pairwise Overlap Values
 #'
-#' Input: vector of traits, vector of species identities
+#' This function displays all pairwise overlap between species pairs in a community.
 #'
+#' @param traits a vector of trait measurement.
+#' @param sp a vector with length equal to length(traits) that indicates the
+#'   taxon of each individual.
+#' @param norm If TRUE, assume data are normally distributed; if FALSE,
+#'   additional normalization step is carried out by multiplying each density 
+#'   entry by the length of each vector.
+#' @param bw the smoothing bandwidth to be used. The kernels are scaled such
+#'   that this is the standard deviation of the smoothing kernel.
+#' @param n the number of equally spaced points at which the density is to be
+#'   estimated.
+#' 
+#' @details The funtion evaluates pairwise overlaps of density estimates of all 
+#' species in a community taking complete cases with species abundances greater 
+#' than 1 from the original dataset, and displays all pairwise overlap values
+#' within the community.
+#' 
+#' @return The function returns all pairwise overlap values of trait distributions
+#' of all species in the community.
+#' 
+#' @seealso \code{\link{pairwise_overlap}} to calculate overlap between two empirical 
+#' density estimates.
+#' @seealso \code{\link{community_overlap_harmonicwmedian}} to see a function that
+#' uses harmonic means of abundances of species pairs as weights to calculate median 
+#' of overlaps.
+#' 
 #' @export
+#' 
 community_overlap_distributions <- function(traits, sp, norm = TRUE, bw = NULL, n = NULL) {
   sp <- as.character(sp)
   dat <- data.frame(traits=traits, sp=sp, stringsAsFactors = FALSE)
