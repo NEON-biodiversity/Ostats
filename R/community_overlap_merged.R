@@ -62,7 +62,7 @@
 #' sp = factor(dat$taxonID))
 #' @export
 #'
-community_overlap_merged <- function(traits, sp, normal = TRUE, output = "median", weights = "hmean", bw = NULL,  N = NULL, itv = TRUE, randomize_weights = FALSE, display = FALSE) {
+community_overlap_merged <- function(traits, sp, normal = TRUE, output = "median", weight_type= "hmean", bw = NULL,  N = NULL, itv = TRUE, randomize_weights = FALSE, display = FALSE) {
   sp <- as.character(sp)
   dat <- data.frame(traits=traits, sp=sp, stringsAsFactors = FALSE)
   dat <- dat[complete.cases(dat), ]
@@ -74,8 +74,8 @@ community_overlap_merged <- function(traits, sp, normal = TRUE, output = "median
   
   if (nspp < 2) return(NA)
   
-  overlaps <- numeric(0)
-  abund_pairs <- numeric(0)
+  overlaps <- NULL
+  abund_pairs <- NULL
   
   for (sp_a in 1:(nspp-1)) {
     for (sp_b in (sp_a+1):nspp) {
@@ -85,11 +85,11 @@ community_overlap_merged <- function(traits, sp, normal = TRUE, output = "median
       else(o <- abs(mean(traitlist[[sp_a]], na.rm=T) - mean(traitlist[[sp_b]], na.rm=T)))
         
       overlaps <- c(overlaps, o[1])
-        if (weights == "hmean")
+        if (weight_type == "hmean")
           harmonic_mean <- 2/(1/abunds[sp_a] + 1/abunds[sp_b])
-          abund_pairs <- c(abund_pairs, harmonic_mean)
-        if (weights == "mean")
-          abund_pairs <- c(abund_pairs, (abunds[sp_a] + abunds[sp_b]))
+          hmean_abund_pairs <- c(hmean_abund_pairs, harmonic_mean)
+        if (weight_type == "mean")
+          mean_abund_pairs <- c(mean_abund_pairs, (abunds[sp_a] + abunds[sp_b]))
       
     }
   }
@@ -97,11 +97,15 @@ community_overlap_merged <- function(traits, sp, normal = TRUE, output = "median
   
   if (randomize_weights) abund_pairs <- sample(abund_pairs)
   
-  if (output == "median" & weights != NULL)
-    matrixStats::weightedMedian(x = overlaps, w = abund_pairs)
-  if (output == "median" & weights == NULL) median(overlaps)
-  if (output == "mean" & weights != NULL)
-    weighted.mean(x = overlaps, w = abund_pairs)
+  if (output == "median" & weight_type == "hmean")
+    matrixStats::weightedMedian(x = as.vector(overlaps), w = hmean_abund_pairs)
+  if (output == "median" & weight_type == "mean")
+    matrixStats::weightedMedian(x = as.vector(unlist(overlaps)), w = mean_abund_pairs)
+  if (output == "median" & weight_type == NULL) median(overlaps)
+  if (output == "mean" & weight_type == "hmean")
+    weighted.mean(x = as.vector(unlist(overlaps)), w = hmean_abund_pairs)
+  if (output == "mean" & weight_type == "mean")
+    weighted.mean(x = as.vector(unlist(overlaps)), w = mean_abund_pairs)
   if (output == "mean" & weights == NULL) mean(overlaps)
   
 }
