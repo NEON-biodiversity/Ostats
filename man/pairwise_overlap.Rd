@@ -4,7 +4,7 @@
 \alias{pairwise_overlap}
 \title{Overlap between Two Empirical Density Estimates}
 \usage{
-pairwise_overlap(a, b, norm = TRUE, bw = NULL, n = NULL)
+pairwise_overlap(a, b, normal = TRUE, bw = NULL, N = NULL)
 }
 \arguments{
 \item{a}{a matrix dataset with nrows= n individuals, with a column containing 
@@ -13,14 +13,14 @@ one measurement of a certain trait.}
 \item{b}{another matrix dataset with the same trait measurements to be compared 
 against a.}
 
-\item{norm}{If TRUE, assume data are normally distributed; if FALSE,
+\item{normal}{If TRUE, assume data are normally distributed; if FALSE,
 additional normalization step is carried out by multiplying each density 
 entry by the length of each vector.}
 
 \item{bw}{the smoothing bandwidth to be used. The kernels are scaled such
 that this is the standard deviation of the smoothing kernel.}
 
-\item{n}{the number of equally spaced points at which the density is to be
+\item{N}{the number of equally spaced points at which the density is to be
 estimated.}
 }
 \value{

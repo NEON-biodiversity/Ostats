@@ -7,11 +7,11 @@
 community_overlap_merged(
   traits,
   sp,
-  norm = TRUE,
+  normal = TRUE,
   output = "median",
-  weights = "hmean",
+  weight_type = "hmean",
   bw = NULL,
-  n = NULL,
+  N = NULL,
   itv = TRUE,
   randomize_weights = FALSE,
   display = FALSE
@@ -23,18 +23,18 @@ community_overlap_merged(
 \item{sp}{a vector with length equal to length(traits) that indicates the
 taxon of each individual.}
 
-\item{norm}{If TRUE, assume data are normally distributed; if FALSE,
+\item{normal}{If TRUE, assume data are normally distributed; if FALSE,
 additional normalization step is carried out by multiplying each density 
 entry by the length of each vector.}
 
 \item{output}{specifies whether median or mean is calculated.}
 
-\item{weights}{specifies weights to be used to calculate the median or mean.}
+\item{weight_type}{specifies weights to be used to calculate the median or mean.}
 
 \item{bw}{the smoothing bandwidth to be used. The kernels are scaled such
 that this is the standard deviation of the smoothing kernel.}
 
-\item{n}{the number of equally spaced points at which the density is to be
+\item{N}{the number of equally spaced points at which the density is to be
 estimated.}
 
 \item{itv}{If TRUE, pairwise overlaps are evaluated;if FALSE, pairwise distances
@@ -82,7 +82,7 @@ dat <- read_csv('https://ndownloader.figshare.com/files/9167548') \%>\%
 
 # Calculate median of pairwise overlaps for the community,weighted by harmonic median
 of abundances
-community_overlap(traits = as.matrix(dat$log_weight), 
+community_overlap_merged(traits = as.matrix(dat$log_weight), 
 sp = factor(dat$taxonID))
 }
 \references{

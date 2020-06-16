@@ -8,14 +8,14 @@
 #' @param traits a vector of trait measurement.
 #' @param sp a vector with length equal to length(traits) that indicates the
 #'taxon of each individual.
-#' @param norm If TRUE, assume data are normally distributed; if FALSE,
+#' @param normal If TRUE, assume data are normally distributed; if FALSE,
 #'   additional normalization step is carried out by multiplying each density 
 #'   entry by the length of each vector.
 #' @param output specifies whether median or mean is calculated.
-#' @param weights specifies weights to be used to calculate the median or mean.
+#' @param weight_type specifies weights to be used to calculate the median or mean.
 #' @param bw the smoothing bandwidth to be used. The kernels are scaled such
 #'   that this is the standard deviation of the smoothing kernel.
-#' @param n the number of equally spaced points at which the density is to be
+#' @param N the number of equally spaced points at which the density is to be
 #'   estimated.
 #' @param itv If TRUE, pairwise overlaps are evaluated;if FALSE, pairwise distances
 #' are calculated, which means each species is reduced to a trait mean and the 
@@ -58,7 +58,7 @@
 #' 
 #' # Calculate median of pairwise overlaps for the community,weighted by harmonic median
 #' of abundances
-#' community_overlap(traits = as.matrix(dat$log_weight), 
+#' community_overlap_merged(traits = as.matrix(dat$log_weight), 
 #' sp = factor(dat$taxonID))
 #' @export
 #'
@@ -77,19 +77,19 @@ community_overlap_merged <- function(traits, sp, normal = TRUE, output = "median
   overlaps <- NULL
   abund_pairs <- NULL
   
+  
   for (sp_a in 1:(nspp-1)) {
     for (sp_b in (sp_a+1):nspp) {
       if (itv==TRUE) {
-        o <- pairwise_overlap(a = traitlist[[sp_a]], b = traitlist[[sp_b]], bw = bw, N = N)
+        o <- pairwise_overlap(a = traitlist[[sp_a]], b = traitlist[[sp_b]], normal=normal, bw = bw, N = N)
       }
       else(o <- abs(mean(traitlist[[sp_a]], na.rm=T) - mean(traitlist[[sp_b]], na.rm=T)))
-        
+      
       overlaps <- c(overlaps, o[1])
-        if (weight_type == "hmean")
-          harmonic_mean <- 2/(1/abunds[sp_a] + 1/abunds[sp_b])
-          hmean_abund_pairs <- c(hmean_abund_pairs, harmonic_mean)
-        if (weight_type == "mean")
-          mean_abund_pairs <- c(mean_abund_pairs, (abunds[sp_a] + abunds[sp_b]))
+      if (weight_type == "hmean")
+        abund_pairs <- c(abund_pairs, 2/(1/abunds[sp_a] + 1/abunds[sp_b]))
+      if (weight_type == "mean")
+        abund_pairs <- c(abund_pairs, (abunds[sp_a] + abunds[sp_b]))
       
     }
   }
@@ -97,16 +97,18 @@ community_overlap_merged <- function(traits, sp, normal = TRUE, output = "median
   
   if (randomize_weights) abund_pairs <- sample(abund_pairs)
   
-  if (output == "median" & weight_type == "hmean")
-    matrixStats::weightedMedian(x = as.vector(overlaps), w = hmean_abund_pairs)
-  if (output == "median" & weight_type == "mean")
-    matrixStats::weightedMedian(x = as.vector(unlist(overlaps)), w = mean_abund_pairs)
-  if (output == "median" & weight_type == NULL) median(overlaps)
-  if (output == "mean" & weight_type == "hmean")
-    weighted.mean(x = as.vector(unlist(overlaps)), w = hmean_abund_pairs)
-  if (output == "mean" & weight_type == "mean")
-    weighted.mean(x = as.vector(unlist(overlaps)), w = mean_abund_pairs)
-  if (output == "mean" & weights == NULL) mean(overlaps)
+  if (output == "median" && is.null(weight_type)==TRUE) median(overlaps)
+  else if (output == "median" && weight_type == "hmean")
+    return(matrixStats::weightedMedian(x = as.vector(overlaps), w = abund_pairs))
+  else if (output == "median" & weight_type == "mean")
+    return(matrixStats::weightedMedian(x = overlaps, w = abund_pairs))
+  else if (output == "mean" & weight_type == "hmean")
+    return(weighted.mean(x = overlaps, w = abund_pairs))
+  else if (output == "mean" & weight_type == "mean")
+    return(weighted.mean(x = overlaps, w = abund_pairs))
+  else if (output == "mean" && is.null(weight_type)==TRUE) mean(overlaps)
+  else return("invalid arguments for weight_type or output")
   
 }
+  
 

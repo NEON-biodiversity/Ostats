@@ -10,12 +10,12 @@
 #'   one measurement of a certain trait.
 #' @param b another matrix dataset with the same trait measurements to be compared 
 #'   against a.
-#' @param norm If TRUE, assume data are normally distributed; if FALSE,
+#' @param normal If TRUE, assume data are normally distributed; if FALSE,
 #'   additional normalization step is carried out by multiplying each density 
 #'   entry by the length of each vector.
 #' @param bw the smoothing bandwidth to be used. The kernels are scaled such
 #'   that this is the standard deviation of the smoothing kernel.
-#' @param n the number of equally spaced points at which the density is to be
+#' @param N the number of equally spaced points at which the density is to be
 #'   estimated.
 #'
 #' @details This function generates kernel density estimates using the density() 
