@@ -79,10 +79,10 @@ community_overlap_merged <- function(traits, sp, norm = TRUE, output = "median",
   
   for (sp_a in 1:(nspp-1)) {
     for (sp_b in (sp_a+1):nspp) {
-      if (itv)
+      if (itv==TRUE) {
         o <- pairwise_overlap(a = traitlist[[sp_a]], b = traitlist[[sp_b]], norm = norm, bw = bw, n = n)
-      if (!itv)
-        o <- abs(mean(traitlist[[sp_a]], na.rm=T) - mean(traitlist[[sp_b]], na.rm=T))
+      }
+      else(o <- abs(mean(traitlist[[sp_a]], na.rm=T) - mean(traitlist[[sp_b]], na.rm=T)))
         
       overlaps <- c(overlaps, o[1])
         if (weights == "hmean")
@@ -93,7 +93,7 @@ community_overlap_merged <- function(traits, sp, norm = TRUE, output = "median",
       
     }
   }
-  if (display) return(overlaps)
+  if (display==TRUE) return(overlaps)
   
   if (randomize_weights) abund_pairs <- sample(abund_pairs)
   
