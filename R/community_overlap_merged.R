@@ -62,7 +62,7 @@
 #' sp = factor(dat$taxonID))
 #' @export
 #'
-community_overlap_merged <- function(traits, sp, norm = TRUE, output = "median", weights = "hmean", bw = NULL, n = NULL, itv = TRUE, randomize_weights = FALSE, display = FALSE) {
+community_overlap_merged <- function(traits, sp, normal = TRUE, output = "median", weights = "hmean", bw = NULL,  N = NULL, itv = TRUE, randomize_weights = FALSE, display = FALSE) {
   sp <- as.character(sp)
   dat <- data.frame(traits=traits, sp=sp, stringsAsFactors = FALSE)
   dat <- dat[complete.cases(dat), ]
@@ -80,7 +80,7 @@ community_overlap_merged <- function(traits, sp, norm = TRUE, output = "median",
   for (sp_a in 1:(nspp-1)) {
     for (sp_b in (sp_a+1):nspp) {
       if (itv==TRUE) {
-        o <- pairwise_overlap(a = traitlist[[sp_a]], b = traitlist[[sp_b]], norm = norm, bw = bw, n = n)
+        o <- pairwise_overlap(a = traitlist[[sp_a]], b = traitlist[[sp_b]], bw = bw, N = N)
       }
       else(o <- abs(mean(traitlist[[sp_a]], na.rm=T) - mean(traitlist[[sp_b]], na.rm=T)))
         

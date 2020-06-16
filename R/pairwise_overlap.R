@@ -51,7 +51,7 @@
 #' 
 # Overlap between two empirical density estimates
 
-pairwise_overlap <- function(a, b, norm = TRUE, bw = NULL, n = NULL) {
+pairwise_overlap <- function(a, b, normal = TRUE, bw = NULL, N = NULL) {
   
   # clean input
   a <- as.numeric(na.omit(a))
@@ -64,13 +64,13 @@ pairwise_overlap <- function(a, b, norm = TRUE, bw = NULL, n = NULL) {
   # generate kernel densities
   # add option to use user-defined bandwidth and n
   if (is.null(bw)) bw <- 'nrd0' # Defaults to traditional method if not given
-  if (is.null(n)) n <- 512 # Default value if not given
-  da <- density(a, from=lower, to=upper, bw=bw, n=n)
-  db <- density(b, from=lower, to=upper, bw=bw, n=n)
+  if (is.null(N)) N <- 512 # Default value if not given
+  da <- density(a, from=lower, to=upper, bw=bw, n=N)
+  db <- density(b, from=lower, to=upper, bw=bw, n=N)
   d <- data.frame(x=da$x, a=da$y, b=db$y)
   
   # If not normalized, multiply each density entry by the length of each vector
-  if (!norm) {
+  if (normal!=TRUE) {
     d$a <- d$a * length(a)
     d$b <- d$b * length(b)
   }
