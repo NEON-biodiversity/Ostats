@@ -27,7 +27,7 @@
 #' uses harmonic means of abundances of species pairs as weights to calculate median.
 #' 
 #' @export
-community_overlap <- function(traits, sp, norm = TRUE, bw = NULL, n = NULL) {
+community_overlap <- function(traits, sp, normal = TRUE, bw = NULL, N = NULL) {
   sp <- as.character(sp)
   dat <- data.frame(traits=traits, sp=sp, stringsAsFactors = FALSE)
   dat <- dat[complete.cases(dat), ]
@@ -35,22 +35,21 @@ community_overlap <- function(traits, sp, norm = TRUE, bw = NULL, n = NULL) {
   dat <- dat[dat$sp %in% names(abunds)[abunds>1], ]
   traitlist <- split(dat$traits, dat$sp)
   nspp <- length(traitlist)
-
+  
   if (nspp < 2) return(NA)
-
+  
   overlaps <- numeric(0)
-
+  
   for (sp_a in 1:(nspp-1)) {
     for (sp_b in (sp_a+1):nspp) {
-      o <- pairwise_overlap(a = traitlist[[sp_a]], b = traitlist[[sp_b]], norm = norm, bw = bw, n = n)
+      o <- pairwise_overlap(a = traitlist[[sp_a]], b = traitlist[[sp_b]], normal = normal, bw = bw, N = N)
       overlaps <- c(overlaps, o[2:3])
     }
   }
-
+  
   median(overlaps)
-
+  
 }
-
 #' Abundance-weighted Mean of Pairwise Overlaps across All Species in a Community
 #' 
 #' This function calculates the mean of pairwise overlaps between density 
@@ -159,7 +158,7 @@ community_overlap_wmedian <- function(traits, sp, norm = TRUE, bw = NULL, n = NU
 
   for (sp_a in 1:(nspp-1)) {
     for (sp_b in (sp_a+1):nspp) {
-      o <- pairwise_overlap(a = traitlist[[sp_a]], b = traitlist[[sp_b]], norm = norm, bw = bw, n = n)
+      o <- pairwise_overlap(a = traitlist[[sp_a]], b = traitlist[[sp_b]], normal = norm, bw = bw, N = n)
       overlaps <- c(overlaps, o[1])
       abund_pairs <- c(abund_pairs, (abunds[sp_a] + abunds[sp_b]))
     }

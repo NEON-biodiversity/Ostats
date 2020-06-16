@@ -4,7 +4,7 @@
 \alias{community_overlap}
 \title{Median Pairwise Overlap across All Species in a Community}
 \usage{
-community_overlap(traits, sp, norm = TRUE, bw = NULL, n = NULL)
+community_overlap(traits, sp, normal = TRUE, bw = NULL, N = NULL)
 }
 \arguments{
 \item{traits}{a vector of trait measurement.}
@@ -12,12 +12,12 @@ community_overlap(traits, sp, norm = TRUE, bw = NULL, n = NULL)
 \item{sp}{a vector with length equal to length(traits) that indicates the
 taxon of each individual.}
 
+\item{bw}{the smoothing bandwidth to be used. The kernels are scaled such
+that this is the standard deviation of the smoothing kernel.}
+
 \item{norm}{If TRUE, assume data are normally distributed; if FALSE,
 additional normalization step is carried out by multiplying each density 
 entry by the length of each vector.}
-
-\item{bw}{the smoothing bandwidth to be used. The kernels are scaled such
-that this is the standard deviation of the smoothing kernel.}
 
 \item{n}{the number of equally spaced points at which the density is to be
 estimated.}

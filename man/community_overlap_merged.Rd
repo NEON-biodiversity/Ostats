@@ -61,7 +61,7 @@ The funtion evaluates weighted pairwise distances or overlaps of density
 estimates of all species in a community taking complete cases with species abundances 
 greater than 1 from the dataset. The default calculates the median of pairwise overlaps
 for the whole community using the harmonic means of abundances of the species pairs as 
-weights, which minimizes the effect of outliners.If the argument weights == NULL, no 
+weights, which minimizes the effect of outliners.If the argument weights == "none", no 
 weights are used for the calculation of mean/median. If weights == "mean", means of 
 abundances are used as weights. To change the output to mean, specify the argument 
 output == "mean".
