@@ -28,7 +28,7 @@
 #' estimates of all species in a community taking complete cases with species abundances 
 #' greater than 1 from the dataset. The default calculates the median of pairwise overlaps
 #' for the whole community using the harmonic means of abundances of the species pairs as 
-#' weights, which minimizes the effect of outliners.If the argument weights == NULL, no 
+#' weights, which minimizes the effect of outliners.If the argument weights == "none", no 
 #' weights are used for the calculation of mean/median. If weights == "mean", means of 
 #' abundances are used as weights. To change the output to mean, specify the argument 
 #' output == "mean".
@@ -84,7 +84,7 @@ community_overlap_merged <- function(traits, sp, normal = TRUE, output = "median
         o <- pairwise_overlap(a = traitlist[[sp_a]], b = traitlist[[sp_b]], normal=normal, bw = bw, N = N)
       }
       else(o <- abs(mean(traitlist[[sp_a]], na.rm=T) - mean(traitlist[[sp_b]], na.rm=T)))
-      
+     
       overlaps <- c(overlaps, o[1])
       if (weight_type == "hmean")
         abund_pairs <- c(abund_pairs, 2/(1/abunds[sp_a] + 1/abunds[sp_b]))
@@ -97,7 +97,8 @@ community_overlap_merged <- function(traits, sp, normal = TRUE, output = "median
   
   if (randomize_weights) abund_pairs <- sample(abund_pairs)
   
-  if (output == "median" && is.null(weight_type)==TRUE) median(overlaps)
+  if (output == "median" && weight_type == "none") 
+    return(median(overlaps))
   else if (output == "median" && weight_type == "hmean")
     return(matrixStats::weightedMedian(x = as.vector(overlaps), w = abund_pairs))
   else if (output == "median" && weight_type == "mean")
@@ -106,7 +107,8 @@ community_overlap_merged <- function(traits, sp, normal = TRUE, output = "median
     return(weighted.mean(x = overlaps, w = abund_pairs))
   else if (output == "mean" && weight_type == "mean")
     return(weighted.mean(x = overlaps, w = abund_pairs))
-  else if (output == "mean" && is.null(weight_type)==TRUE) mean(overlaps)
+  else if (output == "mean" && weight_type == "none") 
+    return(mean(overlaps))
   else return("invalid arguments for weight_type or output")
   
 }
