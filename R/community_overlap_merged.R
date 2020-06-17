@@ -28,13 +28,14 @@
 #' estimates of all species in a community taking complete cases with species abundances 
 #' greater than 1 from the dataset. The default calculates the median of pairwise overlaps
 #' for the whole community using the harmonic means of abundances of the species pairs as 
-#' weights, which minimizes the effect of outliners.If the argument weights == "none", no 
-#' weights are used for the calculation of mean/median. If weights == "mean", means of 
-#' abundances are used as weights. To change the output to mean, specify the argument 
-#' output == "mean".
+#' weights, which minimizes the effect of outliners and rare species.If the argument 
+#' weight_type == "none", no weights are used for the calculation of mean/median. If 
+#' weight_type == "mean", arithmetic means of abundances are used as weights. To change the 
+#' output to mean, specify the argument output == "mean".
 #' 
 #' @return At default, the function returns a median of pairwise overlaps weighted by 
-#' harmonic means of abundances for the community. 
+#' harmonic means of abundances for the community. When display is TRUE, all pairwise overlaps
+#' are displayed.
 #'
 #' @references Read, Q. D. et al. Among-species overlap in rodent body size
 #'   distributions predicts species richness along a temperature gradient.
@@ -59,7 +60,7 @@
 #' # Calculate median of pairwise overlaps for the community,weighted by harmonic median
 #' of abundances
 #' community_overlap_merged(traits = as.matrix(dat$log_weight), 
-#' sp = factor(dat$taxonID))
+#'    sp = factor(dat$taxonID))
 #' @export
 #'
 community_overlap_merged <- function(traits, sp, normal = TRUE, output = "median", weight_type= "hmean", bw = NULL,  N = NULL, itv = TRUE, randomize_weights = FALSE, display = FALSE) {
