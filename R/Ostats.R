@@ -50,8 +50,8 @@
 #'   
 #' @note The function so far only supports overlap statistics for one trait.
 #'
-#'@author Quentin Read, John Grady, Arya Y. Yue, Isadora Fluck E., Ben Baiser, 
-#'Angela Strecker, Phoebe Zarnetske, and Sydne Record
+#' @author Quentin Read, John Grady, Arya Y. Yue, Isadora Fluck E., Ben Baiser, 
+#' Angela Strecker, Phoebe Zarnetske, and Sydne Record
 #'
 #' @seealso \code{\link{Ostats_regional}} to evaluate against a regional null
 #'   model.

@@ -6,7 +6,7 @@
 #' this function is derived from code posted in the answer by user mmk.
 #'
 #'
-#' @param a a matrix dataset with nrows= n individuals, with a column containing 
+#' @param a a vector dataset with nrows= n individuals, with a column containing 
 #'   one measurement of a certain trait.
 #' @param b another matrix dataset with the same trait measurements to be compared 
 #'   against a.
@@ -22,21 +22,22 @@
 #' function for two datasets on a common grid.If bw = NULL, the default 'nrd0'is 
 #' used. If n = NULL, the default value of 512 is used.Intersection density function 
 #' is then calculated by taking the integral of the minimum of the two functions, 
-#' from which the coefficients are calculated.
+#' from which the overlap outputs are calculated.
 #'
 #' @return The funtion returns a vector of three values: 
-#' \item{overlap}{the overlap area *2 divided by the sum of areas under the two 
-#' functions.} 
-#' \item{overlap_a}{the overlap area divided by area under the function generated from 
-#' a.}
-#' \item{overlap_b}{the overlap area diveided by area under the function generated 
-#' from b.}
+#' \item{overlap_average}{the average overlap of a and b, calculated by the overlap 
+#' area *2 divided by the sum of areas under the two functions.} 
+#' \item{overlap_a}{the proportion of a that overlaps with b, calculated by the overlap 
+#' area divided by area under the function generated from a.}
+#' \item{overlap_b}{the proportion of b that overlaps with a, calculated by the overlap 
+#' area diveided by area under the function generated from b.}
 #'
 #' @references http://stats.stackexchange.com/questions/97596/how-to-calculate-overlap-between-empirical-probability-densities
-#'   
+#'
+#' @seealso \code{\link{circular_overlap}} to calculate circular overlap.
+#'
 #' @examples
 #' #overlap of miles per gallon between 4-cylinder and 6-cylinder cars
-#' library(ggplot2)
 #' library(dplyr)
 #' a <- mtcars %>%
 #'   filter(cyl==6)
@@ -84,10 +85,10 @@ pairwise_overlap <- function(a, b, normal = TRUE, bw = NULL, N = NULL) {
   intersection <- integrate.xy(d$x, d$w)
   
   # compute overlap coefficient
-  overlap <- 2 * intersection / total
+  overlap_average <- 2 * intersection / total
   overlap_a <- intersection / integrate.xy(d$x, d$a)
   overlap_b <- intersection / integrate.xy(d$x, d$b)
   
-  return(c(overlap = overlap, overlap_a = overlap_a, overlap_b = overlap_b))
+  return(c(overlap_average = overlap_average, overlap_a = overlap_a, overlap_b = overlap_b))
   
 }

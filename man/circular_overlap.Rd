@@ -2,7 +2,7 @@
 % Please edit documentation in R/circular_overlap.R
 \name{circular_overlap}
 \alias{circular_overlap}
-\title{Overlap of two circular distributions}
+\title{Overlap of Two Circular Distributions}
 \usage{
 circular_overlap(
   a,
@@ -14,11 +14,59 @@ circular_overlap(
   n = NULL
 )
 }
+\arguments{
+\item{a}{a vector dataset with nrows= n individuals, with a column containing 
+one measurement of a certain trait.}
+
+\item{b}{another matrix dataset with the same trait measurements to be compared 
+against a.}
+
+\item{circular_units}{units of the measures.}
+
+\item{circular_template}{how the data should be plotted. This set modulo, zero 
+and rotation of the function \code{circular} to some suitable values.}
+
+\item{bw}{the smoothing bandwidth to be used. The kernels are scaled such
+that this is the standard deviation of the smoothing kernel.}
+
+\item{normal}{If TRUE, assume data are normally distributed; if FALSE,
+additional normalization step is carried out by multiplying each density 
+entry by the length of each vector.}
+
+\item{N}{the number of equally spaced points at which the density is to be
+estimated.}
+}
+\value{
+The funtion returns a vector of three values: 
+\item{overlap_average}{the average overlap of a and b, calculated by the overlap 
+area *2 divided by the sum of areas under the two functions.} 
+\item{overlap_a}{the proportion of a that overlaps with b, calculated by the overlap 
+area divided by area under the function generated from a.}
+\item{overlap_b}{the proportion of b that overlaps with a, calculated by the overlap 
+area diveided by area under the function generated from b.}
+}
 \description{
-This function converts the input vectors to circular objects, calculates empirical densities,
-and then calculates their overlap.
+This function converts input vectors to circular objects, generates kernel
+density estimates to calculate the area of overlap between the two
+distributions.
 }
 \details{
-The user must specify the bandwidth for the KDE as well as some other options for the circular
-conversion.
+Circular conversion is carried out by using the function \code{circular}.
+Kernel density estimates are then generated.If n = NULL, the default value of 512 
+is used.Intersection density function is then calculated by taking the integral of 
+the minimum of the two functions, from which the overlap outputs are calculated.The 
+user must specify the bandwidth for the kernel density estimates as well as options 
+for the circular conversion.
+}
+\examples{
+# circular overlap of randomly generated circular data
+
+x <- rvonmises(n=100, mu=circular(pi), kappa=2)
+y <- rvonmises(n=100, mu=circular(pi/2), kappa=2)
+circular_overlap(x,y,circular_units = "radians", circular_template = "none",bw = 1)
+
+}
+\seealso{
+\code{\link{pairwise_overlap}} to calculate linear overlap between two empirical 
+density estimates.
 }
