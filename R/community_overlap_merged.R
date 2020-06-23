@@ -3,11 +3,12 @@
 #' This function calculates the median or mean of pairwise overlaps between density 
 #' estimates of trait distributions of all species within a community, which can 
 #' be weighted by species abundances. It can also evaluate pairwise distances 
-#' calculated from trait means.
+#' calculated from trait means.NOW itv ONLY GOES WITH LINEAR!
 #' 
 #' @param traits a vector of trait measurement.
 #' @param sp a vector with length equal to length(traits) that indicates the
-#'taxon of each individual.
+#' taxon of each individual.
+#' @param data_type data type can be "linear", "circular",or "circular_discrete".
 #' @param normal If TRUE, assume data are normally distributed; if FALSE,
 #'   additional normalization step is carried out by multiplying each density 
 #'   entry by the length of each vector.
@@ -45,7 +46,11 @@
 #'
 #' @seealso \code{\link{pairwise_overlap}} to calculate overlap between two empirical 
 #' density estimates.
-#'
+#' @seealso \code{\link{circular_overlap}} to calculate continous circular overlap between 
+#' two empirical density estimates.
+#' @seealso \code{\link{circular_overlap_24hour}} to calculate overlap for discrete hourly 
+#' data.
+#' 
 #' @examples
 #' library(tidyverse)
 #' library(Ostats)
@@ -63,7 +68,7 @@
 #'    sp = factor(dat$taxonID))
 #' @export
 #'
-community_overlap_merged <- function(traits, sp, normal = TRUE, output = "median", weight_type= "hmean", bw = NULL,  N = NULL, itv = TRUE, randomize_weights = FALSE, display = FALSE) {
+community_overlap_merged <- function(traits, sp, data_type, normal = TRUE, output = "median", weight_type= "hmean", bw = NULL,  N = NULL, itv = TRUE, randomize_weights = FALSE, display = FALSE) {
   sp <- as.character(sp)
   dat <- data.frame(traits=traits, sp=sp, stringsAsFactors = FALSE)
   dat <- dat[complete.cases(dat), ]
@@ -81,11 +86,18 @@ community_overlap_merged <- function(traits, sp, normal = TRUE, output = "median
   
   for (sp_a in 1:(nspp-1)) {
     for (sp_b in (sp_a+1):nspp) {
-      if (itv==TRUE) {
-        o <- pairwise_overlap(a = traitlist[[sp_a]], b = traitlist[[sp_b]], normal=normal, bw = bw, N = N)
+      if (data_type == "linear"){
+        if (itv==TRUE) {
+          o <- pairwise_overlap(a = traitlist[[sp_a]], b = traitlist[[sp_b]], normal=normal, bw = bw, N = N)
+        }
+        else(o <- abs(mean(traitlist[[sp_a]], na.rm=T) - mean(traitlist[[sp_b]], na.rm=T)))
       }
-      else(o <- abs(mean(traitlist[[sp_a]], na.rm=T) - mean(traitlist[[sp_b]], na.rm=T)))
-     
+      if (data_type == "circular"){
+        o <- circular_overlap(a = traitlist[[sp_a]], b = traitlist[[sp_b]], normal=normal, bw = bw, N = N)
+      }
+      if (data_type == "circular_discrete"){
+        o <- circular_overlap_24hour(a = traitlist[[sp_a]], b = traitlist[[sp_b]], normal=normal)
+      }
       overlaps <- c(overlaps, o[1])
       if (weight_type == "hmean")
         abund_pairs <- c(abund_pairs, 2/(1/abunds[sp_a] + 1/abunds[sp_b]))

@@ -37,6 +37,8 @@
 #' 
 #' @seealso \code{\link{pairwise_overlap}} to calculate linear overlap between two empirical 
 #' density estimates.
+#' @seealso \code{\link{circular_overlap_24hour}} to calculate overlap for discrete hourly 
+#' data.
 #' 
 #' @examples 
 #' # circular overlap of randomly generated circular data
@@ -46,7 +48,7 @@
 #' circular_overlap(x,y,circular_units = "radians", circular_template = "none",bw = 1)
 #'
 #' @export
-circular_overlap <- function(a, b, circular_units, circular_template, norm = TRUE, bw, n = NULL) {
+circular_overlap <- function(a, b, circular_units, circular_template, normal = TRUE, bw, n = NULL) {
 
   # clean input
   a <- as.numeric(na.omit(a))
@@ -65,7 +67,7 @@ circular_overlap <- function(a, b, circular_units, circular_template, norm = TRU
   d <- data.frame(x=da$x, a=da$y, b=db$y)
 
   # If not normalized, multiply each density entry by the length of each vector
-  if (!norm) {
+  if (!normal) {
     d$a <- d$a * length(a)
     d$b <- d$b * length(b)
   }
@@ -88,19 +90,49 @@ circular_overlap <- function(a, b, circular_units, circular_template, norm = TRU
 
 }
 
-#' Overlap of two 24-hour distributions
+#' Overlap of Two Hourly Circular Distributions
 #'
-#' This manually calculates the density by just taking the proportion of each hour.
-#' Simple but effective.
+#' This function calculates circular overlap based on discrete hourly observations from
+#' 0 to 23.
+#' 
+#' @param a a vector dataset with nrows= n individuals, with a column containing 
+#'   one measurement of a certain trait.
+#' @param b another matrix dataset with the same trait measurements to be compared 
+#'   against a.
+#' @param normal If TRUE, assume data are normally distributed; if FALSE,
+#'   additional normalization step is carried out by multiplying each density 
+#'   entry by the length of each vector.
 #'
+#' @details This function works for discrete data collected on the hour.Data is converted
+#' to a factor with levels(0:23). It then by manually calculates the density by taking 
+#' the proportion of each hour. Intersection density function is then calculated by 
+#' taking the integral of the minimum of the two functions, from which the overlap 
+#' outputs are calculated.
+#'
+#' @return The funtion returns a vector of three values: 
+#' \item{overlap_average}{the average overlap of a and b, calculated by the overlap 
+#' area *2 divided by the sum of areas under the two functions.} 
+#' \item{overlap_a}{the proportion of a that overlaps with b, calculated by the overlap 
+#' area divided by area under the function generated from a.}
+#' \item{overlap_b}{the proportion of b that overlaps with a, calculated by the overlap 
+#' area diveided by area under the function generated from b.}
+#' 
+#' @seealso \code{\link{pairwise_overlap}} to calculate linear overlap between two empirical 
+#' density estimates.
+#' @seealso \code{\link{circular_overlap}} to calculate continous circular overlap between 
+#' two empirical density estimates.
+#' 
+#' @examples 
+#' # waiting for datasets
+#' 
 #' @export
-circular_overlap_24hour <- function(a, b, norm = TRUE) {
+circular_overlap_24hour <- function(a, b, normal = TRUE) {
   calc_weight <- function(x) { # a vector of hours
     tab <- table(factor(x,  levels=as.character(0:23)),
                  useNA="ifany")
 
     dimnames(tab) <- NULL
-    if (norm) {
+    if (normal) {
       weights <- tab / sum(tab)
     } else {
       weights <- tab
@@ -122,11 +154,11 @@ circular_overlap_24hour <- function(a, b, norm = TRUE) {
   intersection <- sfsmisc::integrate.xy(d$x, d$w)
 
   # compute overlap coefficient
-  overlap <- 2 * intersection / total
+  overlap_average <- 2 * intersection / total
   overlap_a <- intersection / sfsmisc::integrate.xy(d$x, d$a)
   overlap_b <- intersection / sfsmisc::integrate.xy(d$x, d$b)
 
-  return(c(overlap = overlap, overlap_a = overlap_a, overlap_b = overlap_b))
+  return(c(overlap_average = overlap_average, overlap_a = overlap_a, overlap_b = overlap_b))
 
 }
 

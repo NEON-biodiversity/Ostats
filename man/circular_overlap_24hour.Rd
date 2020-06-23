@@ -2,11 +2,49 @@
 % Please edit documentation in R/circular_overlap.R
 \name{circular_overlap_24hour}
 \alias{circular_overlap_24hour}
-\title{Overlap of two 24-hour distributions}
+\title{Overlap of Two Hourly Circular Distributions}
 \usage{
-circular_overlap_24hour(a, b, norm = TRUE)
+circular_overlap_24hour(a, b, normal = TRUE)
+}
+\arguments{
+\item{a}{a vector dataset with nrows= n individuals, with a column containing 
+one measurement of a certain trait.}
+
+\item{b}{another matrix dataset with the same trait measurements to be compared 
+against a.}
+
+\item{normal}{If TRUE, assume data are normally distributed; if FALSE,
+additional normalization step is carried out by multiplying each density 
+entry by the length of each vector.}
+}
+\value{
+The funtion returns a vector of three values: 
+\item{overlap_average}{the average overlap of a and b, calculated by the overlap 
+area *2 divided by the sum of areas under the two functions.} 
+\item{overlap_a}{the proportion of a that overlaps with b, calculated by the overlap 
+area divided by area under the function generated from a.}
+\item{overlap_b}{the proportion of b that overlaps with a, calculated by the overlap 
+area diveided by area under the function generated from b.}
 }
 \description{
-This manually calculates the density by just taking the proportion of each hour.
-Simple but effective.
+This function calculates circular overlap based on discrete hourly observations from
+0 to 23.
+}
+\details{
+This function works for discrete data collected on the hour.Data is converted
+to a factor with levels(0:23). It then by manually calculates the density by taking 
+the proportion of each hour. Intersection density function is then calculated by 
+taking the integral of the minimum of the two functions, from which the overlap 
+outputs are calculated.
+}
+\examples{
+# waiting for datasets
+
+}
+\seealso{
+\code{\link{pairwise_overlap}} to calculate linear overlap between two empirical 
+density estimates.
+
+\code{\link{circular_overlap}} to calculate continous circular overlap between 
+two empirical density estimates.
 }

@@ -7,6 +7,7 @@
 community_overlap_merged(
   traits,
   sp,
+  data_type,
   normal = TRUE,
   output = "median",
   weight_type = "hmean",
@@ -22,6 +23,8 @@ community_overlap_merged(
 
 \item{sp}{a vector with length equal to length(traits) that indicates the
 taxon of each individual.}
+
+\item{data_type}{data type can be "linear", "circular",or "circular_discrete".}
 
 \item{normal}{If TRUE, assume data are normally distributed; if FALSE,
 additional normalization step is carried out by multiplying each density 
@@ -55,7 +58,7 @@ are displayed.
 This function calculates the median or mean of pairwise overlaps between density 
 estimates of trait distributions of all species within a community, which can 
 be weighted by species abundances. It can also evaluate pairwise distances 
-calculated from trait means.
+calculated from trait means.NOW itv ONLY GOES WITH LINEAR!
 }
 \details{
 The funtion evaluates weighted pairwise distances or overlaps of density 
@@ -94,4 +97,10 @@ Read, Q. D. et al. Among-species overlap in rodent body size
 \seealso{
 \code{\link{pairwise_overlap}} to calculate overlap between two empirical 
 density estimates.
+
+\code{\link{circular_overlap}} to calculate continous circular overlap between 
+two empirical density estimates.
+
+\code{\link{circular_overlap_24hour}} to calculate overlap for discrete hourly 
+data.
 }

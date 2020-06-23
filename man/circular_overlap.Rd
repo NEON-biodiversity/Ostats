@@ -9,7 +9,7 @@ circular_overlap(
   b,
   circular_units,
   circular_template,
-  norm = TRUE,
+  normal = TRUE,
   bw,
   n = NULL
 )
@@ -26,12 +26,12 @@ against a.}
 \item{circular_template}{how the data should be plotted. This set modulo, zero 
 and rotation of the function \code{circular} to some suitable values.}
 
-\item{bw}{the smoothing bandwidth to be used. The kernels are scaled such
-that this is the standard deviation of the smoothing kernel.}
-
 \item{normal}{If TRUE, assume data are normally distributed; if FALSE,
 additional normalization step is carried out by multiplying each density 
 entry by the length of each vector.}
+
+\item{bw}{the smoothing bandwidth to be used. The kernels are scaled such
+that this is the standard deviation of the smoothing kernel.}
 
 \item{N}{the number of equally spaced points at which the density is to be
 estimated.}
@@ -69,4 +69,7 @@ circular_overlap(x,y,circular_units = "radians", circular_template = "none",bw =
 \seealso{
 \code{\link{pairwise_overlap}} to calculate linear overlap between two empirical 
 density estimates.
+
+\code{\link{circular_overlap_24hour}} to calculate overlap for discrete hourly 
+data.
 }
