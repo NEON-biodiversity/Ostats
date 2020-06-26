@@ -13,9 +13,7 @@ community_overlap_merged(
   weight_type = "hmean",
   bw = NULL,
   N = NULL,
-  itv = TRUE,
-  randomize_weights = FALSE,
-  display = FALSE
+  randomize_weights = FALSE
 )
 }
 \arguments{
@@ -40,28 +38,20 @@ that this is the standard deviation of the smoothing kernel.}
 \item{N}{the number of equally spaced points at which the density is to be
 estimated.}
 
-\item{itv}{If TRUE, pairwise overlaps are evaluated;if FALSE, pairwise distances
-are calculated, which means each species is reduced to a trait mean and the 
-intraspecific trait variation (ITV) is ignored.}
-
 \item{randomize_weights}{If TRUE, randomize weights given to pairwise overlaps
 within a community. This can be used to generate null models.}
-
-\item{display}{If TRUE, display all pairwise overlaps.}
 }
 \value{
 At default, the function returns a median of pairwise overlaps weighted by 
-harmonic means of abundances for the community. When display is TRUE, all pairwise overlaps
-are displayed.
+harmonic means of abundances for the community.
 }
 \description{
 This function calculates the median or mean of pairwise overlaps between density 
 estimates of trait distributions of all species within a community, which can 
-be weighted by species abundances. It can also evaluate pairwise distances 
-calculated from trait means.NOW itv ONLY GOES WITH LINEAR!
+be weighted by species abundances.
 }
 \details{
-The funtion evaluates weighted pairwise distances or overlaps of density 
+The funtion evaluates weighted mean or median of overlaps of density 
 estimates of all species in a community taking complete cases with species abundances 
 greater than 1 from the dataset. The default calculates the median of pairwise overlaps
 for the whole community using the harmonic means of abundances of the species pairs as 
@@ -69,9 +59,6 @@ weights, which minimizes the effect of outliners and rare species.If the argumen
 weight_type == "none", no weights are used for the calculation of mean/median. If 
 weight_type == "mean", arithmetic means of abundances are used as weights. To change the 
 output to mean, specify the argument output == "mean".
-}
-\note{
-The function so far only supports overlap statistics for one trait.
 }
 \examples{
 library(tidyverse)
