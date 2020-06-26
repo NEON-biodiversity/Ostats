@@ -3,67 +3,70 @@
 #' This function converts input vectors to circular objects, generates kernel
 #' density estimates to calculate the area of overlap between the two
 #' distributions.
-#' 
-#' @param a a vector dataset with nrows= n individuals, with a column containing 
+#'
+#' @param a a vector dataset with nrows= n individuals, with a column containing
 #'   one measurement of a certain trait.
-#' @param b another matrix dataset with the same trait measurements to be compared 
+#' @param b another matrix dataset with the same trait measurements to be compared
 #'   against a.
-#' @param circular_units units of the measures.
-#' @param circular_template how the data should be plotted. This set modulo, zero 
-#'   and rotation of the function \code{circular} to some suitable values. 
+#' @param circular_units units of the measures. Passed to \code{\link[circular]{circular}}.
+#' Defaults to \code{"radians"}.
 #' @param normal If TRUE, assume data are normally distributed; if FALSE,
-#'   additional normalization step is carried out by multiplying each density 
+#'   additional normalization step is carried out by multiplying each density
 #'   entry by the length of each vector.
 #' @param bw the smoothing bandwidth to be used. The kernels are scaled such
 #'   that this is the standard deviation of the smoothing kernel.
 #' @param N the number of equally spaced points at which the density is to be
 #'   estimated.
+#' @param ... additional arguments passed to \code{\link[circular]{circular}}.
 #'
 #'
-#' @details Circular conversion is carried out by using the function \code{circular}.
-#' Kernel density estimates are then generated.If n = NULL, the default value of 512 
-#' is used.Intersection density function is then calculated by taking the integral of 
-#' the minimum of the two functions, from which the overlap outputs are calculated.The 
-#' user must specify the bandwidth for the kernel density estimates as well as options 
+#' @details Circular conversion is carried out by using the function \code{\link[circular]{circular}}.
+#' Kernel density estimates are then generated.If n = NULL, the default value of 512
+#' is used. Intersection density function is then calculated by taking the integral of
+#' the minimum of the two functions, from which the overlap outputs are calculated.The
+#' user must specify the bandwidth for the kernel density estimates as well as options
 #' for the circular conversion.
 #'
-#' @return The funtion returns a vector of three values: 
-#' \item{overlap_average}{the average overlap of a and b, calculated by the overlap 
-#' area *2 divided by the sum of areas under the two functions.} 
-#' \item{overlap_a}{the proportion of a that overlaps with b, calculated by the overlap 
+#' @return The function returns a vector of three values:
+#' \item{overlap_average}{the average overlap of a and b, calculated by the overlap
+#' area *2 divided by the sum of areas under the two functions.}
+#' \item{overlap_a}{the proportion of a that overlaps with b, calculated by the overlap
 #' area divided by area under the function generated from a.}
-#' \item{overlap_b}{the proportion of b that overlaps with a, calculated by the overlap 
-#' area diveided by area under the function generated from b.}
-#' 
-#' @seealso \code{\link{pairwise_overlap}} to calculate linear overlap between two empirical 
+#' \item{overlap_b}{the proportion of b that overlaps with a, calculated by the overlap
+#' area divided by area under the function generated from b.}
+#'
+#' @seealso \code{\link{pairwise_overlap}} to calculate linear overlap between two empirical
 #' density estimates.
-#' @seealso \code{\link{circular_overlap_24hour}} to calculate overlap for discrete hourly 
+#' @seealso \code{\link{circular_overlap_24hour}} to calculate overlap for discrete hourly
 #' data.
-#' 
-#' @examples 
-#' # circular overlap of randomly generated circular data
-#' 
-#' x <- rvonmises(n=100, mu=circular(pi), kappa=2)
-#' y <- rvonmises(n=100, mu=circular(pi/2), kappa=2)
-#' circular_overlap(x,y,circular_units = "radians", circular_template = "none",bw = 1)
+#'
+#' @examples
+#' # circular overlap of two random uniform vectors of radian angles
+#'
+#' x <- runif(n = 100, min = 0, max = pi*3/2)
+#' y <- runif(n = 100, min = pi, max = 2*pi)
+#' circular_overlap(x,y,circular_units = "radians",bw = 1)
 #'
 #' @export
-circular_overlap <- function(a, b, circular_units, circular_template, normal = TRUE, bw, n = NULL) {
+circular_overlap <- function(a, b, circular_units = 'radians', normal = TRUE, bw, n = NULL, ...) {
+
+  # collect additional arguments to circular(), if any
+  circular_args <- list(...)
 
   # clean input
   a <- as.numeric(na.omit(a))
   b <- as.numeric(na.omit(b))
 
   # convert input to circular
-  acirc <- circular::circular(a, units = circular_units, template = circular_template)
-  bcirc <- circular::circular(a, units = circular_units, template = circular_template)
+  acirc <- do.call(circular::circular, c(list(x = a, units = circular_units), circular_args))
+  bcirc <- do.call(circular::circular, c(list(x = b, units = circular_units), circular_args))
 
   # generate kernel densities
   # add option to use user-defined n
   # Must specify bandwidth
   if (is.null(n)) n <- 512 # Default value if not given
-  da <- circular::density.circular(a, bw=bw, n=n)
-  db <- circular::density.circular(b, bw=bw, n=n)
+  da <- circular::density.circular(acirc, bw=bw, n=n)
+  db <- circular::density.circular(bcirc, bw=bw, n=n)
   d <- data.frame(x=da$x, a=da$y, b=db$y)
 
   # If not normalized, multiply each density entry by the length of each vector
@@ -94,37 +97,37 @@ circular_overlap <- function(a, b, circular_units, circular_template, normal = T
 #'
 #' This function calculates circular overlap based on discrete hourly observations from
 #' 0 to 23.
-#' 
-#' @param a a vector dataset with nrows= n individuals, with a column containing 
+#'
+#' @param a a vector dataset with nrows= n individuals, with a column containing
 #'   one measurement of a certain trait.
-#' @param b another matrix dataset with the same trait measurements to be compared 
+#' @param b another matrix dataset with the same trait measurements to be compared
 #'   against a.
 #' @param normal If TRUE, assume data are normally distributed; if FALSE,
-#'   additional normalization step is carried out by multiplying each density 
+#'   additional normalization step is carried out by multiplying each density
 #'   entry by the length of each vector.
 #'
 #' @details This function works for discrete data collected on the hour.Data is converted
-#' to a factor with levels(0:23). It then by manually calculates the density by taking 
-#' the proportion of each hour. Intersection density function is then calculated by 
-#' taking the integral of the minimum of the two functions, from which the overlap 
+#' to a factor with levels(0:23). It then by manually calculates the density by taking
+#' the proportion of each hour. Intersection density function is then calculated by
+#' taking the integral of the minimum of the two functions, from which the overlap
 #' outputs are calculated.
 #'
-#' @return The funtion returns a vector of three values: 
-#' \item{overlap_average}{the average overlap of a and b, calculated by the overlap 
-#' area *2 divided by the sum of areas under the two functions.} 
-#' \item{overlap_a}{the proportion of a that overlaps with b, calculated by the overlap 
+#' @return The funtion returns a vector of three values:
+#' \item{overlap_average}{the average overlap of a and b, calculated by the overlap
+#' area *2 divided by the sum of areas under the two functions.}
+#' \item{overlap_a}{the proportion of a that overlaps with b, calculated by the overlap
 #' area divided by area under the function generated from a.}
-#' \item{overlap_b}{the proportion of b that overlaps with a, calculated by the overlap 
+#' \item{overlap_b}{the proportion of b that overlaps with a, calculated by the overlap
 #' area diveided by area under the function generated from b.}
-#' 
-#' @seealso \code{\link{pairwise_overlap}} to calculate linear overlap between two empirical 
+#'
+#' @seealso \code{\link{pairwise_overlap}} to calculate linear overlap between two empirical
 #' density estimates.
-#' @seealso \code{\link{circular_overlap}} to calculate continous circular overlap between 
+#' @seealso \code{\link{circular_overlap}} to calculate continous circular overlap between
 #' two empirical density estimates.
-#' 
-#' @examples 
+#'
+#' @examples
 #' # waiting for datasets
-#' 
+#'
 #' @export
 circular_overlap_24hour <- function(a, b, normal = TRUE) {
   calc_weight <- function(x) { # a vector of hours
