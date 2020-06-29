@@ -317,7 +317,8 @@ community_overlap_noitv <- function(traits, sp, norm = TRUE, bw = NULL, n = NULL
 
 #' Display All Pairwise Overlap Values
 #'
-#' This function displays all pairwise overlap between species pairs in a community.
+#' This function displays all pairwise overlaps between species pairs in a 
+#' community.
 #'
 #' @param traits a vector of trait measurement.
 #' @param sp a vector with length equal to length(traits) that indicates the
