@@ -14,10 +14,14 @@
 #' @param qs quantiles of the null distribution to extract, usually 0.025 and 0.975
 #'
 #' @return ses - a matrix containing values of standardized effect sizes for observed data of each of the locals (rows) and traits(columns) avaliated. To see if the overlap values can be expected by chance see returns ses_upper and ses_lower. If the value corresponding to the local in ses is between ses_upper and ses_lower, the overlapping between traits in community can be expected by chance.
-#' @return ses_lower - a matrix containing null values extracted for the quantil of qs[1] (usually 0.025)
-#' @return ses_upper - a matrix containing null values extracted for the quantil of qs[2] (usually 0.975)
-#' @return raw_lower - a matrix containing null values extracted for the quantil of qs[1] (usually 0.025) without subtracting the mean and divided by standard deviation (see equation for calculating the standardize effect size on the function code)
-#' @return raw_lower - a matrix containing null values extracted for the quantil of qs[2] (usually 0.975) without subtracting the mean and divided by standard deviation (see equation for calculating the standardize effect size on the function code)
+#' @return ses_lower
+#' a matrix containing null values extracted for the quantil of qs[1] (usually 0.025)
+#' @return ses_upper
+#' a matrix containing null values extracted for the quantil of qs[2] (usually 0.975)
+#' @return raw_lower
+#' a matrix containing null values extracted for the quantil of qs[1] (usually 0.025) without subtracting the mean and divided by standard deviation (see equation for calculating the standardize effect size on the function code)
+#' @return raw_upper
+#' a matrix containing null values extracted for the quantil of qs[2] (usually 0.975) without subtracting the mean and divided by standard deviation (see equation for calculating the standardize effect size on the function code)
 #'
 #'@example
 #' #import data
