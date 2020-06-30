@@ -27,7 +27,8 @@ The function returns all pairwise overlap values of trait distributions
 of all species in the community.
 }
 \description{
-This function displays all pairwise overlap between species pairs in a community.
+This function displays all pairwise overlaps between species pairs in a 
+community.
 }
 \details{
 The funtion evaluates pairwise overlaps of density estimates of all 

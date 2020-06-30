@@ -8,6 +8,9 @@
 #'   community each individual belongs to.
 #' @param sp a factor with length equal to nrow(traits) that indicates the taxon
 #'   of each individual.
+#' @param data_type data type can be "linear", "circular",or "circular_discrete".
+#' @param output specifies whether median or mean is calculated.
+#' @param weight_type specifies weights to be used to calculate the median or mean.
 #' @param nperm the number of permutations to generate a null model.
 #' @param nullqs numeric vector of probabilities with values in [0,1] to set
 #'   effect size quantiles.
@@ -17,9 +20,9 @@
 #'   generating null models.
 #'
 #' @details This function evaluates the overlap statistics against a local null
-#'   model.The function community_overlap_harmonicwmedian calculates the median
-#'   of pairwise overlaps of trait distributions of all species in each
-#'   community, weighted by harmonic mean of species abundaces of the species
+#'   model.The function community_overlap_merged calculates the community overlap
+#'   statistics in each community. At default, it calculates the median of pairwise 
+#'   overlaps, weighted by harmonic mean of species abundaces of the species
 #'   pairs in each community. Two results are produced, one assuming the kernel
 #'   densities are normally distributed, and the other assuming the kernel
 #'   densities are not normalized, thus each density entry is multiplied by the
@@ -57,7 +60,7 @@
 #'   model.
 #'
 #' @seealso \code{\link{Ostats_circular}} for circular distributions.
-#' @seealso \code{\link{community_overlap_harmonicwmedian}} for median of 
+#' @seealso \code{\link{community_overlap_merged}} for median of 
 #' pairwise overlaps of species trait distributions within a community.
 #' @seealso \code{\link{get_ses}} for standardized effect sizes from null 
 #' model values.
@@ -81,13 +84,13 @@
 #'
 #' #Run O-stats on the data with nperm = 2 (do not bother with null models)
 #' Ostats_example <- Ostats(traits = as.matrix(dat$log_weight),
-#'                    sp = factor(dat$taxonID),
+#'                    sp = factor(dat$taxonID), data_type = "linear",
 #'                    plots = factor(dat$siteID),
 #'                    nperm = 2)
 #' @export
 #'
 #' 
-Ostats <- function(traits, plots, sp, nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE) {
+Ostats <- function(traits, plots, sp, data_type, output = "median", weight_type= "hmean", nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE) {
   # Required input: a matrix called traits (nrows=n individuals, ncols=n traits),
   # a vector called plots which is a factor with length equal to nrow(traits),
   # a vector called sp which is a factor with length equal to nrow(traits),
@@ -113,9 +116,9 @@ Ostats <- function(traits, plots, sp, nperm = 99, nullqs = c(0.025, 0.975), shuf
 
   for (s in 1:nlevels(plots)) {
     for (t in 1:ncol(traits)) {
-      overlap_norm_st <- try(community_overlap_harmonicwmedian(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], norm=TRUE), TRUE)
+      overlap_norm_st <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type=data_type, output = output, weight_type = weight_type,normal=TRUE), TRUE)
       overlaps_norm[s, t] <- if (inherits(overlap_norm_st, 'try-error')) NA else overlap_norm_st
-      overlap_unnorm_st <- try(community_overlap_harmonicwmedian(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], norm=FALSE), TRUE)
+      overlap_unnorm_st <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type=data_type, output = output, weight_type = weight_type,normal=FALSE), TRUE)
       overlaps_unnorm[s, t] <- if (inherits(overlap_unnorm_st, 'try-error')) NA else overlap_unnorm_st
     }
     setTxtProgressBar(pb, s)
@@ -133,8 +136,8 @@ Ostats <- function(traits, plots, sp, nperm = 99, nullqs = c(0.025, 0.975), shuf
     setTxtProgressBar(pb, i)
     for (s in 1:nlevels(plots)) {
       for (t in 1:ncol(traits)) {
-        if (!shuffle_weights & !swap_means) overlap_norm_sti <- try(community_overlap_harmonicwmedian(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]), norm=TRUE), TRUE)
-        if (shuffle_weights) overlap_norm_sti <- try(community_overlap_harmonicwmedian(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], norm=TRUE, randomize_weights = TRUE), TRUE)
+        if (!shuffle_weights & !swap_means) overlap_norm_sti <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]), data_type=data_type, output = output, weight_type = weight_type,normal=TRUE), TRUE)
+        if (shuffle_weights) overlap_norm_sti <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type=data_type, output = output, weight_type = weight_type,normal=TRUE, randomize_weights = TRUE), TRUE)
         if (swap_means) {
           traits_st <- traits[plots==levels(plots)[s], t]
           sp_st <- sp[plots==levels(plots)[s]]
@@ -146,11 +149,11 @@ Ostats <- function(traits, plots, sp, nperm = 99, nullqs = c(0.025, 0.975), shuf
           traitmeans_null <- sample(traitmeans)
           sp_null <- rep(names(traitmeans_null), table(sp_st))
           traits_null <- traitdeviations + traitmeans_null[sp_null]
-          overlap_norm_sti <- try(community_overlap_harmonicwmedian(traits = traits_null, sp = sp_null, norm=TRUE, randomize_weights = FALSE), TRUE)
+          overlap_norm_sti <- try(community_overlap_merged(traits = traits_null, sp = sp_null, data_type=data_type, output = output, weight_type = weight_type,normal=TRUE, randomize_weights = FALSE), TRUE)
         }
 
         overlaps_norm_null[s, t, i] <- if (inherits(overlap_norm_sti, 'try-error')) NA else overlap_norm_sti
-        overlap_unnorm_sti <- try(community_overlap_harmonicwmedian(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]), norm=FALSE), TRUE)
+        overlap_unnorm_sti <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]),data_type=data_type, output = output, weight_type = weight_type, normal=FALSE), TRUE)
         overlaps_unnorm_null[s, t, i] <- if (inherits(overlap_unnorm_sti, 'try-error')) NA else overlap_unnorm_sti
       }
     }
