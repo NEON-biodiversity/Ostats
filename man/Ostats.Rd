@@ -8,6 +8,9 @@ Ostats(
   traits,
   plots,
   sp,
+  data_type,
+  output = "median",
+  weight_type = "hmean",
   nperm = 99,
   nullqs = c(0.025, 0.975),
   shuffle_weights = FALSE,
@@ -22,6 +25,12 @@ community each individual belongs to.}
 
 \item{sp}{a factor with length equal to nrow(traits) that indicates the taxon
 of each individual.}
+
+\item{data_type}{data type can be "linear", "circular",or "circular_discrete".}
+
+\item{output}{specifies whether median or mean is calculated.}
+
+\item{weight_type}{specifies weights to be used to calculate the median or mean.}
 
 \item{nperm}{the number of permutations to generate a null model.}
 
@@ -51,9 +60,9 @@ O-statistics against a local null model.
 }
 \details{
 This function evaluates the overlap statistics against a local null
-  model.The function community_overlap_harmonicwmedian calculates the median
-  of pairwise overlaps of trait distributions of all species in each
-  community, weighted by harmonic mean of species abundaces of the species
+  model.The function community_overlap_merged calculates the community overlap
+  statistics in each community. At default, it calculates the median of pairwise 
+  overlaps, weighted by harmonic mean of species abundaces of the species
   pairs in each community. Two results are produced, one assuming the kernel
   densities are normally distributed, and the other assuming the kernel
   densities are not normalized, thus each density entry is multiplied by the
@@ -90,7 +99,7 @@ dat \%>\%
 
 #Run O-stats on the data with nperm = 2 (do not bother with null models)
 Ostats_example <- Ostats(traits = as.matrix(dat$log_weight),
-                   sp = factor(dat$taxonID),
+                   sp = factor(dat$taxonID), data_type = "linear",
                    plots = factor(dat$siteID),
                    nperm = 2)
 }
@@ -105,7 +114,7 @@ Read, Q. D. et al. Among-species overlap in rodent body size
 
 \code{\link{Ostats_circular}} for circular distributions.
 
-\code{\link{community_overlap_harmonicwmedian}} for median of 
+\code{\link{community_overlap_merged}} for median of 
 pairwise overlaps of species trait distributions within a community.
 
 \code{\link{get_ses}} for standardized effect sizes from null 
