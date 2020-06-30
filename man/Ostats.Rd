@@ -15,7 +15,7 @@ Ostats(
 )
 }
 \arguments{
-\item{traits}{a matrix dataset with nrows = n individuals, ncols = n traits.}
+\item{traits}{a vector of trait measurement with nrow = n individuals.}
 
 \item{plots}{a factor with length equal to nrow(traits) that indicates the
 community each individual belongs to.}
