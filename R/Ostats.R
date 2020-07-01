@@ -18,10 +18,15 @@
 #'   within a community when generating null models.
 #' @param swap_means If TRUE, swap means of body sizes within a community when
 #'   generating null models.
+#' @param circular_args optional list of additional arguments to pass to
+#'  \code{\link[circular]{circular}}. Only used if the data type is "circular".
+#' @param ... additional arguments to pass to \code{\link[stats]{density}}, such as
+#' \code{bw}, \code{n}, or \code{adjust}. If none are provided, default values
+#' are used.
 #'
 #' @details This function evaluates the overlap statistics against a local null
 #'   model.The function community_overlap_merged calculates the community overlap
-#'   statistics in each community. At default, it calculates the median of pairwise 
+#'   statistics in each community. At default, it calculates the median of pairwise
 #'   overlaps, weighted by harmonic mean of species abundaces of the species
 #'   pairs in each community. Two results are produced, one assuming the kernel
 #'   densities are normally distributed, and the other assuming the kernel
@@ -37,32 +42,32 @@
 #'   and the null model.
 
 #'
-#' @return The funtion returns a list containing 4 objects: 
-#' \item{overlaps_norm}{the median of weighted pairwise overlaps of trait 
+#' @return The funtion returns a list containing 4 objects:
+#' \item{overlaps_norm}{the median of weighted pairwise overlaps of trait
 #'   distributions of all species in each community, assuming normal distribution.}
-#' \item{overlaps_unnorm}{the medians calculated assuming kernel densities are 
+#' \item{overlaps_unnorm}{the medians calculated assuming kernel densities are
 #'   not normalized.}
 #' \item{overlaps_norm_ses}{effect size statistics against a null model assuming
 #'   normal distribution.}
-#' \item{overlaps_unnorm_ses}{effect size statistics with the additional 
+#' \item{overlaps_unnorm_ses}{effect size statistics with the additional
 #'  normalization step.}
 #'
 #' @references Read, Q. D. et al. Among-species overlap in rodent body size
 #'   distributions predicts species richness along a temperature gradient.
 #'   Ecography 41, 1718-1727 (2018).
-#'   
+#'
 #' @note The function so far only supports overlap statistics for one trait.
 #'
-#' @author Quentin Read, John Grady, Arya Y. Yue, Isadora Fluck E., Ben Baiser, 
+#' @author Quentin Read, John Grady, Arya Y. Yue, Isadora Fluck E., Ben Baiser,
 #' Angela Strecker, Phoebe Zarnetske, and Sydne Record
 #'
 #' @seealso \code{\link{Ostats_regional}} to evaluate against a regional null
 #'   model.
 #'
 #' @seealso \code{\link{Ostats_circular}} for circular distributions.
-#' @seealso \code{\link{community_overlap_merged}} for median of 
+#' @seealso \code{\link{community_overlap_merged}} for median of
 #' pairwise overlaps of species trait distributions within a community.
-#' @seealso \code{\link{get_ses}} for standardized effect sizes from null 
+#' @seealso \code{\link{get_ses}} for standardized effect sizes from null
 #' model values.
 #' @examples
 #' # overlap statistics for body weights of species in NEON sites
@@ -89,11 +94,14 @@
 #'                    nperm = 2)
 #' @export
 #'
-#' 
-Ostats <- function(traits, plots, sp, data_type, output = "median", weight_type= "hmean", nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE) {
+#'
+Ostats <- function(traits, plots, sp, data_type, output = "median", weight_type= "hmean", nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE, circular_args = list(), ...) {
   # Required input: a matrix called traits (nrows=n individuals, ncols=n traits),
   # a vector called plots which is a factor with length equal to nrow(traits),
   # a vector called sp which is a factor with length equal to nrow(traits),
+
+  # Collect arguments to density()
+  density_args <- list(...)
 
   # Declaration of data structures to hold the results
 
@@ -116,9 +124,9 @@ Ostats <- function(traits, plots, sp, data_type, output = "median", weight_type=
 
   for (s in 1:nlevels(plots)) {
     for (t in 1:ncol(traits)) {
-      overlap_norm_st <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type=data_type, output = output, weight_type = weight_type,normal=TRUE), TRUE)
+      overlap_norm_st <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type=data_type, output = output, weight_type = weight_type, normal=TRUE), TRUE)
       overlaps_norm[s, t] <- if (inherits(overlap_norm_st, 'try-error')) NA else overlap_norm_st
-      overlap_unnorm_st <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type=data_type, output = output, weight_type = weight_type,normal=FALSE), TRUE)
+      overlap_unnorm_st <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type=data_type, output = output, weight_type = weight_type, normal=FALSE), TRUE)
       overlaps_unnorm[s, t] <- if (inherits(overlap_unnorm_st, 'try-error')) NA else overlap_unnorm_st
     }
     setTxtProgressBar(pb, s)
@@ -136,8 +144,8 @@ Ostats <- function(traits, plots, sp, data_type, output = "median", weight_type=
     setTxtProgressBar(pb, i)
     for (s in 1:nlevels(plots)) {
       for (t in 1:ncol(traits)) {
-        if (!shuffle_weights & !swap_means) overlap_norm_sti <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]), data_type=data_type, output = output, weight_type = weight_type,normal=TRUE), TRUE)
-        if (shuffle_weights) overlap_norm_sti <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type=data_type, output = output, weight_type = weight_type,normal=TRUE, randomize_weights = TRUE), TRUE)
+        if (!shuffle_weights & !swap_means) overlap_norm_sti <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]), data_type=data_type, output = output, weight_type = weight_type, normal=TRUE), TRUE)
+        if (shuffle_weights) overlap_norm_sti <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type=data_type, output = output, weight_type = weight_type, normal=TRUE, randomize_weights = TRUE), TRUE)
         if (swap_means) {
           traits_st <- traits[plots==levels(plots)[s], t]
           sp_st <- sp[plots==levels(plots)[s]]
@@ -172,8 +180,8 @@ Ostats <- function(traits, plots, sp, data_type, output = "median", weight_type=
 
 #' Calculate O-statistics evaluated against regional null model
 #'
-#' This function evaluates the O-statistics (community-level pairwise niche 
-#' overlap statistics)against a regional null model. In contrast to \code{Ostats}, 
+#' This function evaluates the O-statistics (community-level pairwise niche
+#' overlap statistics)against a regional null model. In contrast to \code{Ostats},
 #' it requires trait and species information about the regional species pool.
 #'
 #' @param traits a vector of trait measurement with nrow = n individuals.
@@ -181,48 +189,48 @@ Ostats <- function(traits, plots, sp, data_type, output = "median", weight_type=
 #'   community each individual belongs to.
 #' @param sp a factor with length equal to nrow(traits) that indicates the taxon
 #'   of each individual.
-#' @param reg_pool_traits trait measurements in the species regional pool to 
+#' @param reg_pool_traits trait measurements in the species regional pool to
 #' compare the dataset with.
-#' @param reg_pool_sp species identification for each measurement in the regional 
+#' @param reg_pool_sp species identification for each measurement in the regional
 #' species pool.
 #' @param nperm the number of permutations to generate a null model.
 #' @param nullqs numeric vector of probabilities with values in [0,1] to set
 #'   effect size quantiles.
 #'
 #' @details This function evaluates the overlap statistics against a regional null
-#'   model. It takes all individual trait measurements in the community to compare 
-#'   with the regional pool (ignoring species identity) to calculate pairwise overlap 
+#'   model. It takes all individual trait measurements in the community to compare
+#'   with the regional pool (ignoring species identity) to calculate pairwise overlap
 #'   for each community, which indicates the regional pool space a community takes up.
-#'   
-#'   Total pool null model is generated by sampling n trait measurements (n = number 
-#'   of trait measurements for the community) from the regional pool and calculate the 
+#'
+#'   Total pool null model is generated by sampling n trait measurements (n = number
+#'   of trait measurements for the community) from the regional pool and calculate the
 #'   pairwise_overlap between the random sample and the regional pool. By-species null
-#'   model is calculated by sampling trait measurements of the same species from the 
+#'   model is calculated by sampling trait measurements of the same species from the
 #'   regional pool for each species present in the community to calculate pairwise
 #'   overlap between the sample and the whole regional pool.
-#'   
-#' @return The funtion returns a list containing 4 objects: 
+#'
+#' @return The funtion returns a list containing 4 objects:
 #' \item{overlaps_reg}{pairwise overlap output between the trait data and the regional
 #' species pool.}
-#' \item{overlaps_reg_allpool_ses}{effect size statistics between observed O-stats and 
+#' \item{overlaps_reg_allpool_ses}{effect size statistics between observed O-stats and
 #' the total-pool null model}
-#' \item{overlaps_reg_bysp_ses}{effect size statistics between observed O-stats and 
+#' \item{overlaps_reg_bysp_ses}{effect size statistics between observed O-stats and
 #' the by-species null model}
 #'
-#' @author Quentin Read, John Grady, Arya Y. Yue, Isadora Fluck E., Ben Baiser, 
+#' @author Quentin Read, John Grady, Arya Y. Yue, Isadora Fluck E., Ben Baiser,
 #' Angela Strecker, Phoebe Zarnetske, and Sydne Record
 #'
 #' @seealso \code{\link{Ostats}} to evaluate against a local null model.
-#' @seealso \code{\link{pairwise_overlap}} to calculate overlap between two empirical 
+#' @seealso \code{\link{pairwise_overlap}} to calculate overlap between two empirical
 #' density estimates.
-#' @seealso \code{\link{get_ses}} for standardized effect sizes from null 
+#' @seealso \code{\link{get_ses}} for standardized effect sizes from null
 #' model values.
-#' 
+#'
 #' @examples
-#' 
+#'
 #' @export
 #'
-#' 
+#'
 Ostats_regional <-function(traits, plots, sp, reg_pool_traits, reg_pool_sp, nperm = 99, nullqs = c(0.025, 0.975)) {
 	# Declaration of data structures to hold the results
 

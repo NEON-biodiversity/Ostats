@@ -171,7 +171,7 @@ circular_overlap_24hour <- function(a, b, normal = TRUE) {
 #' Uses manual calculation of density.
 #'
 #' @export
-community_overlap_circular <- function(traits, sp, norm = TRUE, randomize_weights = FALSE) {
+community_overlap_circular <- function(traits, sp, normal = TRUE, randomize_weights = FALSE) {
   sp <- as.character(sp)
   dat <- data.frame(traits=traits, sp=sp, stringsAsFactors = FALSE)
   dat <- dat[complete.cases(dat), ]
@@ -188,7 +188,7 @@ community_overlap_circular <- function(traits, sp, norm = TRUE, randomize_weight
 
   for (sp_a in 1:(nspp-1)) {
     for (sp_b in (sp_a+1):nspp) {
-      o <- circular_overlap_24hour(a = traitlist[[sp_a]], b = traitlist[[sp_b]], norm = norm)
+      o <- circular_overlap_24hour(a = traitlist[[sp_a]], b = traitlist[[sp_b]], normal = normal)
       overlaps <- c(overlaps, o[1])
       harmonic_mean <- 2/(1/abunds[sp_a] + 1/abunds[sp_b])
       abund_pairs <- c(abund_pairs, harmonic_mean)
