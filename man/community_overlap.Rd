@@ -16,27 +16,27 @@ taxon of each individual.}
 that this is the standard deviation of the smoothing kernel.}
 
 \item{norm}{If TRUE, assume data are normally distributed; if FALSE,
-additional normalization step is carried out by multiplying each density 
+additional normalization step is carried out by multiplying each density
 entry by the length of each vector.}
 
 \item{n}{the number of equally spaced points at which the density is to be
 estimated.}
 }
 \value{
-The function returns a median of pairwise overlaps of all species in 
+The function returns a median of pairwise overlaps of all species in
 the community.
 }
 \description{
-This function calculates the median of pairwise overlaps between density 
+This function calculates the median of pairwise overlaps between density
 estimates of trait distributions of all species within a community.
 }
 \details{
-The funtion evaluates pairwise overlaps of density estimates of all 
-species in a community taking complete cases with species abundances greater 
+The funtion evaluates pairwise overlaps of density estimates of all
+species in a community taking complete cases with species abundances greater
 than 1 from the original dataset to calculate the median for the community.
 }
 \seealso{
-\code{\link{pairwise_overlap}} to calculate overlap between two empirical 
+\code{\link{pairwise_overlap}} to calculate overlap between two empirical
 density estimates.
 
 \code{\link{community_overlap_harmonicwmedian}} to see a function that

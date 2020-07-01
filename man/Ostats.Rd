@@ -56,14 +56,15 @@ are used.}
 \value{
 The funtion returns a list containing 4 objects:
 \item{overlaps_norm}{the median of weighted pairwise overlaps of trait
-  distributions of all species in each community, with the area
-  under all density functions normalized to 1.}
-\item{overlaps_unnorm}{the medians calculated with the area under all density
+  distributions of all species in each community (at default output
+  and weight_type), with the area under all density functions normalized to 1.}
+\item{overlaps_unnorm}{O-stats calculated with the area under all density
   functions proportional to the number of observations in that group.}
 \item{overlaps_norm_ses}{effect size statistics against a null model
   with the area under all density functions normalized to 1.}
-\item{overlaps_unnorm_ses}{effect size statistics with the area under all density
-  functions proportional to the number of observations in that group.}
+\item{overlaps_unnorm_ses}{effect size statistics against a null model
+  with the area under all density functions proportional to the number
+  of observations in that group.}
 }
 \description{
 This is the primary function in the Ostats package. It evaluates the
@@ -84,9 +85,6 @@ This function evaluates the overlap statistics against a local null
 
   Effect size statistics are calculated between the observed O-stats
   and the null model.
-}
-\note{
-The function so far only supports overlap statistics for one trait.
 }
 \examples{
 # overlap statistics for body weights of species in NEON sites

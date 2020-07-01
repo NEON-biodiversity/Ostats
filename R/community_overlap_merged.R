@@ -8,6 +8,7 @@
 #' @param sp a vector with length equal to length(traits) that indicates the
 #' taxon of each individual.
 #' @param data_type data type can be "linear", "circular",or "circular_discrete".
+#' Default to "linear".
 #' @param normal if TRUE, the area under all density functions is normalized to 1,
 #' if FALSE, the area under all density functions is proportional to the number of
 #' observations in that group.
@@ -29,8 +30,8 @@
 #' weight_type == "mean", arithmetic means of abundances are used as weights. To change the
 #' output to mean, specify the argument output == "mean".
 #'
-#' @return The function returns a median of pairwise overlaps weighted by
-#' harmonic means of abundances for the community.
+#' @return The function returns overall species overlap for a community. At default, it returns the
+#' median of pairwise overlaps weighted by harmonic means of abundances for the community.
 #'
 #' @references Read, Q. D. et al. Among-species overlap in rodent body size
 #'   distributions predicts species richness along a temperature gradient.
@@ -54,13 +55,13 @@
 #'    filter(!is.na(weight)) %>%
 #'    mutate(log_weight = log10(weight))
 #'
-#' # Calculate median of pairwise overlaps for the community,weighted by harmonic median
+#' # Calculate median of pairwise overlaps for the community,weighted by harmonic means
 #' of abundances
 #' community_overlap_merged(traits = as.matrix(dat$log_weight),
 #'    sp = factor(dat$taxonID))
 #'
 #' @export
-community_overlap_merged <- function(traits, sp, data_type, normal = TRUE, output = "median", weight_type= "hmean", randomize_weights = FALSE, circular_args = list(), density_args = list()) {
+community_overlap_merged <- function(traits, sp, data_type = "linear", normal = TRUE, output = "median", weight_type= "hmean", randomize_weights = FALSE, circular_args = list(), density_args = list()) {
   sp <- as.character(sp)
   dat <- data.frame(traits=traits, sp=sp, stringsAsFactors = FALSE)
   dat <- dat[complete.cases(dat), ]
@@ -104,8 +105,6 @@ community_overlap_merged <- function(traits, sp, data_type, normal = TRUE, outpu
     return(matrixStats::weightedMedian(x = as.vector(overlaps), w = abund_pairs))
   else if (output == "median" && weight_type == "mean")
     return(matrixStats::weightedMedian(x = overlaps, w = abund_pairs))
-  else if (output == "median" && weight_type == "none")
-    return(median(overlaps))
   else if (output == "mean" && weight_type == "hmean")
     return(weighted.mean(x = overlaps, w = abund_pairs))
   else if (output == "mean" && weight_type == "mean")

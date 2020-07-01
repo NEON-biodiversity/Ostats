@@ -2,7 +2,7 @@
 % Please edit documentation in R/densityoverlap.R
 \name{community_overlap_harmonicwmedian}
 \alias{community_overlap_harmonicwmedian}
-\title{Abundance-weighted Median of Pairwise Overlap of Species Trait Distributions 
+\title{Abundance-weighted Median of Pairwise Overlap of Species Trait Distributions
 in a Community}
 \usage{
 community_overlap_harmonicwmedian(
@@ -21,7 +21,7 @@ community_overlap_harmonicwmedian(
 taxon of each individual.}
 
 \item{norm}{If TRUE, assume data are normally distributed; if FALSE,
-additional normalization step is carried out by multiplying each density 
+additional normalization step is carried out by multiplying each density
 entry by the length of each vector.}
 
 \item{bw}{the smoothing bandwidth to be used. The kernels are scaled such
@@ -34,19 +34,19 @@ estimated.}
 within a community. This can be used to generate null models.}
 }
 \value{
-The function returns a median of pairwise overlaps weighted by harmonic 
+The function returns a median of pairwise overlaps weighted by harmonic
 means of abundances for the community.
 }
 \description{
-This function calculates the median of pairwise overlaps between density 
-estimates of trait distributions of all species within a community, weighted 
+This function calculates the median of pairwise overlaps between density
+estimates of trait distributions of all species within a community, weighted
 by the harmonic mean of the abundances of each species pair.
 }
 \details{
-The funtion evaluates weighted pairwise overlaps of density estimates of all 
-species in a community taking complete cases with species abundances greater 
-than 1 from the original dataset. The median of pairwise overlaps is calculated 
-for the whole community using the harmonic means of abundances of the species 
+The funtion evaluates weighted pairwise overlaps of density estimates of all
+species in a community taking complete cases with species abundances greater
+than 1 from the original dataset. The median of pairwise overlaps is calculated
+for the whole community using the harmonic means of abundances of the species
 pairs as weights.
 }
 \note{
@@ -65,7 +65,7 @@ dat <- read_csv('https://ndownloader.figshare.com/files/9167548') \%>\%
    mutate(log_weight = log10(weight))
 
 # Calculate median of pairwise overlaps for the community
-community_overlap_harmonicwmedian(traits = as.matrix(dat$log_weight), 
+community_overlap_harmonicwmedian(traits = as.matrix(dat$log_weight),
 sp = factor(dat$taxonID))
 }
 \references{
@@ -74,6 +74,6 @@ Read, Q. D. et al. Among-species overlap in rodent body size
   Ecography 41, 1718-1727 (2018).
 }
 \seealso{
-\code{\link{pairwise_overlap}} to calculate overlap between two empirical 
+\code{\link{pairwise_overlap}} to calculate overlap between two empirical
 density estimates.
 }

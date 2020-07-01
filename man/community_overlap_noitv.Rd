@@ -2,10 +2,10 @@
 % Please edit documentation in R/densityoverlap.R
 \name{community_overlap_noitv}
 \alias{community_overlap_noitv}
-\title{Abundance-weighted Median of Pairwise Distance between Species Trait Means 
+\title{Abundance-weighted Median of Pairwise Distance between Species Trait Means
 in a Community}
 \usage{
-community_overlap_noitv(traits, sp, norm = TRUE, bw = NULL, n = NULL)
+community_overlap_noitv(traits, sp, output = "median", weight_type = "hmean")
 }
 \arguments{
 \item{traits}{a vector of trait measurement.}
@@ -13,38 +13,54 @@ community_overlap_noitv(traits, sp, norm = TRUE, bw = NULL, n = NULL)
 \item{sp}{a vector with length equal to length(traits) that indicates the
 taxon of each individual.}
 
-\item{norm}{If TRUE, assume data are normally distributed; if FALSE,
-additional normalization step is carried out by multiplying each density 
-entry by the length of each vector.}
+\item{output}{specifies whether median or mean is calculated.}
 
-\item{bw}{the smoothing bandwidth to be used. The kernels are scaled such
-that this is the standard deviation of the smoothing kernel.}
-
-\item{n}{the number of equally spaced points at which the density is to be
-estimated.}
+\item{weight_type}{specifies weights to be used to calculate the median or mean.}
 }
 \value{
-The function returns a median of pairwise distances of all species in 
-the community, weighted by means of abundances of species pairs.
+The function returns a mean or median of pairwise distances of all species in
+the community, which can be weighted by harmonic means or arithmetic means of abundances
+of species pairs.
 }
 \description{
-This function calculates the median of pairwise distances between species 
-trait means within a community, weighted by the mean of abundances of the 
-species pairs. This reduces each species to a trait mean and the intraspecific 
+This function calculates the median of pairwise distances between species
+trait means within a community, weighted by the mean of abundances of the
+species pairs. This reduces each species to a trait mean and the intraspecific
 trait variation (ITV) is ignored.
 }
 \details{
-The funtion evaluates means of trait measurements of each 
-species in a community taking complete cases with species abundances greater 
-than 1 from the original dataset, using the mean of abundances of species 
-pairs as weights to calculate the weighted median of pairwise distances between
-species for the community.
+The function evaluates the means of trait measurements of each
+species in a community taking complete cases with species abundances greater
+than 1 from the original dataset, and calculates weighted mean or median of pairwise
+distances between all species in a community. The default calculates the median
+using the harmonic means of abundances of the species pairs as weights, which
+minimizes the effect of outliners and rare species.If the argument
+weight_type == "none", no weights are used for the calculation of mean/median. If
+weight_type == "mean", arithmetic means of abundances are used as weights. To change the
+output to mean, specify the argument output == "mean".
+}
+\note{
+This function so far only works for linear datasets.
+}
+\examples{
+library(tidyverse)
+library(Ostats)
+
+# Load data from web archive and Keep only the relevant part of data
+dat <- read_csv('https://ndownloader.figshare.com/files/9167548') \%>\%
+   filter(siteID \%in\% 'HARV') \%>\%
+   select(siteID, taxonID, weight) \%>\%
+   filter(!is.na(weight)) \%>\%
+   mutate(log_weight = log10(weight))
+
+# Calculate median of pairwise distances for the community,weighted by harmonic means
+of abundances
+community_overlap_noitv(traits = as.matrix(dat$log_weight),
+   sp = factor(dat$taxonID))
+
 }
 \seealso{
-\code{\link{pairwise_overlap}} to calculate overlap between two empirical 
-density estimates.
-
-\code{\link{community_overlap_harmonicwmedian}} to see a function that
-uses harmonic means of abundances of species pairs as weights to calculate median 
-of overlaps.
+\code{\link{community_overlap_merged}} to see a function that takes
+intraspecific trait variation (ITV) into account to calculate overlap statistics
+for a community.
 }

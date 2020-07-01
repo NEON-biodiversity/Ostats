@@ -7,7 +7,7 @@
 community_overlap_merged(
   traits,
   sp,
-  data_type,
+  data_type = "linear",
   normal = TRUE,
   output = "median",
   weight_type = "hmean",
@@ -22,7 +22,8 @@ community_overlap_merged(
 \item{sp}{a vector with length equal to length(traits) that indicates the
 taxon of each individual.}
 
-\item{data_type}{data type can be "linear", "circular",or "circular_discrete".}
+\item{data_type}{data type can be "linear", "circular",or "circular_discrete".
+Default to "linear".}
 
 \item{normal}{if TRUE, the area under all density functions is normalized to 1,
 if FALSE, the area under all density functions is proportional to the number of
@@ -42,8 +43,8 @@ within a community. This can be used to generate null models.}
 \code{\link[stats]{density}}.}
 }
 \value{
-The function returns a median of pairwise overlaps weighted by
-harmonic means of abundances for the community.
+The function returns overall species overlap for a community. At default, it returns the
+median of pairwise overlaps weighted by harmonic means of abundances for the community.
 }
 \description{
 This function calculates the median or mean of pairwise overlaps between density
@@ -71,7 +72,7 @@ dat <- read_csv('https://ndownloader.figshare.com/files/9167548') \%>\%
    filter(!is.na(weight)) \%>\%
    mutate(log_weight = log10(weight))
 
-# Calculate median of pairwise overlaps for the community,weighted by harmonic median
+# Calculate median of pairwise overlaps for the community,weighted by harmonic means
 of abundances
 community_overlap_merged(traits = as.matrix(dat$log_weight),
    sp = factor(dat$taxonID))
