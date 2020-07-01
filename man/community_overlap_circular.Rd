@@ -4,7 +4,12 @@
 \alias{community_overlap_circular}
 \title{Community-level weighted median overlap using circular distributions}
 \usage{
-community_overlap_circular(traits, sp, norm = TRUE, randomize_weights = FALSE)
+community_overlap_circular(
+  traits,
+  sp,
+  normal = TRUE,
+  randomize_weights = FALSE
+)
 }
 \description{
 Defaults to use 24-hour clock as units.

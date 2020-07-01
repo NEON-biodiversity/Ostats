@@ -11,9 +11,9 @@ community_overlap_merged(
   normal = TRUE,
   output = "median",
   weight_type = "hmean",
-  bw = NULL,
-  N = NULL,
-  randomize_weights = FALSE
+  randomize_weights = FALSE,
+  circular_args = list(),
+  density_args = list()
 )
 }
 \arguments{
@@ -24,40 +24,40 @@ taxon of each individual.}
 
 \item{data_type}{data type can be "linear", "circular",or "circular_discrete".}
 
-\item{normal}{If TRUE, assume data are normally distributed; if FALSE,
-additional normalization step is carried out by multiplying each density 
-entry by the length of each vector.}
+\item{normal}{if TRUE, the area under all density functions is normalized to 1,
+if FALSE, the area under all density functions is proportional to the number of
+observations in that group.}
 
 \item{output}{specifies whether median or mean is calculated.}
 
 \item{weight_type}{specifies weights to be used to calculate the median or mean.}
 
-\item{bw}{the smoothing bandwidth to be used. The kernels are scaled such
-that this is the standard deviation of the smoothing kernel.}
-
-\item{N}{the number of equally spaced points at which the density is to be
-estimated.}
-
 \item{randomize_weights}{If TRUE, randomize weights given to pairwise overlaps
 within a community. This can be used to generate null models.}
+
+\item{circular_args}{list of additional arguments to be passed to
+\code{\link[circular]{circular}}. Only used if \code{data_type} is "circular".}
+
+\item{density_args}{list of additional arguments to be passed to
+\code{\link[stats]{density}}.}
 }
 \value{
-At default, the function returns a median of pairwise overlaps weighted by 
+The function returns a median of pairwise overlaps weighted by
 harmonic means of abundances for the community.
 }
 \description{
-This function calculates the median or mean of pairwise overlaps between density 
-estimates of trait distributions of all species within a community, which can 
+This function calculates the median or mean of pairwise overlaps between density
+estimates of trait distributions of all species within a community, which can
 be weighted by species abundances.
 }
 \details{
-The funtion evaluates weighted mean or median of overlaps of density 
-estimates of all species in a community taking complete cases with species abundances 
+The function evaluates weighted mean or median of overlaps of density
+estimates of all species in a community taking complete cases with species abundances
 greater than 1 from the dataset. The default calculates the median of pairwise overlaps
-for the whole community using the harmonic means of abundances of the species pairs as 
-weights, which minimizes the effect of outliners and rare species.If the argument 
-weight_type == "none", no weights are used for the calculation of mean/median. If 
-weight_type == "mean", arithmetic means of abundances are used as weights. To change the 
+for the whole community using the harmonic means of abundances of the species pairs as
+weights, which minimizes the effect of outliners and rare species.If the argument
+weight_type == "none", no weights are used for the calculation of mean/median. If
+weight_type == "mean", arithmetic means of abundances are used as weights. To change the
 output to mean, specify the argument output == "mean".
 }
 \examples{
@@ -73,8 +73,9 @@ dat <- read_csv('https://ndownloader.figshare.com/files/9167548') \%>\%
 
 # Calculate median of pairwise overlaps for the community,weighted by harmonic median
 of abundances
-community_overlap_merged(traits = as.matrix(dat$log_weight), 
+community_overlap_merged(traits = as.matrix(dat$log_weight),
    sp = factor(dat$taxonID))
+
 }
 \references{
 Read, Q. D. et al. Among-species overlap in rodent body size
@@ -82,12 +83,12 @@ Read, Q. D. et al. Among-species overlap in rodent body size
   Ecography 41, 1718-1727 (2018).
 }
 \seealso{
-\code{\link{pairwise_overlap}} to calculate overlap between two empirical 
+\code{\link{pairwise_overlap}} to calculate overlap between two empirical
 density estimates.
 
-\code{\link{circular_overlap}} to calculate continous circular overlap between 
+\code{\link{circular_overlap}} to calculate continous circular overlap between
 two empirical density estimates.
 
-\code{\link{circular_overlap_24hour}} to calculate overlap for discrete hourly 
+\code{\link{circular_overlap_24hour}} to calculate overlap for discrete hourly
 data.
 }

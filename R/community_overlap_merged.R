@@ -8,9 +8,9 @@
 #' @param sp a vector with length equal to length(traits) that indicates the
 #' taxon of each individual.
 #' @param data_type data type can be "linear", "circular",or "circular_discrete".
-#' @param normal If TRUE, assume data are normally distributed; if FALSE,
-#'   additional normalization step is carried out by multiplying each density
-#'   entry by the length of each vector.
+#' @param normal if TRUE, the area under all density functions is normalized to 1,
+#' if FALSE, the area under all density functions is proportional to the number of
+#' observations in that group.
 #' @param output specifies whether median or mean is calculated.
 #' @param weight_type specifies weights to be used to calculate the median or mean.
 #' @param randomize_weights If TRUE, randomize weights given to pairwise overlaps

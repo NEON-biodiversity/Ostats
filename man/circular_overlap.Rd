@@ -9,32 +9,29 @@ circular_overlap(
   b,
   circular_units = "radians",
   normal = TRUE,
-  bw,
-  n = NULL,
-  ...
+  circular_args = list,
+  density_args = list()
 )
 }
 \arguments{
 \item{a}{a vector dataset with nrows= n individuals, with a column containing
 one measurement of a certain trait.}
 
-\item{b}{another matrix dataset with the same trait measurements to be compared
+\item{b}{another vector dataset with the same trait measurements to be compared
 against a.}
 
 \item{circular_units}{units of the measures. Passed to \code{\link[circular]{circular}}.
 Defaults to \code{"radians"}.}
 
-\item{normal}{If TRUE, assume data are normally distributed; if FALSE,
-additional normalization step is carried out by multiplying each density
-entry by the length of each vector.}
+\item{normal}{if TRUE, the area under all density functions is normalized to 1,
+if FALSE, the area under all density functions is proportional to the number of
+observations in that group.}
 
-\item{bw}{the smoothing bandwidth to be used. The kernels are scaled such
-that this is the standard deviation of the smoothing kernel.}
+\item{circular_args}{list of additional arguments to be passed to
+\code{\link[circular]{circular}}.}
 
-\item{...}{additional arguments passed to \code{\link[circular]{circular}}.}
-
-\item{N}{the number of equally spaced points at which the density is to be
-estimated.}
+\item{density_args}{list of additional arguments to be passed to
+\code{\link[circular]{density.circular}}.}
 }
 \value{
 The function returns a vector of three values:
@@ -52,9 +49,10 @@ distributions.
 }
 \details{
 Circular conversion is carried out by using the function \code{\link[circular]{circular}}.
-Kernel density estimates are then generated.If n = NULL, the default value of 512
-is used. Intersection density function is then calculated by taking the integral of
-the minimum of the two functions, from which the overlap outputs are calculated.The
+Kernel density estimates are then generated. Additional options for kernel density
+estimation should be passed to \code{density_args}; otherwise, default values are used.
+Intersection density function is then calculated by taking the integral of
+the minimum of the two functions, from which the overlap outputs are calculated. The
 user must specify the bandwidth for the kernel density estimates as well as options
 for the circular conversion.
 }
@@ -63,7 +61,7 @@ for the circular conversion.
 
 x <- runif(n = 100, min = 0, max = pi*3/2)
 y <- runif(n = 100, min = pi, max = 2*pi)
-circular_overlap(x,y,circular_units = "radians",bw = 1)
+circular_overlap(x, y, circular_units = "radians", density_args = list(bw = 1))
 
 }
 \seealso{

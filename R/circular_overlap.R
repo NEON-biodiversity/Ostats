@@ -6,13 +6,13 @@
 #'
 #' @param a a vector dataset with nrows= n individuals, with a column containing
 #'   one measurement of a certain trait.
-#' @param b another matrix dataset with the same trait measurements to be compared
+#' @param b another vector dataset with the same trait measurements to be compared
 #'   against a.
 #' @param circular_units units of the measures. Passed to \code{\link[circular]{circular}}.
 #' Defaults to \code{"radians"}.
-#' @param normal If TRUE, assume data are normally distributed; if FALSE,
-#'   additional normalization step is carried out by multiplying each density
-#'   entry by the length of each vector.
+#' @param normal if TRUE, the area under all density functions is normalized to 1,
+#' if FALSE, the area under all density functions is proportional to the number of
+#' observations in that group.
 #' @param circular_args list of additional arguments to be passed to
 #' \code{\link[circular]{circular}}.
 #' @param density_args list of additional arguments to be passed to
@@ -109,9 +109,9 @@ circular_overlap <- function(a, b, circular_units = 'radians', normal = TRUE, ci
 #'   one measurement of a certain trait.
 #' @param b another matrix dataset with the same trait measurements to be compared
 #'   against a.
-#' @param normal If TRUE, assume data are normally distributed; if FALSE,
-#'   additional normalization step is carried out by multiplying each density
-#'   entry by the length of each vector.
+#' @param normal if TRUE, the area under all density functions is normalized to 1, if FALSE,
+#'  the area under all density functions is proportional to the number of observations in
+#'  that group.
 #'
 #' @details This function works for discrete data collected on the hour.Data is converted
 #' to a factor with levels(0:23). It then by manually calculates the density by taking

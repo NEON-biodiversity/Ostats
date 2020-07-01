@@ -4,32 +4,29 @@
 \alias{pairwise_overlap}
 \title{Overlap between Two Empirical Density Estimates}
 \usage{
-pairwise_overlap(a, b, normal = TRUE, bw = NULL, N = NULL)
+pairwise_overlap(a, b, normal = TRUE, density_args = list())
 }
 \arguments{
-\item{a}{a vector dataset with nrows= n individuals, with a column containing 
+\item{a}{a vector dataset with nrows= n individuals, with a column containing
 one measurement of a certain trait.}
 
-\item{b}{another matrix dataset with the same trait measurements to be compared 
+\item{b}{another matrix dataset with the same trait measurements to be compared
 against a.}
 
 \item{normal}{If TRUE, assume data are normally distributed; if FALSE,
-additional normalization step is carried out by multiplying each density 
+additional normalization step is carried out by multiplying each density
 entry by the length of each vector.}
 
-\item{bw}{the smoothing bandwidth to be used. The kernels are scaled such
-that this is the standard deviation of the smoothing kernel.}
-
-\item{N}{the number of equally spaced points at which the density is to be
-estimated.}
+\item{density_args}{list of additional arguments to be passed to
+\code{\link[stats]{density}}.}
 }
 \value{
-The funtion returns a vector of three values: 
-\item{overlap_average}{the average overlap of a and b, calculated by the overlap 
-area *2 divided by the sum of areas under the two functions.} 
-\item{overlap_a}{the proportion of a that overlaps with b, calculated by the overlap 
+The funtion returns a vector of three values:
+\item{overlap_average}{the average overlap of a and b, calculated by the overlap
+area *2 divided by the sum of areas under the two functions.}
+\item{overlap_a}{the proportion of a that overlaps with b, calculated by the overlap
 area divided by area under the function generated from a.}
-\item{overlap_b}{the proportion of b that overlaps with a, calculated by the overlap 
+\item{overlap_b}{the proportion of b that overlaps with a, calculated by the overlap
 area diveided by area under the function generated from b.}
 }
 \description{
@@ -39,10 +36,11 @@ See \url{http://stats.stackexchange.com/questions/97596/how-to-calculate-overlap
 this function is derived from code posted in the answer by user mmk.
 }
 \details{
-This function generates kernel density estimates using the density() 
-function for two datasets on a common grid.If bw = NULL, the default 'nrd0'is 
-used. If n = NULL, the default value of 512 is used.Intersection density function 
-is then calculated by taking the integral of the minimum of the two functions, 
+This function generates kernel density estimates using the
+\code{\link[stats]{density}}  function for two datasets on a common grid.
+Default values for \code{bw} and \code{n} are used if not provided in \code{density_args}.
+Intersection density function
+is then calculated by taking the integral of the minimum of the two functions,
 from which the overlap outputs are calculated.
 }
 \examples{
@@ -54,7 +52,7 @@ a <- a[,1]
 b <- mtcars \%>\%
   filter(cyl==4)
 b <- b[,1]
-pairwise_overlap(a,b) 
+pairwise_overlap(a,b)
 
 }
 \references{

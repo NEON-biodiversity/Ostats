@@ -93,8 +93,6 @@ for (i in 1:nperm) {
 
 
 SES<-get_ses(o = overlaps_norm,o_n =overlaps_norm_null ,qs = c(0.025, 0.975))
-
-
 }
 \seealso{
 \code{\link{Ostats}} to Calculate O-statistics (community-level pairwise niche overlap statistics)
