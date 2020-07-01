@@ -84,10 +84,6 @@
 #'
 #'
 #' SES<-get_ses(o = overlaps_norm,o_n =overlaps_norm_null ,qs = c(0.025, 0.975))
-#'
-#'
-#'@export
-#'
 get_ses <- function(o, o_n, qs) {
   ses <- ses_lower <- ses_upper <- raw_lower <- raw_upper <- matrix(NA, nrow=nrow(o), ncol=ncol(o))
 

@@ -13,17 +13,17 @@
 #' @param normal If TRUE, assume data are normally distributed; if FALSE,
 #'   additional normalization step is carried out by multiplying each density
 #'   entry by the length of each vector.
-#' @param bw the smoothing bandwidth to be used. The kernels are scaled such
-#'   that this is the standard deviation of the smoothing kernel.
-#' @param N the number of equally spaced points at which the density is to be
-#'   estimated.
-#' @param ... additional arguments passed to \code{\link[circular]{circular}}.
+#' @param circular_args list of additional arguments to be passed to
+#' \code{\link[circular]{circular}}.
+#' @param density_args list of additional arguments to be passed to
+#' \code{\link[circular]{density.circular}}.
 #'
 #'
 #' @details Circular conversion is carried out by using the function \code{\link[circular]{circular}}.
-#' Kernel density estimates are then generated.If n = NULL, the default value of 512
-#' is used. Intersection density function is then calculated by taking the integral of
-#' the minimum of the two functions, from which the overlap outputs are calculated.The
+#' Kernel density estimates are then generated. Additional options for kernel density
+#' estimation should be passed to \code{density_args}; otherwise, default values are used.
+#' Intersection density function is then calculated by taking the integral of
+#' the minimum of the two functions, from which the overlap outputs are calculated. The
 #' user must specify the bandwidth for the kernel density estimates as well as options
 #' for the circular conversion.
 #'
@@ -45,13 +45,10 @@
 #'
 #' x <- runif(n = 100, min = 0, max = pi*3/2)
 #' y <- runif(n = 100, min = pi, max = 2*pi)
-#' circular_overlap(x,y,circular_units = "radians",bw = 1)
+#' circular_overlap(x, y, circular_units = "radians", density_args = list(bw = 1))
 #'
 #' @export
-circular_overlap <- function(a, b, circular_units = 'radians', normal = TRUE, bw, n = NULL, ...) {
-
-  # collect additional arguments to circular(), if any
-  circular_args <- list(...)
+circular_overlap <- function(a, b, circular_units = 'radians', normal = TRUE, circular_args = list, density_args = list()) {
 
   # clean input
   a <- as.numeric(na.omit(a))
@@ -62,8 +59,18 @@ circular_overlap <- function(a, b, circular_units = 'radians', normal = TRUE, bw
   bcirc <- do.call(circular::circular, c(list(x = b, units = circular_units), circular_args))
 
   # generate kernel densities
-  # add option to use user-defined n
-  # Must specify bandwidth
+  # Bandwidth defaults to 1 if not given, n defaults to 512 if not given
+  if ('bw' %in% names(density_args)) {
+    bw <- density_args[['bw']]
+  } else {
+    bw <- 1
+  }
+  if ('n' %in% names(density_args)) {
+    n <- density_args[['n']]
+  } else {
+    n <- 512
+  }
+
   if (is.null(n)) n <- 512 # Default value if not given
   da <- circular::density.circular(acirc, bw=bw, n=n)
   db <- circular::density.circular(bcirc, bw=bw, n=n)
@@ -172,6 +179,7 @@ circular_overlap_24hour <- function(a, b, normal = TRUE) {
 #'
 #' @export
 community_overlap_circular <- function(traits, sp, normal = TRUE, randomize_weights = FALSE) {
+  ### FIXME this function should be deprecated, functionality taken over by community_overlap_merged
   sp <- as.character(sp)
   dat <- data.frame(traits=traits, sp=sp, stringsAsFactors = FALSE)
   dat <- dat[complete.cases(dat), ]

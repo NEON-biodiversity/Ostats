@@ -13,14 +13,13 @@
 #' @param normal If TRUE, assume data are normally distributed; if FALSE,
 #'   additional normalization step is carried out by multiplying each density
 #'   entry by the length of each vector.
-#' @param bw the smoothing bandwidth to be used. The kernels are scaled such
-#'   that this is the standard deviation of the smoothing kernel.
-#' @param N the number of equally spaced points at which the density is to be
-#'   estimated.
+#' @param density_args list of additional arguments to be passed to
+#'   \code{\link[stats]{density}}.
 #'
-#' @details This function generates kernel density estimates using the density()
-#' function for two datasets on a common grid.If bw = NULL, the default 'nrd0'is
-#' used. If n = NULL, the default value of 512 is used.Intersection density function
+#' @details This function generates kernel density estimates using the
+#' \code{\link[stats]{density}}  function for two datasets on a common grid.
+#' Default values for \code{bw} and \code{n} are used if not provided in \code{density_args}.
+#' Intersection density function
 #' is then calculated by taking the integral of the minimum of the two functions,
 #' from which the overlap outputs are calculated.
 #'
@@ -48,11 +47,7 @@
 #' pairwise_overlap(a,b)
 #'
 #' @export
-#'
-#'
-# Overlap between two empirical density estimates
-
-pairwise_overlap <- function(a, b, normal = TRUE, bw = NULL, N = NULL) {
+pairwise_overlap <- function(a, b, normal = TRUE, density_args = list()) {
 
   # clean input
   a <- as.numeric(na.omit(a))
@@ -63,11 +58,20 @@ pairwise_overlap <- function(a, b, normal = TRUE, bw = NULL, N = NULL) {
   upper <- max(c(a, b)) + 1
 
   # generate kernel densities
-  # add option to use user-defined bandwidth and n
-  if (is.null(bw)) bw <- 'nrd0' # Defaults to traditional method if not given
-  if (is.null(N)) N <- 512 # Default value if not given
-  da <- density(a, from=lower, to=upper, bw=bw, n=N)
-  db <- density(b, from=lower, to=upper, bw=bw, n=N)
+  # Bandwidth method defaults to nrd0 if not given, n defaults to 512 if not given
+  if ('bw' %in% names(density_args)) {
+    bw <- density_args[['bw']]
+  } else {
+    bw <- 'nrd0'
+  }
+  if ('n' %in% names(density_args)) {
+    n <- density_args[['n']]
+  } else {
+    n <- 512
+  }
+
+  da <- density(a, from=lower, to=upper, bw=bw, n=n)
+  db <- density(b, from=lower, to=upper, bw=bw, n=n)
   d <- data.frame(x=da$x, a=da$y, b=db$y)
 
   # If not normalized, multiply each density entry by the length of each vector
