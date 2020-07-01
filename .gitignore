@@ -1,4 +1,5 @@
 .Rproj.user
+.RData
 .Rhistory
 /revdep
 inst/doc
