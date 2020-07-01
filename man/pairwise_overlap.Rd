@@ -13,9 +13,9 @@ one measurement of a certain trait.}
 \item{b}{another matrix dataset with the same trait measurements to be compared
 against a.}
 
-\item{normal}{If TRUE, assume data are normally distributed; if FALSE,
-additional normalization step is carried out by multiplying each density
-entry by the length of each vector.}
+\item{normal}{if TRUE, the area under all density functions is normalized to 1,
+if FALSE, the area under all density functions is proportional to the number of
+observations in that group.}
 
 \item{density_args}{list of additional arguments to be passed to
 \code{\link[stats]{density}}.}
