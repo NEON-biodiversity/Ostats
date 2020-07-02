@@ -38,7 +38,10 @@ taking the integral of the minimum of the two functions, from which the overlap
 outputs are calculated.
 }
 \examples{
-# waiting for datasets
+library(dplyr)
+a <- filter(ant_data, chamber == 1)
+b <- filter(ant_data, chamber == 2)
+circular_overlap_24hour(a$time,b$time)
 
 }
 \seealso{

@@ -133,7 +133,10 @@ circular_overlap <- function(a, b, circular_units = 'radians', normal = TRUE, ci
 #' two empirical density estimates.
 #'
 #' @examples
-#' # waiting for datasets
+#' library(dplyr)
+#' a <- filter(ant_data, chamber == 1)
+#' b <- filter(ant_data, chamber == 2)
+#' circular_overlap_24hour(a$time,b$time)
 #'
 #' @export
 circular_overlap_24hour <- function(a, b, normal = TRUE) {

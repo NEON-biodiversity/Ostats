@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 R/old_functions.R
 /internal_docs
+^data-raw$
