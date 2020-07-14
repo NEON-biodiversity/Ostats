@@ -11,8 +11,10 @@ An object of class \code{data.frame} with 7905 rows and 6 columns.
 reg_pool
 }
 \description{
-This is a sample dataset with small mammal data from the NEON sites BART and
-HARV across years.The two sites belong to the same domain, the Northeast domain.
+This is a sample dataset with small mammal data from the NEON sites Bartlett
+(BART) and Harvard Forest (HARV) from 2015. The two sites belong to the same domain, 
+the Northeast domain. Each row represents an individual small mammal that was
+trapped and weighed, with its species identity and body mass in grams.
 }
 \references{
 

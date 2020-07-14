@@ -12,7 +12,10 @@ ant_data
 }
 \description{
 This is a sample dataset with discrete hourly data collection from a study
-about ant-mediated seed dispersal.
+in which ants were observed during 24-hour periods in multiple experimental
+chambers. Each row represents an observation of an individual ant, with its
+species identity and the time it was observed, rounded to the nearest hour.
+The experimental setup is described in Stuble et al. 2014.
 }
 \references{
 Stuble, K.L., Patterson, C.M., Rodriguez-Cabal, M.A., Ribbons,
