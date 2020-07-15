@@ -1,22 +1,20 @@
 #'@title  Plotting Community Overlap
 #'
-#'@description This function plots the overlap of trait measurements of among
+#'@description This function plots the overlap of traits among
 #'  species for each community.
 #'
-#'@param indiv_dat a data frame containing individual measurments for a certain
-#'trait,its species identity, and the community it belongs to.
-#'@param siteID a column in indiv_dat that indicates the community.
-#'@param taxonID a column in indiv_dat that indicates species identity.
-#'@param trait a column of trait measurements in indiv_dat.
-#'@param overlap_dat a data frame containing .. NEED TO FIGURE OUT HOW TO USE
-#'OVERLAP OUTPUT
+#'@param indiv_dat Individual data: a data frame containing individual measurments for a certain
+#'traits,its species identity, and the community identity it belongs to.
+#'@param siteID Site identity: a column in indiv_dat data frame that indicates the names of each community.
+#'@param taxonID Taxon identity: a column in indiv_dat data frame that indicates species or taxa names.
+#'@param trait The trait you want to overlap among species: a column in indiv_dat data frame containing trait measurements for each individual.
+#'@param overlap_dat a data frame where the first column contains the names of each community and the second column contains the values of total overlap among species in each of these communities obtained from the \code{\link{Ostats}} function  NEED TO FIGURE OUT HOW TO USE OVERLAP OUTPUT
 #'@param trait_name a character that specifies the name of the trait, to be
 #'  labelled on the x axis.
 #'
 #'
-#'@return Density plots of species trait distribution are plotted on the same graph
-#'  for each community to show how they overlap with each other. With the output from
-#'  the function \code{\link{Ostats}}, the overlap value is labelled on each graph.
+#'@return Density plots of species trait distribution plotted on the same graph
+#'  for each community to show how they overlap each other. The overlap value obtained as output from the function \code{\link{Ostats}}, is labelled on each community graph.
 #'
 #'@seealso \code{\link{Ostats}} to Calculate O-statistics (community-level
 #'  pairwise niche overlap statistics)
