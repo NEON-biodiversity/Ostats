@@ -126,6 +126,9 @@ pairwise overlaps of species trait distributions within a community.
 
 \code{\link{get_ses}} for standardized effect sizes from null
 model values.
+
+\code{\link{Ostats_plot}} for plotting community overlap for
+each community.
 }
 \author{
 Quentin D. Read, John M. Grady, Arya Y. Yue, Isadora Fluck E., Ben Baiser,

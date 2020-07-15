@@ -68,6 +68,9 @@
 #' pairwise overlaps of species trait distributions within a community.
 #' @seealso \code{\link{get_ses}} for standardized effect sizes from null
 #' model values.
+#' @seealso \code{\link{Ostats_plot}} for plotting community overlap for
+#' each community.
+#'
 #' @examples
 #' # overlap statistics for body weights of species in NEON sites
 #' library(tidyverse)

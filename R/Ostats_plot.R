@@ -41,7 +41,7 @@
 #'@export
 #'
 Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, trait_name){
-  colorvalues <- sample(hcl.colors(10, palette = 'viridis'), size = 24, replace = TRUE)
+  colorvalues <- sample(hcl.colors(10, palette = 'viridis'), size = length(unique(taxonID)), replace = TRUE)
   theme_set(
     theme_bw() + theme(panel.grid = element_blank(),
                        axis.text = element_text(size = 12),
@@ -55,7 +55,7 @@ Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, trait_name
     stat_density(adjust = 2, size = 1,aes(x = trait, group = taxonID, fill=taxonID), alpha = 0.5, geom='polygon', position = 'identity') +
     facet_wrap(~ siteID, ncol = 1) +
     scale_fill_manual(values = colorvalues) +
-    scale_x_continuous(name = trait_name) +
+    scale_x_continuous(name = trait_name, limits = c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE))) +
     scale_y_continuous(name = 'Probability Density',expand = c(0,0)) +
     geom_text(aes(label = paste('Overlap =', round(ostat_norm,3)), x = 1.5, y = 8.5), color = 'black', data = overlap_dat %>% mutate(siteID = factor(siteID)))
 }
