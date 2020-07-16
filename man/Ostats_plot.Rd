@@ -7,28 +7,26 @@
 Ostats_plot(indiv_dat, siteID, taxonID, trait, overlap_dat, trait_name)
 }
 \arguments{
-\item{indiv_dat}{a data frame containing individual measurments for a certain
-trait,its species identity, and the community it belongs to.}
+\item{indiv_dat}{Individual data: a data frame containing individual measurments for a certain
+traits,its species identity, and the community identity it belongs to.}
 
-\item{siteID}{a column in indiv_dat that indicates the community.}
+\item{siteID}{Site identity: a column in indiv_dat data frame that indicates the names of each community.}
 
-\item{taxonID}{a column in indiv_dat that indicates species identity.}
+\item{taxonID}{Taxon identity: a column in indiv_dat data frame that indicates species or taxa names.}
 
-\item{trait}{a column of trait measurements in indiv_dat.}
+\item{trait}{The trait you want to overlap among species: a column in indiv_dat data frame containing trait measurements for each individual.}
 
-\item{overlap_dat}{a data frame containing .. NEED TO FIGURE OUT HOW TO USE
-OVERLAP OUTPUT}
+\item{overlap_dat}{a data frame where the first column contains the names of each community and the second column contains the values of total overlap among species in each of these communities obtained from the \code{\link{Ostats}} function  NEED TO FIGURE OUT HOW TO USE OVERLAP OUTPUT}
 
 \item{trait_name}{a character that specifies the name of the trait, to be
 labelled on the x axis.}
 }
 \value{
-Density plots of species trait distribution are plotted on the same graph
- for each community to show how they overlap with each other. With the output from
- the function \code{\link{Ostats}}, the overlap value is labelled on each graph.
+Density plots of species trait distribution plotted on the same graph
+ for each community to show how they overlap each other. The overlap value obtained as output from the function \code{\link{Ostats}}, is labelled on each community graph.
 }
 \description{
-This function plots the overlap of trait measurements of among
+This function plots the overlap of traits among
  species for each community.
 }
 \examples{

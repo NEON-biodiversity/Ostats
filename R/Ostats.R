@@ -42,14 +42,14 @@
 
 #'
 #' @return The funtion returns a list containing 4 objects:
-#' \item{overlaps_norm}{the median of weighted pairwise overlaps of trait
+#' \item{overlaps_norm}{a matrix showing the median of weighted pairwise overlaps (at default) of trait
 #'   distributions of all species in each community (at default output
 #'   and weight_type), with the area under all density functions normalized to 1.}
-#' \item{overlaps_unnorm}{O-stats calculated with the area under all density
+#' \item{overlaps_unnorm}{a matrix showing O-stats calculated with the area under all density
 #'   functions proportional to the number of observations in that group.}
-#' \item{overlaps_norm_ses}{effect size statistics against a null model
+#' \item{overlaps_norm_ses}{5 matrices of effect size statistics against a null model
 #'   with the area under all density functions normalized to 1.}
-#' \item{overlaps_unnorm_ses}{effect size statistics against a null model
+#' \item{overlaps_unnorm_ses}{5 matrices of effect size statistics against a null model
 #'   with the area under all density functions proportional to the number
 #'   of observations in that group.}
 #'
