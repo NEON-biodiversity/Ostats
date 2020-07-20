@@ -24,7 +24,7 @@
 #'
 #' #example use same dataset as ostats (need to change later)
 #'
-#' library(ggplot2)
+#'library(ggplot2)
 #'library(dplyr)
 #'
 #'overlap_dat <- Ostats_bysite2015 #results of ostat function
@@ -103,5 +103,5 @@ Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use=
   #geom_text(aes(label = paste('Overlap =', round(ostat_norm,3)), x = 1.5, y = 8.5), color = 'black', data = overlap_dat %>% filter(siteID %in% sites2use) %>% mutate(siteID = factor(siteID, levels=sites2use)))
 
 
-
+}
 

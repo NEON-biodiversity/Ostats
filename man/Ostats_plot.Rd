@@ -4,7 +4,7 @@
 \alias{Ostats_plot}
 \title{Plotting Community Overlap}
 \usage{
-Ostats_plot(indiv_dat, siteID, taxonID, trait, overlap_dat, trait_name)
+Ostats_plot(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use = NULL)
 }
 \arguments{
 \item{indiv_dat}{Individual data: a data frame containing individual measurments for a certain
@@ -31,21 +31,22 @@ This function plots the overlap of traits among
 }
 \examples{
 
-#FUNCTION NOT COMPLETE!!!
+
 #example use same dataset as ostats (need to change later)
 
-library(tidyverse)
-overlap_dat <- read.csv('overlap_dat.csv')
-indiv_dat <- read.csv('indiv_dat.csv')
-indiv_dat <- indiv_dat \%>\%filter(siteID \%in\% c('HARV','JORN'))
-overlap_dat <- overlap_dat \%>\%filter(siteID \%in\% c('HARV','JORN'))
+library(ggplot2)
+library(dplyr)
 
-indiv_dat <- mutate(indiv_dat, log_weight = log10(weight))
+overlap_dat <- Ostats_bysite2015 #results of ostat function
+final_mammal_data <- read.csv('final_NEON_mammal_data.csv', stringsAsFactors = FALSE) #raw data
 
-#change column name to test whether the function works
-names(indiv_dat) <- c("siteID", "species","weight", "log_weight")
+indiv_dat <-data.frame(final_mammal_data$siteID, final_mammal_data$taxonID, final_mammal_data$weight)
+siteID <- indiv_dat$final_mammal_data.siteID
+taxonID <- indiv_dat$final_mammal_data.taxonID
+trait <- log(indiv_dat$final_mammal_data.weight)
 
-Ostats_plot(indiv_dat = indiv_dat,siteID=indiv_dat$siteID, taxonID = indiv_dat$species, trait = indiv_dat$log_weight,overlap_dat = overlap_dat, trait_name = "log_weight")
+
+Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat)
 }
 \seealso{
 \code{\link{Ostats}} to Calculate O-statistics (community-level
