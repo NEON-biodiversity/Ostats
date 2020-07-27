@@ -6,8 +6,6 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-### Abstract
-### Contents
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -16,6 +14,66 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+# Overview
+
+Intraspecific trait variation (ITV), or trait variation within a species, has gained more attention in the field of ecology, especially in community ecology. It reflects difference and diversity within a species on which natural selection acts, thus has been incorporated into ecological models and used to test ecological theories. (cite ecography and violle?) 
+
+When intraspecific trait variation is taken into account, trait for each species needs to be portrayed as a distribution rather than a single mean value. Therefore, the package Ostats was developed to better understand the overlaps of trait distributions among species living in the same community.(should I talk about niche dimensions?) Functions in this package can be used to assess the level of species trait overlap and compare across communities. Effect size statistics can also be calculated against local or regional null models.
+
+***
+
+The Ostats package consists of 10 functions in total. Some of the most common ways to use them are:
+
+1. Calculating overlap statistics against a local null model using *Ostats*, which depends on *community_overlap_merged*, which calculates a community overlap value using one of the three *pairwise_overlap* functions, and *get_ses*, which calculate effect sizes. *Ostats* is capable of processing both linear and circular data (time, angles, etc).
+
+2. Calculating overlap statistics against a regional null model when there is a regional dataset available, using *Ostats_regional* which depends on *pairwise_overlap* and *get_ses*. 
+
+3. The plotting function *Ostats_plot* is used to produce a visual display of species trait overlap in each community. 
+
+4. *Ostat2longform* converts the output of *Ostats* to a table in long form.
+
+5. *community_overlap_noitv* calculates a value for each community that reflects pairwise distances using means of traits for each species, not taking intraspecific variation into account.
+
+# Step-by-step Tutorials
+
+## Overlap statistics for linear data against a local null model
+
+The input of the function *Ostats* is taken from a dataset with a column for species identification, a column that indicates which community the individual belongs to, and a column with trait measurements, often log-transformed. 
+
+A sample dataset is shown below, used to calculate the Overlap statistics for sites 'HARV' and 'JORN' from the National Ecological Observatory Network (NEON).
+
+(cite ecography?)
+
+```{r}
 library(Ostats)
+library(tidyverse)
+# Load data from web archive
+ dat <- read_csv('https://ndownloader.figshare.com/files/9167548')
+
+ # Keep only the relevant part of data
+ dat <- dat %>%
+   filter(siteID %in% c('HARV','JORN')) %>%
+   select(siteID, taxonID, weight) %>%
+   filter(!is.na(weight)) %>%
+   mutate(log_weight = log10(weight))
+
+ dat %>%
+   group_by(siteID, taxonID) %>%
+   slice(1)
+
+ head(dat)
 ```
+
+```{r}
+ #Run O-stats on the data with nperm = 2 (do not bother with null models)
+ Ostats_example <- Ostats(traits = as.matrix(dat$log_weight),
+                    sp = factor(dat$taxonID),data_type = 'linear',
+                    plots = factor(dat$siteID),
+                    nperm = 2)
+```
+```{r}
+Ostats_example
+```
+## Overlap statistics for circular data against a local null model
+## Overlap Statistics for linear data against a regional model 
+## Overlap plots

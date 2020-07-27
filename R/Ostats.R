@@ -126,9 +126,9 @@ Ostats <- function(traits, plots, sp, data_type = 'linear', output = "median", w
 
   for (s in 1:nlevels(plots)) {
     for (t in 1:ncol(traits)) {
-      overlap_norm_st <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type=data_type, output = output, weight_type = weight_type, normal=TRUE, circular_args = circular_args, density_args = density_args), TRUE)
+      overlap_norm_st <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type = data_type, output = output, weight_type = weight_type, normal=TRUE, circular_args = circular_args, density_args = density_args), TRUE)
       overlaps_norm[s, t] <- if (inherits(overlap_norm_st, 'try-error')) NA else overlap_norm_st
-      overlap_unnorm_st <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type=data_type, output = output, weight_type = weight_type, normal=FALSE, circular_args = circular_args, density_args = density_args), TRUE)
+      overlap_unnorm_st <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type = data_type, output = output, weight_type = weight_type, normal=FALSE, circular_args = circular_args, density_args = density_args), TRUE)
       overlaps_unnorm[s, t] <- if (inherits(overlap_unnorm_st, 'try-error')) NA else overlap_unnorm_st
     }
     setTxtProgressBar(pb, s)
