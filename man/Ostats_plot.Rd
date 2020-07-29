@@ -16,10 +16,9 @@ traits,its species identity, and the community identity it belongs to.}
 
 \item{trait}{The trait you want to overlap among species: a column in indiv_dat data frame containing trait measurements for each individual.}
 
-\item{overlap_dat}{a data frame where the first column contains the names of each community and the second column contains the values of total overlap among species in each of these communities obtained from the \code{\link{Ostats}} function  NEED TO FIGURE OUT HOW TO USE OVERLAP OUTPUT}
+\item{overlap_dat}{an object containing the results from the Ostats function - see \code{\link{Ostats}}}
 
-\item{trait_name}{a character that specifies the name of the trait, to be
-labelled on the x axis.}
+\item{sites2use}{a vector that select the sites you want to plot. If NULL, the function will plot all the sites.}
 }
 \value{
 Density plots of species trait distribution plotted on the same graph
@@ -30,23 +29,21 @@ This function plots the overlap of traits among
  species for each community.
 }
 \examples{
-
-
-#example use same dataset as ostats (need to change later)
-
+library(tidyverse)
 library(ggplot2)
 library(dplyr)
 
-overlap_dat <- Ostats_bysite2015 #results of ostat function
-final_mammal_data <- read.csv('final_NEON_mammal_data.csv', stringsAsFactors = FALSE) #raw data
+overlap_dat <- Ostats_example #your results from the Ostat function - see \code{\link{Ostats}}
+indiv_dat <- read_csv('https://ndownloader.figshare.com/files/9167548', col_names = T)
+siteID <- indiv_dat$siteID
+taxonID <- indiv_dat$taxonID
+trait <- indiv_dat$logweight
+#to plot only selected sites:
+sites2use<- c('BART','KONZ','JORN') #used in the example
 
-indiv_dat <-data.frame(final_mammal_data$siteID, final_mammal_data$taxonID, final_mammal_data$weight)
-siteID <- indiv_dat$final_mammal_data.siteID
-taxonID <- indiv_dat$final_mammal_data.taxonID
-trait <- log(indiv_dat$final_mammal_data.weight)
-
-
-Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat)
+#to plot all sites:
+sites2use<- NULL
+Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat, sites2use = sites2use)
 }
 \seealso{
 \code{\link{Ostats}} to Calculate O-statistics (community-level
