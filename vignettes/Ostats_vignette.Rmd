@@ -52,7 +52,7 @@ library(tidyverse)
 
  # Keep only the relevant part of data
  dat <- dat %>%
-   filter(siteID %in% c('HARV','JORN')) %>%
+   filter(siteID %in% c('HARV','SERC')) %>%
    select(siteID, taxonID, weight) %>%
    filter(!is.na(weight)) %>%
    mutate(log_weight = log10(weight))
