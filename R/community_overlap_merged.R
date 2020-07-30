@@ -99,20 +99,20 @@ community_overlap_merged <- function(traits, sp, data_type = "linear", normal = 
 
   if (randomize_weights) abund_pairs <- sample(abund_pairs)
 
-  if (output == "median" && weight_type == "none")
-    return(median(overlaps))
-  else if (output == "median" && weight_type == "hmean")
-    return(matrixStats::weightedMedian(x = as.vector(overlaps), w = abund_pairs))
-  else if (output == "median" && weight_type == "mean")
-    return(matrixStats::weightedMedian(x = overlaps, w = abund_pairs))
-  else if (output == "mean" && weight_type == "hmean")
-    return(weighted.mean(x = overlaps, w = abund_pairs))
-  else if (output == "mean" && weight_type == "mean")
-    return(weighted.mean(x = overlaps, w = abund_pairs))
-  else if (output == "mean" && weight_type == "none")
-    return(mean(overlaps))
-  else return("invalid arguments for weight_type or output")
+  if (output == "median" && weight_type == "none"){
+    final_output <- median(overlaps)}
+  if (output == "median" && weight_type == "hmean"){
+    final_output <- matrixStats::weightedMedian(x = as.vector(overlaps), w = abund_pairs)}
+  if (output == "median" && weight_type == "mean"){
+    final_output <- matrixStats::weightedMedian(x = overlaps, w = abund_pairs)}
+  if (output == "mean" && weight_type == "hmean"){
+    final_output <- weighted.mean(x = overlaps, w = abund_pairs)}
+  if (output == "mean" && weight_type == "mean"){
+    final_output <- weighted.mean(x = overlaps, w = abund_pairs)}
+  if (output == "mean" && weight_type == "none"){
+    final_output <- mean(overlaps)}
 
+return(final_output)
 }
 
 
