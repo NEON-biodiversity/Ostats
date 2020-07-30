@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 Intraspecific trait variation (ITV), or trait variation within a species, has gained more attention in the field of ecology, especially in community ecology. It reflects difference and diversity within a species on which natural selection acts, thus has been incorporated into ecological models and used to test ecological theories. (cite ecography and violle?) 
 
-When intraspecific trait variation is taken into account, trait for each species needs to be portrayed as a distribution rather than a single mean value. Therefore, the package Ostats was developed to better understand the overlaps of trait distributions among species living in the same community.(should I talk about niche dimensions?) Functions in this package can be used to assess the level of species trait overlap and compare across communities. Effect size statistics can also be calculated against local or regional null models.
+When intraspecific trait variation is taken into account, trait for each species needs to be portrayed as a distribution rather than a single mean value. Therefore, the package Ostats was developed to better understand the overlaps of trait distributions among species living in the same community, which inturn can provide us with insights on mechanisms of ecology and biodiversity.Functions in this package can be used to assess the level of species trait overlap and compare across communities. Effect size statistics can also be calculated against local or regional null models.
 
 ***
 
@@ -44,37 +44,72 @@ A sample dataset is shown below, used to calculate the Overlap statistics for si
 
 (cite ecography?)
 
-```{r}
+```{r include=FALSE}
 library(Ostats)
 library(tidyverse)
-# Load data from web archive
+ 
+ # Load data from web archive
  dat <- read_csv('https://ndownloader.figshare.com/files/9167548')
 
- # Keep only the relevant part of data
+ # Keep only sites "HARV" and "JORN", and the relevant columns required by the function.
+ # add a new column named "log_weight" to log-transform the measurements.
+
  dat <- dat %>%
-   filter(siteID %in% c('HARV','SERC')) %>%
+   filter(siteID %in% c('HARV','JORN')) %>%
    select(siteID, taxonID, weight) %>%
    filter(!is.na(weight)) %>%
    mutate(log_weight = log10(weight))
-
+ 
+ # group the data by siteID and taxonID  
  dat %>%
    group_by(siteID, taxonID) %>%
    slice(1)
 
+```
+
+The input dataset looks like this, arranged by siteID and taxonID:
+```{r}
  head(dat)
 ```
 
+The running of the function can take some time, depending on the size of the dataset and null model generation. A progress bar is provided to enable close monitoring.
+
 ```{r}
- #Run O-stats on the data with nperm = 2 (do not bother with null models)
+ #Run O-stats on the data with everything at default
  Ostats_example <- Ostats(traits = as.matrix(dat$log_weight),
                     sp = factor(dat$taxonID),
                     plots = factor(dat$siteID),
-                    nperm = 2,
-                    data_type="linear")
+                    data_type = "linear")
 ```
+
+The result of Ostats is a list containing the following items:
+*overlaps_norm*: a matrix showing community overlap value for each community with the area under all density functions normalized to 1.
+*overlaps_unnorm*: a matrix showing community overlap value for each community with the area under all density functions proportional to the number of observations in that group.
+
+These are community overlap values for each community, with 1 indicating complete overlap and 0 indicating no overlap. A higher value means greater overlap among species trait distributions. The difference between *overlaps_norm* and *overlaps_unnorm* is that *overlaps_norm* does not take species abundance into account, which is more appropriate if the species abundances vary greatly.
+
+(check with sydne about this)
+
+In addition, the effect size statistics are also calculated and displayed:
+
+*overlaps_norm_ses*: 5 matrices of effect size statistics against a null model with the area under all density functions normalized to 1.
+*overlaps_unnorm_ses*: 5 matrices of effect size statistics against a null model with the area under all density functions proportional to the number of observations in that group.
+
+The values are used to compared the observed overlap statistics with a null model
+
 ```{r}
 Ostats_example
 ```
+
+In the above example, the argument *data_type* = "linear", as the data processed is linear. Other arguments with default inputs are:
+
+*output* = "median" and *weight_type*= "hmean", which means when calculating an overlap value for the whole community from the pairwise overlaps of species trait distrubutions, the median of pairwise overlaps of trait distributions of all species in each community, weighted by harmomic means of abundances of the species pairs is calculated.
+*nperm* = 99, 
+*nullqs* = c(0.025, 0.975), 
+
+*shuffle_weights* = FALSE and *swap_means* = FALSE.
+
 ## Overlap statistics for circular data against a local null model
 ## Overlap Statistics for linear data against a regional model 
 ## Overlap plots
+
