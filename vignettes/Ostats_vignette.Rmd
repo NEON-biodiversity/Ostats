@@ -69,7 +69,8 @@ library(tidyverse)
  Ostats_example <- Ostats(traits = as.matrix(dat$log_weight),
                     sp = factor(dat$taxonID),
                     plots = factor(dat$siteID),
-                    nperm = 2)
+                    nperm = 2,
+                    data_type="linear")
 ```
 ```{r}
 Ostats_example
