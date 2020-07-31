@@ -26,9 +26,9 @@
 #' greater than 1 from the dataset. The default calculates the median of pairwise overlaps
 #' for the whole community using the harmonic means of abundances of the species pairs as
 #' weights, which minimizes the effect of outliners and rare species.If the argument
-#' weight_type == "none", no weights are used for the calculation of mean/median. If
-#' weight_type == "mean", arithmetic means of abundances are used as weights. To change the
-#' output to mean, specify the argument output == "mean".
+#' weight_type = "none", no weights are used for the calculation of mean/median. If
+#' weight_type = "mean", arithmetic means of abundances are used as weights. To change the
+#' output to mean, specify the argument output = "mean".
 #'
 #' @return The function returns overall species overlap for a community. At default, it returns the
 #' median of pairwise overlaps weighted by harmonic means of abundances for the community.

@@ -24,7 +24,7 @@ When intraspecific trait variation is taken into account, trait for each species
 
 The Ostats package consists of 10 functions in total. Some of the most common ways to use them are:
 
-1. Calculating overlap statistics against a local null model using *Ostats*, which depends on *community_overlap_merged*, which calculates a community overlap value using one of the three *pairwise_overlap* functions, and *get_ses*, which calculate effect sizes. *Ostats* is capable of processing both linear and circular data (time, angles, etc).
+1. Calculating overlap statistics against a local null model using *Ostats*, which depends on *community_overlap_merged*, which calculates a community overlap value using one of the three pairwise overlap functions, and *get_ses*. *Ostats* is capable of processing both linear and circular (time, angles, etc) data.
 
 2. Calculating overlap statistics against a regional null model when there is a regional dataset available, using *Ostats_regional* which depends on *pairwise_overlap* and *get_ses*. 
 
@@ -38,7 +38,11 @@ The Ostats package consists of 10 functions in total. Some of the most common wa
 
 ## Overlap statistics for linear data against a local null model
 
+The function *Ostats* is the primary function in this package.This function first generates density estimates for species trait distributions and calculates the intersection of two density functions to produce pairwise overlap values using *pairwise_overlap*, then evaluates a community overlap value from the pairwise overlap values of all species pairs in the community using *community_overlap_merged*, and lastly compares the community overlap value to a null model to calculate effect size statistics.
+
 The input of the function *Ostats* is taken from a dataset with a column for species identification, a column that indicates which community the individual belongs to, and a column with trait measurements, often log-transformed. 
+
+### An example using *Ostats* at default
 
 A sample dataset is shown below, used to calculate the Overlap statistics for sites 'HARV' and 'JORN' from the National Ecological Observatory Network (NEON).
 
@@ -74,7 +78,12 @@ The input dataset looks like this, arranged by siteID and taxonID:
 
 The running of the function can take some time, depending on the size of the dataset and null model generation. A progress bar is provided to enable close monitoring.
 
-```{r}
+(HERE DO I SAY INCLUDE = FALSE?)
+
+```{r include=FALSE}
+###############################
+library(sfsmisc)
+##############################
  #Run O-stats on the data with everything at default
  Ostats_example <- Ostats(traits = as.matrix(dat$log_weight),
                     sp = factor(dat$taxonID),
@@ -95,21 +104,109 @@ In addition, the effect size statistics are also calculated and displayed:
 *overlaps_norm_ses*: 5 matrices of effect size statistics against a null model with the area under all density functions normalized to 1.
 *overlaps_unnorm_ses*: 5 matrices of effect size statistics against a null model with the area under all density functions proportional to the number of observations in that group.
 
-The values are used to compared the observed overlap statistics with a null model
+The effect size values are used to compare the observed overlap statistics with a local null model. The upper and lower limits are set as 95% at default, and if the ses (standard effect sizes) value is lower than the lower limit for that community, it suggests that the community overlap value observed is lower than expected by chance from a null model. Similarly, if the community overlap value is higher than the upper limit, the community has a higher overlap than expected.
+
+
+(effect size cite a paper?)
 
 ```{r}
 Ostats_example
 ```
 
+(HERE ADD INTERPRETATION OF THE RESULTS)
+
+### Arguments for the function *Ostats*
+
 In the above example, the argument *data_type* = "linear", as the data processed is linear. Other arguments with default inputs are:
 
-*output* = "median" and *weight_type*= "hmean", which means when calculating an overlap value for the whole community from the pairwise overlaps of species trait distrubutions, the median of pairwise overlaps of trait distributions of all species in each community, weighted by harmomic means of abundances of the species pairs is calculated.
-*nperm* = 99, 
-*nullqs* = c(0.025, 0.975), 
+*output* = "median" and *weight_type*= "hmean", which means that the function calculates the median of pairwise overlaps of trait distributions of all species in each community, weighted by harmomic means of abundances of the species pairs is calculated as overlap value for the whole community. The default is set as such to minimize the effect of outliners and rare species.If the argument weight_type = "none", no weights are used for the calculation of mean/median. If weight_type = "mean", arithmetic means of abundances are used as weights. To change the output to mean, specify the argument output = "mean".
 
-*shuffle_weights* = FALSE and *swap_means* = FALSE.
+```{r include=FALSE}
+# example of specifying the arguments output and weight_type
+
+Ostats_example2 <- Ostats(traits = as.matrix(dat$log_weight),
+                    sp = factor(dat$taxonID),
+                    plots = factor(dat$siteID),
+                    data_type = "linear",
+                    output = "mean",
+                    weight_type = "none")
+
+```
+
+```{r}
+Ostats_example2
+```
+
+(ANALYZE THE RESULT: JUST SAY VALUES ARE DIFFERENT? IS IT NECESSARY TO DISPLAY THE RESULT OF THE FUNCTION?)
+
+
+The argument *nperm* sets the number of permutations, or randomly generated "fake" detasets, for the null model. The default number is 99. 
+
+The argument *nullqs* sets the limit boundaries for effect size statistics calculation, and the default effect size quantiles is the middle 95%, which is *nullqs* = c(0.025, 0.975). This argument should be a numeric vector of probabilities with values in [0,1].
+
+At default, *shuffle_weights* = FALSE and *swap_means* = FALSE, and the null model is generated by randomly assigning a taxon that is present in the community to each individual. To change the way of null model generation, the user can make use of these to arguments. If *shuffle_weights* is TRUE, the *Ostats* function shuffles weights given to pairwise overlaps within a community when generating null models. If *swap_means* is TRUE, swap means of body sizes within a community.
+
+*circular_args* is an optional list of additional arguments to pass to \code{\link[circular]{circular}} when the data type is "circular".
+
+The ... arguments are any other additional arguments to pass to \code{\link[stats]{density}}, such as \code{bw}, \code{n}, or \code{adjust}. If none are provided, default values are used.
+
+
+(density.args NOT WORKING??)
+```{r eval=FALSE}
+# example of specifying the arguments output and weight_type
+
+Ostats_example3 <- Ostats(traits = as.matrix(dat$log_weight),
+                    sp = factor(dat$taxonID),
+                    plots = factor(dat$siteID),
+                    bw = 'nrd0', n=200)
+Ostats_example3
+
+```
 
 ## Overlap statistics for circular data against a local null model
-## Overlap Statistics for linear data against a regional model 
+
+The function *Ostats* can also be used to calculate overlap statistics of circular data, such as angular data like direction and orientation, or time. Two different kinds of circular calculations are available: one is to use \code{\link[circular]{circular}} embedded in the function *circular_overlap* to calculate density estimates, when the data is continuous; the other is to manually calculate the density by taking the proportion of each hour using the function *circular_overlap_24hour*, when the data is circular but only collected hourly, making it discrete data.
+
+According to the type of data analyzed, the user can set the argument data_type = "circular" when the data is continuous, and data_type = "circular_discrete" if the data is collected every hour.
+
+Below is an example using ant_data and the *Ostats* function to calculate overlap statistics. The input data is a record of ants in two chambers and their time of occurrence.
+
+```{r}
+# the input data
+head(ant_data)
+```
+
+
+```{r}
+# an example to calculate overlap statistics for hourly data using ant_data dataset in the Ostats package
+
+circular_example <- Ostats(traits = as.matrix(ant_data$time),
+                    sp = factor(ant_data$species),
+                    plots = factor(ant_data$chamber),
+                    data_type = "circular_discrete")
+
+```
+
+```{r}
+circular_example
+```
+
+
+
+(WE NOW HAVE CIRCULAR_DISCREATE. DO WE NEED CIRCULAR EXAMPLE?)
+
+### Use of *circular_args*
+
+*circular_args* is an optional list of additional arguments to pass to \code{\link[circular]{circular}} when the data type is "circular".
+
+## Overlap Statistics for linear data against a regional null model 
+
+*Ostats_regional* is a function that calculates overlap statistics against regional null model, if the user has another dataset with trait measurements for the regional species pool. Null model generated from a regional species pool is more realistic than a local null model  
+
+(SHOULD I SAY THIS?)
+
+
+
+
 ## Overlap plots
 
