@@ -12,7 +12,11 @@
 #'@param sites2use a vector that select the sites you want to plot. If NULL, the function will plot all the sites.
 #'@param n_col Number of columns for layout of individual panels. Default is 3.
 #'@param colorvalues Vector of color values for the density polygons. Defaults to a viridis palette if none provided.
-#'
+#'@param alpha_o defines the colors trasparency level for the density polygons. Default is 0.5
+#'@param adjust_o multiplicate the bandwidth adjustment of the density polygons. The less, the tiny your density polygons will be. Default is 2.
+#'@param limits_o the limits (min and max values) of the x axis. Default is \code{c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE))}
+#'@param name_x a character indicating the name of your x axis (i.e. the name of your trait). Default is 'Trait value'
+#'@param name_y a character indicating the name of your y axis. Default is 'Probability Density'
 #'
 #'@return Density plots of species trait distribution plotted on the same graph
 #'  for each community to show how they overlap each other. The overlap value obtained as output from the function \code{\link{Ostats}}, is labelled on each community graph.
@@ -39,20 +43,18 @@
 #'Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat, sites2use = sites2use)
 #'@export
 #'
-Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use = NULL, n_col = 3, colorvalues = NULL) {
+Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use = NULL, n_col = 3, colorvalues = NULL, alpha_o = 0.5, adjust_o = 2, limits_o =c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE)), name_x = 'Trait value', name_y = 'Probability Density' ) {
 
   # Unless a subset of sites is provided, use all sites in dataset.
   if (is.null(sites2use)) {
     sites2use <- unique(indiv_dat$siteID)
   }
 
-
   ostat_norm<-overlap_dat$overlaps_norm
   ostat_norm <- subset(ostat_norm, rownames(ostat_norm) %in% sites2use)
+  trait <- subset(trait, siteID %in% sites2use)
   indiv_dat <- subset(indiv_dat, siteID %in% sites2use)
-  siteID <- indiv_dat$siteID #FIXME this will not work if indiv_dat does not contain siteID. Also, this will overwrite the siteID argument the user supplies.
-  taxonID <- indiv_dat$taxonID #FIXME this will not work if indiv_dat does not contain taxonID. Also, this will overwrite the taxonID argument the user supplies.
-  trait <- indiv_dat$logweight #FIXME this will not work if the trait is not called logweight. Also, this will overwrite the trait argument the user supplies.
+
 
   # If a color vector is not provided, create a default palette.
   if (is.null(colorvalues)) {
@@ -70,17 +72,17 @@ Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use 
 
   overlap_labels <- data.frame(siteID = row.names(ostat_norm),
                                lab = paste('Overlap =', round(ostat_norm[,1], 2)))
+
   indiv_dat$siteID <- factor(indiv_dat$siteID)
 
 
   ggplot2::ggplot(indiv_dat) +
-    ggplot2::stat_density(adjust = 2, size = 1, ggplot2::aes(x = trait, group = taxonID, fill = taxonID), alpha = 0.5, geom='polygon', position = 'identity') + #FIXME add options to make alpha, adjust, and size variable.
+    ggplot2::stat_density(adjust = adjust_o, ggplot2::aes(x = trait, group = taxonID, fill = taxonID), alpha = alpha_o, geom='polygon', position = 'identity') +
+
     ggplot2::facet_wrap(~ siteID, ncol = n_col) +
     ggplot2::scale_fill_manual(values = colorvalues) +
     ggplot2::geom_text(ggplot2::aes(label = lab), data = overlap_labels, x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1) +
-    ggplot2::scale_x_continuous(name = 'Trait value', limits = c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE))) + #FIXME add options for the user to manually supply limits, use these as defaults otherwise.
-    ggplot2::scale_y_continuous(name = 'Probability Density', expand = c(0,0)) #FIXME add options to change default x and y axis names, adding sensible defaults if none provided
-
-
+    ggplot2::scale_x_continuous(name = name_x, limits = limits_o) +
+    ggplot2::scale_y_continuous(name = name_y, expand = c(0,0))
 
 }
