@@ -86,8 +86,7 @@
 #'   mutate(log_weight = log10(weight))
 #'
 #' dat %>%
-#'   group_by(siteID, taxonID) %>%
-#'   slice(1)
+#'   group_by(siteID, taxonID)
 #'
 #' #Run O-stats on the data with nperm = 2 (do not bother with null models)
 #' Ostats_example <- Ostats(traits = as.matrix(dat$log_weight),
