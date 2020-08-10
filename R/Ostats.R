@@ -89,7 +89,7 @@
 #'   group_by(siteID, taxonID)
 #'
 #' #Run O-stats on the data with nperm = 2 (do not bother with null models)
-#' Ostats_example <- Ostats(traits = as.matrix(dat$log_weight),
+#' Ostats_example <- Ostats(traits = as.matrix(dat[,'log_weight']),
 #'                    sp = factor(dat$taxonID), data_type = "linear",
 #'                    plots = factor(dat$siteID),
 #'                    nperm = 2)
