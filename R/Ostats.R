@@ -21,7 +21,7 @@
 #'   generating null models.
 #' @param circular_args optional list of additional arguments to pass to
 #'  \code{\link[circular]{circular}}. Only used if the data type is "circular".
-#' @param ... additional arguments to pass to \code{\link[stats]{density}}, such as
+#' @param density_args additional arguments to pass to \code{\link[stats]{density}}, such as
 #' \code{bw}, \code{n}, or \code{adjust}. If none are provided, default values
 #' are used.
 #'
@@ -96,13 +96,10 @@
 #' @export
 #'
 #'
-Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", weight_type= "hmean", nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE, circular_args = list(), ...) {
+Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", weight_type= "hmean", nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE, circular_args = list(), density_args = list()) {
   # Required input: a matrix called traits (nrows=n individuals, ncols=n traits),
   # a vector called plots which is a factor with length equal to nrow(traits),
   # a vector called sp which is a factor with length equal to nrow(traits),
-
-  # Collect arguments to density()
-  density_args <- list(...)
 
   # Declaration of data structures to hold the results
 
@@ -198,7 +195,7 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
 #' @param nperm the number of permutations to generate a null model.
 #' @param nullqs numeric vector of probabilities with values in [0,1] to set
 #'   effect size quantiles.
-#' @param ... additional arguments to pass to \code{\link[stats]{density}}, such
+#' @param density_args additional arguments to pass to \code{\link[stats]{density}}, such
 #'   as \code{bw}, \code{n}, or \code{adjust}. If none are provided, default
 #'   values are used.
 #'
@@ -257,9 +254,7 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
 #'                                      nperm = 2)
 #'
 #' @export
-Ostats_regional <-function(traits, plots, sp, reg_pool_traits, reg_pool_sp, nperm = 99, nullqs = c(0.025, 0.975), ...) {
-  # Collect arguments to density()
-  density_args <- list(...)
+Ostats_regional <-function(traits, plots, sp, reg_pool_traits, reg_pool_sp, nperm = 99, nullqs = c(0.025, 0.975), density_args = list()) {
 
   # Declaration of data structures to hold the results
 
