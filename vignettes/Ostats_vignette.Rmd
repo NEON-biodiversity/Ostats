@@ -55,9 +55,10 @@ library(tidyverse)
    filter(!is.na(weight)) %>%
    mutate(log_weight = log10(weight))
  
- # group the data by siteID and taxonID  
+ # group the data by siteID and taxonID and look at the summary 
  dat %>%
-   group_by(siteID, taxonID) 
+   group_by(siteID, taxonID) %>%
+   slice(1)
 
 ```
 
