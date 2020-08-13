@@ -233,7 +233,37 @@ Ostats_regional so far only supports linear data calculation.
 
 ## Overlap plots
 
+The graphing function *Ostats_plot* depended on ggplot2 can be used to graph species trait overlaps of each community for multiple communities. 
 
+The input dataset indiv_dat needs to have at least three columns: one for taxon identification, one for trait measurements, and one to indicate which community the individual belongs to.
+
+Overlap_dat is the output of Ostats function for the same data. It is used to label the graphs with community overlap values.
+
+
+```{r}
+# example using the NEON small mammal dataset and Ostats_example
+
+indiv_dat <- read_csv('https://ndownloader.figshare.com/files/9167548', col_names = T)
+
+Ostats_plot(indiv_dat = indiv_dat, siteID = indiv_dat$siteID, taxonID = indiv_dat$taxonID, trait = indiv_dat$logweight, overlap_dat = Ostats_example, sites2use = c('HARV','JORN'),adjust_o = 1.5, name_x = 'Body Weight (log-transformed)')
+
+```
+
+If *site2use* = NULL, the function plots for all communities.
+
+The argument *n_col Number* can be used to change number of columns for layout of individual panels. Default is 3.
+
+*colorvalues* is a vector of color values for the density polygons. Defaults to a viridis palette if none provided.
+
+*alpha_o* defines the colors trasparency level for the density polygons. Default is 0.5
+adjust_o* multiplicate the bandwidth adjustment of the density polygons. The less, the tiny your density polygons will be. Default is 2.
+
+*limits_o* the limits (min and max values) of the x axis. Default is \code{c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE))}
+
+*name_x* is a character indicating the name of your x axis (i.e. the name of your trait). Default is 'Trait value'.
+*name_y* is a character indicating the name of your y axis. Default is 'Probability Density'.
+
+If the graphs do not look normal, check whether the trait measurements have been log-transformed. 
 
 ## Pairwise distances and plots
 

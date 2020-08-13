@@ -16,7 +16,7 @@ Ostats(
   shuffle_weights = FALSE,
   swap_means = FALSE,
   circular_args = list(),
-  ...
+  density_args = list()
 )
 }
 \arguments{
@@ -49,7 +49,7 @@ generating null models.}
 \item{circular_args}{optional list of additional arguments to pass to
 \code{\link[circular]{circular}}. Only used if the data type is "circular".}
 
-\item{...}{additional arguments to pass to \code{\link[stats]{density}}, such as
+\item{density_args}{additional arguments to pass to \code{\link[stats]{density}}, such as
 \code{bw}, \code{n}, or \code{adjust}. If none are provided, default values
 are used.}
 }
@@ -105,7 +105,7 @@ dat \%>\%
   slice(1)
 
 #Run O-stats on the data with nperm = 2 (do not bother with null models)
-Ostats_example <- Ostats(traits = as.matrix(dat$log_weight),
+Ostats_example <- Ostats(traits = as.matrix(dat[,'log_weight']),
                    sp = factor(dat$taxonID), data_type = "linear",
                    plots = factor(dat$siteID),
                    nperm = 2)

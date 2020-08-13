@@ -12,7 +12,7 @@ Ostats_regional(
   reg_pool_sp,
   nperm = 99,
   nullqs = c(0.025, 0.975),
-  ...
+  density_args = list()
 )
 }
 \arguments{
@@ -35,7 +35,7 @@ regional species pool.}
 \item{nullqs}{numeric vector of probabilities with values in [0,1] to set
 effect size quantiles.}
 
-\item{...}{additional arguments to pass to \code{\link[stats]{density}}, such
+\item{density_args}{additional arguments to pass to \code{\link[stats]{density}}, such
 as \code{bw}, \code{n}, or \code{adjust}. If none are provided, default
 values are used.}
 }

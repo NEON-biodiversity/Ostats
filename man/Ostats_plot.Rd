@@ -58,20 +58,11 @@ This function plots the overlap of traits among
 }
 \examples{
 library(tidyverse)
-library(ggplot2)
-library(dplyr)
+library(Ostats)
 
-overlap_dat <- Ostats_example #your results from the Ostat function - see \code{\link{Ostats}}
 indiv_dat <- read_csv('https://ndownloader.figshare.com/files/9167548', col_names = T)
-siteID <- indiv_dat$siteID
-taxonID <- indiv_dat$taxonID
-trait <- indiv_dat$logweight
-#to plot only selected sites:
-sites2use<- c('BART','KONZ','JORN') #used in the example
 
-#to plot all sites:
-sites2use<- NULL
-Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat, sites2use = sites2use)
+Ostats_plot(indiv_dat = indiv_dat, siteID = indiv_dat$siteID, taxonID = indiv_dat$taxonID, trait = indiv_dat$logweight, overlap_dat = Ostats_example, sites2use = c('HARV','JORN'))
 }
 \seealso{
 \code{\link{Ostats}} to Calculate O-statistics (community-level
