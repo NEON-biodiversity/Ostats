@@ -17,7 +17,8 @@ Ostats_plot(
   adjust_o = 2,
   limits_o = c(0.5 * min(trait, na.rm = TRUE), 1.5 * max(trait, na.rm = TRUE)),
   name_x = "Trait value",
-  name_y = "Probability Density"
+  name_y = "Probability Density",
+  media = FALSE
 )
 }
 \arguments{
@@ -47,6 +48,8 @@ traits,its species identity, and the community identity it belongs to.}
 \item{name_x}{a character indicating the name of your x axis (i.e. the name of your trait). Default is 'Trait value'}
 
 \item{name_y}{a character indicating the name of your y axis. Default is 'Probability Density'}
+
+\item{media}{if TRUE it plots the trait media for each species. Default is FALSE.}
 }
 \value{
 Density plots of species trait distribution plotted on the same graph

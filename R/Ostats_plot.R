@@ -17,7 +17,7 @@
 #'@param limits_o the limits (min and max values) of the x axis. Default is \code{c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE))}
 #'@param name_x a character indicating the name of your x axis (i.e. the name of your trait). Default is 'Trait value'
 #'@param name_y a character indicating the name of your y axis. Default is 'Probability Density'
-#'
+#'@param media if TRUE it plots the trait media for each species. Default is FALSE.
 #'@return Density plots of species trait distribution plotted on the same graph
 #'  for each community to show how they overlap each other. The overlap value obtained as output from the function \code{\link{Ostats}}, is labelled on each community graph.
 #'
@@ -43,7 +43,7 @@
 #'Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat, sites2use = sites2use)
 #'@export
 #'
-Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use = NULL, n_col = 3, colorvalues = NULL, alpha_o = 0.5, adjust_o = 2, limits_o =c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE)), name_x = 'Trait value', name_y = 'Probability Density' ) {
+Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use = NULL, n_col = 3, colorvalues = NULL, alpha_o = 0.5, adjust_o = 2, limits_o =c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE)), name_x = 'Trait value', name_y = 'Probability Density', media=FALSE ) {
 
   # Unless a subset of sites is provided, use all sites in dataset.
   if (is.null(sites2use)) {
@@ -55,11 +55,23 @@ Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use 
   trait <- subset(trait, siteID %in% sites2use)
   indiv_dat <- subset(indiv_dat, siteID %in% sites2use)
 
-
   # If a color vector is not provided, create a default palette.
   if (is.null(colorvalues)) {
     colorvalues <- sample(hcl.colors(10, palette = 'viridis'), size = length(unique(taxonID)), replace = TRUE)
   }
+
+  # If the user want to plot the trait media.
+  if(media==TRUE){
+    #values per species
+    taxonID<-subset(taxonID, siteID %in% sites2use) #filter the taxons in the sites2use
+    siteID<-subset(siteID, siteID %in% sites2use)
+    teble_trait_taxon<-data.frame(trait, taxonID, siteID)#organize data #traits were already filtred per local
+    teble_trait_taxon<-na.omit(teble_trait_taxon) #remove rows with NA
+    taxon_mean<-aggregate(teble_trait_taxon[,1], list(teble_trait_taxon[,2]), mean)
+    # notes to isa: NEED TO IMPROVE - I want to know in wich local species occured, so I can plot in each site only the species that occur in that site
+  }
+
+
 
   ggplot2::theme_set(
     ggplot2::theme_bw() + ggplot2::theme(panel.grid = ggplot2::element_blank(),
@@ -83,6 +95,11 @@ Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use 
     ggplot2::scale_fill_manual(values = colorvalues) +
     ggplot2::geom_text(ggplot2::aes(label = lab), data = overlap_labels, x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1) +
     ggplot2::scale_x_continuous(name = name_x, limits = limits_o) +
-    ggplot2::scale_y_continuous(name = name_y, expand = c(0,0))
+    ggplot2::scale_y_continuous(name = name_y, expand = c(0,0)) +
 
+    ###notes for me (isa) trying to add mean###
+    if (media==TRUE) {
+
+      ggplot2::geom_vline(data=taxon_mean, aes(xintercept=x,  colour=Group.1), size=0.5)}
+  #it is plotting for all species, but I want only for the species in each siite
 }
