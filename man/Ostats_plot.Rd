@@ -12,6 +12,7 @@ Ostats_plot(
   overlap_dat,
   sites2use = NULL,
   n_col = 3,
+  scale_o = NULL,
   colorvalues = NULL,
   alpha_o = 0.5,
   adjust_o = 2,
@@ -43,13 +44,15 @@ traits,its species identity, and the community identity it belongs to.}
 
 \item{adjust_o}{multiplicate the bandwidth adjustment of the density polygons. The less, the tiny your density polygons will be. Default is 2.}
 
-\item{limits_o}{the limits (min and max values) of the x axis. Default is \code{c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE))}}
-
 \item{name_x}{a character indicating the name of your x axis (i.e. the name of your trait). Default is 'Trait value'}
 
 \item{name_y}{a character indicating the name of your y axis. Default is 'Probability Density'}
 
 \item{media}{if TRUE it plot traits media for each species. Default is FALSE.}
+
+\item{limits_xo}{the limits (min and max values) of the x axis. Default is \code{c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE))}}
+
+\item{scale_yo}{If you want the scale of y axis to be adjusted according to each site density probability set the argument to "free_y". Default=NULL.}
 }
 \value{
 Density plots of species trait distribution plotted on the same graph

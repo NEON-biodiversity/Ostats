@@ -14,7 +14,8 @@
 #'@param colorvalues Vector of color values for the density polygons. Defaults to a viridis palette if none provided.
 #'@param alpha_o defines the colors trasparency level for the density polygons. Default is 0.5
 #'@param adjust_o multiplicate the bandwidth adjustment of the density polygons. The less, the tiny your density polygons will be. Default is 2.
-#'@param limits_o the limits (min and max values) of the x axis. Default is \code{c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE))}
+#'@param limits_xo the limits (min and max values) of the x axis. Default is \code{c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE))}
+#'@param scale_yo If you want the scale of y axis to be adjusted according to each site density probability set the argument to "free_y". Default=NULL.
 #'@param name_x a character indicating the name of your x axis (i.e. the name of your trait). Default is 'Trait value'
 #'@param name_y a character indicating the name of your y axis. Default is 'Probability Density'
 #'@param media if TRUE it plot traits media for each species. Default is FALSE.
@@ -34,7 +35,7 @@
 
 #'@export
 #'
-Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use = NULL, n_col = 3, colorvalues = NULL, alpha_o = 0.5, adjust_o = 2, limits_o =c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE)), name_x = 'Trait value', name_y = 'Probability Density', media=FALSE ) {
+Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use = NULL, n_col = 3, scale_o=NULL, colorvalues = NULL, alpha_o = 0.5, adjust_o = 2, limits_o =c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE)), name_x = 'Trait value', name_y = 'Probability Density', media=FALSE ) {
 
   # Unless a subset of sites is provided, use all sites in dataset.
   if (is.null(sites2use)) {
@@ -80,7 +81,7 @@ Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use 
   ggplot2::ggplot(indiv_dat) +
     ggplot2::stat_density(adjust = adjust_o, ggplot2::aes(x = trait, group = taxonID, fill = taxonID), alpha = alpha_o, geom='polygon', position = 'identity') +
 
-    ggplot2::facet_wrap(~ siteID, ncol = n_col) +
+    ggplot2::facet_wrap(~ siteID, ncol = n_col, scales = scale_yo) +
     ggplot2::scale_fill_manual(values = colorvalues) +
     ggplot2::geom_text(ggplot2::aes(label = lab), data = overlap_labels, x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1) +
     ggplot2::scale_x_continuous(name = name_x, limits = limits_o) +
