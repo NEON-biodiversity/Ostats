@@ -62,8 +62,6 @@ Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use 
     # notes to isa: NEED TO IMPROVE - I want to know in wich local species occured, so I can plot in each site only the species that occur in that site
   }
 
-
-
   ggplot2::theme_set(
     ggplot2::theme_bw() + ggplot2::theme(panel.grid = ggplot2::element_blank(),
                                          axis.text = ggplot2::element_text(size = 12),
