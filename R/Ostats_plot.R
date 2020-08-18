@@ -26,21 +26,12 @@
 #'
 #'@examples
 #'library(tidyverse)
-#'library(ggplot2)
-#'library(dplyr)
+#'library(Ostats)
 #'
-#'overlap_dat <- Ostats_example #your results from the Ostat function - see \code{\link{Ostats}}
 #'indiv_dat <- read_csv('https://ndownloader.figshare.com/files/9167548', col_names = T)
-#'siteID <- indiv_dat$siteID
-#'taxonID <- indiv_dat$taxonID
-#'trait <- indiv_dat$logweight
-#'#to plot only selected sites:
-#'sites2use<- c('BART','KONZ','JORN') #used in the example
 #'
-#'#to plot all sites:
-#'sites2use<- NULL
+#'Ostats_plot(indiv_dat = indiv_dat, siteID = indiv_dat$siteID, taxonID = indiv_dat$taxonID, trait = indiv_dat$logweight, overlap_dat = Ostats_example, sites2use = c('HARV','JORN'))
 
-#'Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat, sites2use = sites2use)
 #'@export
 #'
 Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use = NULL, n_col = 3, colorvalues = NULL, alpha_o = 0.5, adjust_o = 2, limits_o =c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE)), name_x = 'Trait value', name_y = 'Probability Density', media=FALSE ) {

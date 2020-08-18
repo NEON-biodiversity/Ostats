@@ -21,7 +21,7 @@
 #'   generating null models.
 #' @param circular_args optional list of additional arguments to pass to
 #'  \code{\link[circular]{circular}}. Only used if the data type is "circular".
-#' @param ... additional arguments to pass to \code{\link[stats]{density}}, such as
+#' @param density_args additional arguments to pass to \code{\link[stats]{density}}, such as
 #' \code{bw}, \code{n}, or \code{adjust}. If none are provided, default values
 #' are used.
 #'
@@ -90,21 +90,23 @@
 #'   slice(1)
 #'
 #' #Run O-stats on the data with nperm = 2 (do not bother with null models)
-#' Ostats_example <- Ostats(traits = as.matrix(dat$log_weight),
+#' Ostats_example <- Ostats(traits = as.matrix(dat[,'log_weight']),
 #'                    sp = factor(dat$taxonID), data_type = "linear",
 #'                    plots = factor(dat$siteID),
 #'                    nperm = 2)
 #' @export
 #'
 #'
-Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", weight_type= "hmean", nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE, circular_args = list(), ...) {
+Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", weight_type= "hmean", nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE, circular_args = list(), density_args = list()) {
   # Required input: a matrix called traits (nrows=n individuals, ncols=n traits),
   # a vector called plots which is a factor with length equal to nrow(traits),
   # a vector called sp which is a factor with length equal to nrow(traits),
 
-  # Collect arguments to density()
-  density_args <- list(...)
-
+  # warning and error messages to check the inputs
+  #if (ncol(traits) > 1) {stop("the function does not support calculation for multiple traits")}
+  #if (is.numeric(traits) == FALSE) {stop("the function only evaluates numerical data")}
+  #if (length(unique(plots) == 1) {warning("only one community is evaluated")}
+  #if (length(unique(sp)) == 1) {warning("only one taxon is present")}
   # Declaration of data structures to hold the results
 
   # Data structures for observed O-Stats
@@ -132,6 +134,7 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
       overlaps_unnorm[s, t] <- if (inherits(overlap_unnorm_st, 'try-error')) NA else overlap_unnorm_st
     }
     setTxtProgressBar(pb, s)
+    #if (length(unique(sp)) == 1) {warning(paste("only one taxon is present for the community", plots[i], sep = " ")}
   }
 
   close(pb)
@@ -199,7 +202,7 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
 #' @param nperm the number of permutations to generate a null model.
 #' @param nullqs numeric vector of probabilities with values in [0,1] to set
 #'   effect size quantiles.
-#' @param ... additional arguments to pass to \code{\link[stats]{density}}, such
+#' @param density_args additional arguments to pass to \code{\link[stats]{density}}, such
 #'   as \code{bw}, \code{n}, or \code{adjust}. If none are provided, default
 #'   values are used.
 #'
@@ -258,9 +261,7 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
 #'                                      nperm = 2)
 #'
 #' @export
-Ostats_regional <-function(traits, plots, sp, reg_pool_traits, reg_pool_sp, nperm = 99, nullqs = c(0.025, 0.975), ...) {
-  # Collect arguments to density()
-  density_args <- list(...)
+Ostats_regional <-function(traits, plots, sp, reg_pool_traits, reg_pool_sp, nperm = 99, nullqs = c(0.025, 0.975), density_args = list()) {
 
   # Declaration of data structures to hold the results
 
