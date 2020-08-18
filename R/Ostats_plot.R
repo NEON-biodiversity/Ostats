@@ -17,7 +17,7 @@
 #'@param limits_o the limits (min and max values) of the x axis. Default is \code{c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE))}
 #'@param name_x a character indicating the name of your x axis (i.e. the name of your trait). Default is 'Trait value'
 #'@param name_y a character indicating the name of your y axis. Default is 'Probability Density'
-#'@param media if TRUE it plots the trait media for each species. Default is FALSE.
+#'@param media if TRUE it plot traits media for each species. Default is FALSE.
 #'@return Density plots of species trait distribution plotted on the same graph
 #'  for each community to show how they overlap each other. The overlap value obtained as output from the function \code{\link{Ostats}}, is labelled on each community graph.
 #'

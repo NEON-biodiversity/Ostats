@@ -49,7 +49,7 @@ traits,its species identity, and the community identity it belongs to.}
 
 \item{name_y}{a character indicating the name of your y axis. Default is 'Probability Density'}
 
-\item{media}{if TRUE it plots the trait media for each species. Default is FALSE.}
+\item{media}{if TRUE it plot traits media for each species. Default is FALSE.}
 }
 \value{
 Density plots of species trait distribution plotted on the same graph
