@@ -12,7 +12,7 @@ Ostats_plot(
   overlap_dat,
   sites2use = NULL,
   n_col = 3,
-  scale_yo = NULL,
+  scale_o = NULL,
   colorvalues = NULL,
   alpha_o = 0.5,
   adjust_o = 2,
@@ -38,7 +38,7 @@ traits,its species identity, and the community identity it belongs to.}
 
 \item{n_col}{Number of columns for layout of individual panels. Default is 3.}
 
-\item{scale_yo}{If you want the scale of y axis to be adjusted according to each site density probability set the argument to "free_y". Default=NULL.}
+\item{scale_o}{If you want the scale of x, y or both x and y axis to be adjusted according to each site density probability set the argument to "free_x", "free_y" or "free" respectively. Default=NULL which makes the sites' density probability to be proportional and so, comparable.}
 
 \item{colorvalues}{Vector of color values for the density polygons. Defaults to a viridis palette if none provided.}
 
