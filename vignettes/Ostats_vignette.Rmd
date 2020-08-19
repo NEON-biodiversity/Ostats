@@ -1,17 +1,21 @@
 ---
-title: "Ostats Vignette"
-output: rmarkdown::html_vignette
+title: "Ostats"
+author: 'Quentin Read, Arya Yue, Isadora Essig Fluck, Ben Baiser, Sydne Record'
+date: '`r Sys.Date()`'
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{Ostats Vignette}
+  %\VignetteIndexEntry{Ostats}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
 # Overview
 
-Intraspecific trait variation (ITV), or trait variation within a species, has gained more attention in the field of ecology, especially in community ecology. It reflects difference and diversity within a species on which natural selection acts, thus has been incorporated into ecological models and used to test ecological theories. (Read et al., 2018; Violle et al., 2012)
+The study of functional traits in ecology enables a greater understanding of the mechanisms underlying patterns of biodiversity. While trait-based research has traditionally focused on mean trait values for a species, there is growing awareness of the need to pay greater attention to intraspecific trait variation (ITV; Violle et al. 2012). From an evolutionary standpoint, ITV is important because it reflects differences within a species on which natural selection acts, and ecologically these differences within and among species in traits give rise to differences in species interactions (Bolnick et al. 2011, Read et al. 2018).
 
-When intraspecific trait variation is taken into account, trait for each species needs to be portrayed as a distribution rather than a single mean value. Therefore, the package Ostats was developed to better understand the overlaps of trait distributions among species living in the same community, which inturn can provide us with insights on mechanisms of ecology and biodiversity.Functions in this package can be used to assess the level of species trait overlap and compare across communities. Effect size statistics can also be calculated against local or regional null models.
+When ITV is taken into account, trait values of individuals of each species may be portrayed as a distribution rather than as a single mean value. The degree of trait similarity between species can be measured as the amount of overlap in trait space between all species pairs in a community. The Ostats package Ostats was developed to better understand the overlaps of trait distributions among species living in the same community, which inturn can provide us with insights on mechanisms of ecology and biodiversity. Functions in this package can be used to assess the level of species trait overlap and compare across communities. Effect size statistics can also be calculated against local or regional null models.
 
 ***
 
@@ -243,9 +247,9 @@ Overlap_dat is the output of Ostats function for the same data. It is used to la
 ```{r}
 # example using the NEON small mammal dataset and Ostats_example
 
-indiv_dat <- read_csv('https://ndownloader.figshare.com/files/9167548', col_names = T)
+#indiv_dat <- read_csv('https://ndownloader.figshare.com/files/9167548', col_names = T)
 
-Ostats_plot(indiv_dat = indiv_dat, siteID = indiv_dat$siteID, taxonID = indiv_dat$taxonID, trait = indiv_dat$logweight, overlap_dat = Ostats_example, sites2use = c('HARV','JORN'),adjust_o = 1.5, name_x = 'Body Weight (log-transformed)')
+#Ostats_plot(indiv_dat = indiv_dat, siteID = indiv_dat$siteID, taxonID = indiv_dat$taxonID, trait = indiv_dat$logweight, overlap_dat = Ostats_example, sites2use = c('HARV','JORN'),adjust_o = 1.5, name_x = 'Body Weight (log-transformed)')
 
 ```
 
