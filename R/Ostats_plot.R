@@ -35,7 +35,7 @@
 
 #'@export
 #'
-Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use = NULL, n_col = 3, scale_o=NULL, colorvalues = NULL, alpha_o = 0.5, adjust_o = 2, limits_o =c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE)), name_x = 'Trait value', name_y = 'Probability Density', media=FALSE ) {
+Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use = NULL, n_col = 3, scale_yo=NULL, colorvalues = NULL, alpha_o = 0.5, adjust_o = 2, limits_xo =c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE)), name_x = 'Trait value', name_y = 'Probability Density', media=FALSE) {
 
   # Unless a subset of sites is provided, use all sites in dataset.
   if (is.null(sites2use)) {
@@ -60,8 +60,19 @@ Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use 
     teble_trait_taxon<-data.frame(trait, taxonID, siteID)#organize data #traits were already filtred per local
     teble_trait_taxon<-na.omit(teble_trait_taxon) #remove rows with NA
     taxon_mean<-aggregate(teble_trait_taxon[,1], list(teble_trait_taxon[,2]), mean)
-    # notes to isa: NEED TO IMPROVE - I want to know in wich local species occured, so I can plot in each site only the species that occur in that site
+
+    #make a column with repeted means for each specie
+    all<-cbind(teble_trait_taxon, teble_trait_taxon[,2])
+    for(i in 1:23){
+      name<-unique(all[,4])[i]
+      T_F<-taxon_mean[,1]==name
+      mean_name<-taxon_mean[,2][T_F]
+      all[,4]<-gsub(name, mean_name, all[,4])
+    }
+    names(all)[names(all) == "teble_trait_taxon[, 2]"] <- "means"
+
   }
+
 
   ggplot2::theme_set(
     ggplot2::theme_bw() + ggplot2::theme(panel.grid = ggplot2::element_blank(),
@@ -84,12 +95,9 @@ Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use 
     ggplot2::facet_wrap(~ siteID, ncol = n_col, scales = scale_yo) +
     ggplot2::scale_fill_manual(values = colorvalues) +
     ggplot2::geom_text(ggplot2::aes(label = lab), data = overlap_labels, x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1) +
-    ggplot2::scale_x_continuous(name = name_x, limits = limits_o) +
-    ggplot2::scale_y_continuous(name = name_y, expand = c(0,0)) +
-
-    ###notes for me (isa) trying to add mean###
+    ggplot2::scale_x_continuous(name = name_x, limits = limits_xo) +
+    ggplot2::scale_y_continuous(name = name_y, expand = c(0,0))+
     if (media==TRUE) {
+      ggplot2::geom_vline(data=all, aes(xintercept=as.numeric(means),  colour=taxonID, group=taxonID), size=0.5)}
 
-      ggplot2::geom_vline(data=taxon_mean, aes(xintercept=x,  colour=Group.1), size=0.5)}
-  #it is plotting for all species, but I want only for the species in each siite
 }
