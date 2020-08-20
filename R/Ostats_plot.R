@@ -18,7 +18,7 @@
 #'@param scale_o If you want the scale of x, y or both x and y axis to be adjusted according to each site density probability set the argument to "free_x", "free_y" or "free" respectively. Default=NULL which makes the sites' density probability to be proportional and so, comparable.
 #'@param name_x a character indicating the name of your x axis (i.e. the name of your trait). Default is 'Trait value'
 #'@param name_y a character indicating the name of your y axis. Default is 'Probability Density'
-#'@param media if TRUE it plot traits media for each species. Default is FALSE.
+#'@param media if TRUE it plot traits media for each species in an additionlan plot column next to the traits distribution plots for each site. Default is FALSE, which make the function plot only the traits distribution for each site.
 #'@return Density plots of species trait distribution plotted on the same graph
 #'  for each community to show how they overlap each other. The overlap value obtained as output from the function \code{\link{Ostats}}, is labelled on each community graph.
 #'
@@ -35,30 +35,33 @@
 
 #'@export
 #'
-Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use = NULL, n_col = 3, scale_o=NULL, colorvalues = NULL, alpha_o = 0.5, adjust_o = 2, limits_xo =c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE)), name_x = 'Trait value', name_y = 'Probability Density', media=FALSE) {
+Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use = NULL, n_col=3, scale_o=NULL, colorvalues = NULL, alpha_o = 0.5, adjust_o = 2, limits_xo =c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE)), name_x = 'Trait value', name_y = 'Probability Density', media=FALSE) {
+
+
 
   # Unless a subset of sites is provided, use all sites in dataset.
   if (is.null(sites2use)) {
     sites2use <- unique(indiv_dat$siteID)
   }
 
+  #filter ostats results
   ostat_norm<-overlap_dat$overlaps_norm
   ostat_norm <- subset(ostat_norm, rownames(ostat_norm) %in% sites2use)
+
+  #filter only for sites2use
   trait <- subset(trait, siteID %in% sites2use)
   indiv_dat <- subset(indiv_dat, siteID %in% sites2use)
+  taxonID<-subset(taxonID, siteID %in% sites2use) #filter the taxons in the sites2use
+  siteID<-subset(siteID, siteID %in% sites2use)
 
-  # If a color vector is not provided, create a default palette.
-  if (is.null(colorvalues)) {
-    colorvalues <- sample(hcl.colors(10, palette = 'viridis'), size = length(unique(taxonID)), replace = TRUE)
-  }
+  #organize data in a table
+  teble_trait_taxon<-data.frame(trait, taxonID, siteID)
+  teble_trait_taxon<-na.omit(teble_trait_taxon) #remove rows with NA
+
 
   # If the user want to plot the trait media.
   if(media==TRUE){
     #values per species
-    taxonID<-subset(taxonID, siteID %in% sites2use) #filter the taxons in the sites2use
-    siteID<-subset(siteID, siteID %in% sites2use)
-    teble_trait_taxon<-data.frame(trait, taxonID, siteID)#organize data #traits were already filtred per local
-    teble_trait_taxon<-na.omit(teble_trait_taxon) #remove rows with NA
     taxon_mean<-aggregate(teble_trait_taxon[,1], list(teble_trait_taxon[,2]), mean)
 
     #make a column with repeted means for each specie
@@ -71,8 +74,16 @@ Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use 
     }
     names(all)[names(all) == "teble_trait_taxon[, 2]"] <- "means"
 
+
   }
 
+
+
+
+  # If a color vector is not provided, create a default palette.
+  if (is.null(colorvalues)) {
+    colorvalues <- sample(hcl.colors(10, palette = 'viridis'), size = length(unique(taxonID)), replace = TRUE)
+  }
 
   ggplot2::theme_set(
     ggplot2::theme_bw() + ggplot2::theme(panel.grid = ggplot2::element_blank(),
@@ -89,15 +100,40 @@ Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use 
   indiv_dat$siteID <- factor(indiv_dat$siteID)
 
 
-  ggplot2::ggplot(indiv_dat) +
-    ggplot2::stat_density(adjust = adjust_o, ggplot2::aes(x = trait, group = taxonID, fill = taxonID), alpha = alpha_o, geom='polygon', position = 'identity') +
-
-    ggplot2::facet_wrap(~ siteID, ncol = n_col, scales = scale_o) +
+  ggplot_dist<-ggplot2::ggplot(all) +
+    ggplot2::stat_density(adjust = adjust_o, ggplot2::aes(x = trait, group = taxonID, fill=taxonID), alpha = alpha_o, geom='polygon', position = 'identity') +
+    ggplot2::facet_wrap(~ siteID, ncol=n_col, nrow = length(sites2use), scales = scale_o) +
     ggplot2::scale_fill_manual(values = colorvalues) +
     ggplot2::geom_text(ggplot2::aes(label = lab), data = overlap_labels, x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1) +
     ggplot2::scale_x_continuous(name = name_x, limits = limits_xo) +
-    ggplot2::scale_y_continuous(name = name_y, expand = c(0,0))+
-    if (media==TRUE) {
-      ggplot2::geom_vline(data=all, ggplot2::aes(xintercept=as.numeric(means),  colour=taxonID, group=taxonID), size=0.5)}
+    ggplot2::scale_y_continuous(name = name_y, expand = c(0,0))
 
+
+
+
+
+
+  if (media==TRUE) {
+    ggplot_means<-ggplot2::ggplot(all)+
+      ggplot2::geom_vline(data=all, ggplot2::aes(xintercept=as.numeric(means),  colour=taxonID,  group=taxonID, alpha = alpha_o), size=0.5)+
+      ggplot2::facet_wrap(~ siteID, ncol=n_col ,nrow = length(sites2use), scales = scale_o) +
+      ggplot2::scale_fill_manual(values = colorvalues) +
+      ggplot2::geom_text(ggplot2::aes(label = lab), data = overlap_labels, x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1) +
+      ggplot2::scale_x_continuous(name = name_x, limits = limits_xo) +
+      ggplot2::scale_y_continuous(name = name_y, expand = c(0,0))
+
+
+  }
+
+
+  #final
+
+  if (media==TRUE){
+    gridExtra::grid.arrange(ggplot_dist, ggplot_means, ncol=2)
+
+  } else {
+
+    ggplot_dist
+
+  }
 }
