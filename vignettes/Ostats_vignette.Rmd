@@ -1,6 +1,6 @@
 ---
 title: "Ostats"
-author: 'Quentin Read, Arya Yue, Isadora Essig Fluck, Ben Baiser, Sydne Record'
+author: 'Arya Yue, Quentin Read, Isadora Essig Fluck, Ben Baiser, Sydne Record'
 date: '`r Sys.Date()`'
 output:
   rmarkdown::html_vignette:
@@ -13,45 +13,47 @@ vignette: >
 ---
 # Overview
 
-The study of functional traits in ecology enables a greater understanding of the mechanisms underlying patterns of biodiversity. While trait-based research has traditionally focused on mean trait values for a species, there is growing awareness of the need to pay greater attention to intraspecific trait variation (ITV; Violle et al. 2012). From an evolutionary standpoint, ITV is important because it reflects differences within a species on which natural selection acts, and ecologically these differences within and among species in traits give rise to differences in species interactions (Bolnick et al. 2011, Read et al. 2018).
+The study of functional traits in ecology enables a greater understanding of the mechanisms underlying patterns of biodiversity. While trait-based research has traditionally focused on mean trait values for a species, there is growing awareness of the need to pay greater attention to intraspecific trait variation (ITV; Violle et al. 2012). From an evolutionary standpoint, ITV is important because it reflects differences within a species on which natural selection acts, and ecologically these differences within and among species in traits may give rise to differences in species interactions (Bolnick et al. 2011, Read et al. 2018).
 
-When ITV is taken into account, trait values of individuals of each species may be portrayed as a distribution rather than as a single mean value. The degree of trait similarity between species can be measured as the amount of overlap in trait space between all species pairs in a community. The Ostats package Ostats was developed to better understand the overlaps of trait distributions among species living in the same community, which inturn can provide us with insights on mechanisms of ecology and biodiversity. Functions in this package can be used to assess the level of species trait overlap and compare across communities. Effect size statistics can also be calculated against local or regional null models.
+When ITV is taken into account, trait values of individuals of each species may be portrayed as a distribution rather than as a single mean value. The degree of trait similarity between species can be measured as the amount of overlap in trait space between all species pairs in a community. Lower overlap indicates greater trait partitioning between pairs of species in a community. The Ostats package calculates a statistic to measure the degree of community-level trait overlap by fitting nonparametric kernel density functions to each species’ trait distribution
+and calculating their areas of overlap (Mouillot et al. 2005, Geange et al. 2011, Read et al. 2018). The median pairwise overlap for a community is calculated by first determining the overlap of each species pair in trait space, and then taking the median overlap of each species pair in a community. Functions in this package can be used to assess the level of species trait overlap and compare across communities. Effect size statistics can also be calculated against local or regional null models.
 
 ***
 
 The Ostats package consists of 10 functions in total. Some of the most common ways to use them are:
 
-  * Calculating overlap statistics against a local null model using *Ostats*, which depends on *community_overlap_merged*, which calculates a community overlap value using one of the three pairwise overlap functions, and *get_ses*. *Ostats* is capable of processing both linear and circular (time, angles, etc) data.
+  * Calculating overlap statistics against a local null model using *Ostats*. This task depends on *community_overlap_merged*, which calculates a community overlap value using one of the three pairwise overlap functions, and *get_ses*. *Ostats* is capable of processing both linear (e.g., body size) and circular (e.g., time, angles) data.
 
   * *Ostat2longform* converts the output of *Ostats* to a table in long form.
 
-  * Calculating overlap statistics against a regional null model when there is a regional dataset available, using *Ostats_regional* which depends on *pairwise_overlap* and *get_ses*. 
+  * Calculating overlap statistics against a regional species pool null model when there is a regional species pool dataset available, using *Ostats_regional* which depends on *pairwise_overlap* and *get_ses*. 
 
   * The plotting function *Ostats_plot* is used to produce a visual display of species trait overlap in each community. 
 
-  * *community_overlap_noitv* calculates a value for each community that reflects pairwise distances using means of traits for each species, not taking intraspecific variation into account.
+  * *community_overlap_noitv* calculates a value for each community that reflects pairwise distances using means of traits for each species, not taking ITV into account.
 
-# Step-by-step Tutorials
+# Step-by-step Examples
 
-## Overlap statistics for linear data against a local null model
+## Calculating the overlap statistics for linear data against a local null model
 
-The function *Ostats* is the primary function in this package.This function first generates density estimates for species trait distributions and calculates the intersection of two density functions to produce pairwise overlap values using *pairwise_overlap*, then evaluates a community overlap value from the pairwise overlap values of all species pairs in the community using *community_overlap_merged*, and lastly compares the community overlap value to a null model to calculate effect size statistics.
+The function *Ostats* is the primary function in this package. This function first generates density estimates for species trait distributions and calculates the intersection of two density functions to produce pairwise overlap values using *pairwise_overlap*. *Ostats* then calculates a community overlap value from the pairwise overlap values of all species pairs in the community using *community_overlap_merged*. Following these steps, the *Ostats* function compares the community overlap value to a null model to calculate effect size statistics.
 
-The input of the function *Ostats* is taken from a dataset with a column for species identification, a column that indicates which community the individual belongs to, and a column with trait measurements, often log-transformed. 
 
-### An example using *Ostats* at default
+### An example using *Ostats* with default arguments
 
-A sample dataset is shown below, used to calculate the Overlap statistics for sites 'HARV' and 'JORN' from the National Ecological Observatory Network (NEON) (Read et al., 2018).
+The input of the function *Ostats* is taken from a dataset with a column for species identification, a column that indicates which community the individual belongs to, and a column with trait measurements, often log-transformed. The code chunk below generates an input dataset for Ostats, used to calculate the Overlap statistics for sites 'HARV' and 'JORN' from the National Ecological Observatory Network (NEON) (Read et al., 2018).  
+
 
 ```{r include=FALSE}
+# Load the Ostats and tidyverse packages. tidyverse will be used for data wrangling. 
 library(Ostats)
 library(tidyverse)
  
- # Load data from web archive
+ # Load data from Read et al. (2018) from Figshare web archive
  dat <- read_csv('https://ndownloader.figshare.com/files/9167548')
 
- # Keep only sites "HARV" and "JORN", and the relevant columns required by the function.
- # add a new column named "log_weight" to log-transform the measurements.
+ # Keep only sites "HARV" and "JORN" using the filter function, and select the relevant columns required  # by the function.
+ # Use the mutate function to add a new column named "log_weight" to log-transform the measurements.
 
  dat <- dat %>%
    filter(siteID %in% c('HARV','JORN')) %>%
@@ -71,8 +73,7 @@ The input dataset looks like this, arranged by siteID and taxonID:
  head(dat)
 ```
 
-The running of the function can take some time, depending on the size of the dataset and null model generation. A progress bar is provided to enable close monitoring.
-
+Running the function several minutes, depending on the size of the dataset and the null model generation. A progress bar is provided to help the user monitor the time til the function completes the job. Note that in the code chunk below, the 'traits' argument is defined as a matrix with one column and as many rows as there are individuals in the dataset. The 'sp' and 'plots' arguments are each vectors of length number of individuals in the dataset where all elements are specified as factors. Here since the data are body sizes as measured by mass in grams, the data are considered linear for the argument 'data_type.'
 
 ```{r echo = T, results='hide'}
  #Run O-stats on the data with everything at default
@@ -82,6 +83,8 @@ The running of the function can take some time, depending on the size of the dat
                     data_type = "linear")
 ```
 
+
+#####SYDNE STOPPED EDITING HERE
 
 ```{r}
 # the output of the function Ostats

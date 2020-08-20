@@ -97,8 +97,8 @@ community_overlap_merged <- function(traits, sp, data_type = "linear", normal = 
     }
   }
 
-  if (randomize_weights) abund_pairs <- sample(abund_pairs)
-
+  if (randomize_weights == TRUE){
+    abund_pairs <- sample(abund_pairs)}
   if (output == "median" && weight_type == "none"){
     final_output <- median(overlaps)}
   if (output == "median" && weight_type == "hmean"){
