@@ -1,6 +1,6 @@
 ---
 title: "Ostats"
-author: 'Quentin Read, Arya Yue, Isadora Essig Fluck, Ben Baiser, Sydne Record'
+author: 'Arya Yue, Quentin Read, Isadora Essig Fluck, Ben Baiser, Sydne Record'
 date: '`r Sys.Date()`'
 output:
   rmarkdown::html_vignette:
@@ -13,9 +13,10 @@ vignette: >
 ---
 # Overview
 
-The study of functional traits in ecology enables a greater understanding of the mechanisms underlying patterns of biodiversity. While trait-based research has traditionally focused on mean trait values for a species, there is growing awareness of the need to pay greater attention to intraspecific trait variation (ITV; Violle et al. 2012). From an evolutionary standpoint, ITV is important because it reflects differences within a species on which natural selection acts, and ecologically these differences within and among species in traits give rise to differences in species interactions (Bolnick et al. 2011, Read et al. 2018).
+The study of functional traits in ecology enables a greater understanding of the mechanisms underlying patterns of biodiversity. While trait-based research has traditionally focused on mean trait values for a species, there is growing awareness of the need to pay greater attention to intraspecific trait variation (ITV; Violle et al. 2012). From an evolutionary standpoint, ITV is important because it reflects differences within a species on which natural selection acts, and ecologically these differences within and among species in traits may give rise to differences in species interactions (Bolnick et al. 2011, Read et al. 2018).
 
-When ITV is taken into account, trait values of individuals of each species may be portrayed as a distribution rather than as a single mean value. The degree of trait similarity between species can be measured as the amount of overlap in trait space between all species pairs in a community. The Ostats package Ostats was developed to better understand the overlaps of trait distributions among species living in the same community, which inturn can provide us with insights on mechanisms of ecology and biodiversity. Functions in this package can be used to assess the level of species trait overlap and compare across communities. Effect size statistics can also be calculated against local or regional null models.
+When ITV is taken into account, trait values of individuals of each species may be portrayed as a distribution rather than as a single mean value. The degree of trait similarity between species can be measured as the amount of overlap in trait space between all species pairs in a community. Lower overlap indicates greater trait partitioning between pairs of species in a community. The Ostats package calculates a statistic to measure the degree of community-level trait overlap by fitting nonparametric kernel density functions to each species’ trait distribution
+and calculating their areas of overlap (Mouillot et al. 2005, Geange et al. 2011, Read et al. 2018). The median pairwise overlap for a community is calculated by first determining the overlap of each species pair in trait space, and then taking the median overlap of each species pair in a community. Functions in this package can be used to assess the level of species trait overlap and compare across communities. Effect size statistics can also be calculated against local or regional null models.
 
 ***
 
