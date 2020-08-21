@@ -149,9 +149,9 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
     setTxtProgressBar(pb, i)
     for (s in 1:nlevels(plots)) {
       for (t in 1:ncol(traits)) {
-        if (!shuffle_weights & !swap_means) overlap_norm_sti <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]), data_type=data_type, output = output, weight_type = weight_type, normal=TRUE, circular_args = circular_args, density_args = density_args), TRUE)
-        if (shuffle_weights) overlap_norm_sti <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type=data_type, output = output, weight_type = weight_type, normal=TRUE, randomize_weights = TRUE, circular_args = circular_args, density_args = density_args), TRUE)
-        if (swap_means) {
+        if (shuffle_weights == FALSE & swap_means = FALSE) overlap_norm_sti <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]), data_type=data_type, output = output, weight_type = weight_type, normal=TRUE, circular_args = circular_args, density_args = density_args), TRUE)
+        if (shuffle_weights == TRUE) overlap_norm_sti <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type=data_type, output = output, weight_type = weight_type, normal=TRUE, randomize_weights = TRUE, circular_args = circular_args, density_args = density_args), TRUE)
+        if (swap_means == TRUE) {
           traits_st <- traits[plots==levels(plots)[s], t]
           sp_st <- sp[plots==levels(plots)[s]]
 
@@ -399,9 +399,9 @@ Ostats_circular <- function(traits, plots, sp, nperm = 99, nullqs = c(0.025, 0.9
     setTxtProgressBar(pb, i)
     for (s in 1:nlevels(plots)) {
       for (t in 1:ncol(traits)) {
-        if (!shuffle_weights & !swap_means) overlap_norm_sti <- try(community_overlap_circular(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]), norm=TRUE), TRUE)
-        if (shuffle_weights) overlap_norm_sti <- try(community_overlap_circular(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], norm=TRUE, randomize_weights = TRUE), TRUE)
-        if (swap_means) {
+        if (shuffle_weights == FALSE & swap_means == FALSE) overlap_norm_sti <- try(community_overlap_circular(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]), norm=TRUE), TRUE)
+        if (shuffle_weights == TRUE) overlap_norm_sti <- try(community_overlap_circular(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], norm=TRUE, randomize_weights = TRUE), TRUE)
+        if (swap_means == TRUE) {
           traits_st <- traits[plots==levels(plots)[s], t]
           sp_st <- sp[plots==levels(plots)[s]]
 
