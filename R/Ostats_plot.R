@@ -56,13 +56,12 @@ Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use 
 
   #organize data in a table
   teble_trait_taxon<-data.frame(trait, taxonID, siteID)
-  teble_trait_taxon<-na.omit(teble_trait_taxon) #remove rows with NA
 
 
   # If the user want to plot the trait means.
   if(means_o==TRUE){
     #values per species
-    taxon_mean<-aggregate(teble_trait_taxon[,1], list(teble_trait_taxon[,2]), mean)
+    taxon_mean<-aggregate(teble_trait_taxon[,1], list(teble_trait_taxon[,2]), mean, na.rm = TRUE)
 
     #make a column with repeted means for each specie
     table_all<-cbind(teble_trait_taxon, teble_trait_taxon[,2])
@@ -117,7 +116,7 @@ Ostats_plot<-function(indiv_dat, siteID, taxonID, trait, overlap_dat, sites2use 
     ggplot_means<-ggplot2::ggplot(table_all)+
       ggplot2::geom_vline(data=table_all, ggplot2::aes(xintercept=as.numeric(means_o),  colour=taxonID,  group=taxonID, alpha = alpha_o), size=0.5)+
       ggplot2::facet_wrap(~ siteID, ncol=n_col ,nrow = length(sites2use), scales = scale_o) +
-      ggplot2::scale_fill_manual(values = colorvalues) +
+      ggplot2::scale_color_manual(values = colorvalues) +
       ggplot2::geom_text(ggplot2::aes(label = lab), data = overlap_labels, x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1) +
       ggplot2::scale_x_continuous(name = name_x, limits = limits_xo) +
       ggplot2::scale_y_continuous(name = name_y, expand = c(0,0))
