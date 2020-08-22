@@ -73,7 +73,7 @@ The input dataset looks like this, arranged by siteID and taxonID:
  head(dat)
 ```
 
-Running the function several minutes, depending on the size of the dataset and the null model generation. A progress bar is provided to help the user monitor the time til the function completes the job. Note that in the code chunk below, the 'traits' argument is defined as a matrix with one column and as many rows as there are individuals in the dataset. The 'sp' and 'plots' arguments are each vectors of length number of individuals in the dataset where all elements are specified as factors. Here since the data are body sizes as measured by mass in grams, the data are considered linear for the argument 'data_type.'
+Running the function may take several minutes, depending on the size of the dataset and the null model generation. A progress bar is provided to help the user monitor the time til the function completes the job. Note that in the code chunk below, the 'traits' argument is defined as a matrix with one column and as many rows as there are individuals in the dataset. The 'sp' and 'plots' arguments are each vectors of length number of individuals in the dataset where all elements are specified as factors. Here since the data are body sizes as measured by mass in grams, the data are considered linear for the argument 'data_type.'
 
 ```{r echo = T, results='hide'}
  #Run O-stats on the data with everything at default
