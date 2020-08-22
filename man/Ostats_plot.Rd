@@ -11,15 +11,15 @@ Ostats_plot(
   trait,
   overlap_dat,
   sites2use = NULL,
-  n_col = 3,
-  scale_o = "fixed",
+  n_col = 1,
+  scale = "fixed",
   colorvalues = NULL,
-  alpha_o = 0.5,
-  adjust_o = 2,
-  limits_xo = c(0.5 * min(trait, na.rm = TRUE), 1.5 * max(trait, na.rm = TRUE)),
+  alpha = 0.5,
+  adjust = 2,
+  limits_x = c(0.5 * min(trait, na.rm = TRUE), 1.5 * max(trait, na.rm = TRUE)),
   name_x = "Trait value",
   name_y = "Probability Density",
-  means_o = FALSE
+  means = FALSE
 )
 }
 \arguments{
@@ -36,23 +36,23 @@ traits,its species identity, and the community identity it belongs to.}
 
 \item{sites2use}{a vector that select the sites you want to plot. If NULL, the function will plot all the sites.}
 
-\item{n_col}{Number of columns for layout of individual panels. Default is 3.}
+\item{n_col}{Number of columns for layout of individual panels. Default is 1.}
 
-\item{scale_o}{If you want the scale of x, y or both x and y axis to be adjusted according to each site density probability set the argument to "free_x", "free_y" or "free" respectively. Default= "fixed" which uses the same scale across all sites.}
+\item{scale}{If you want the scale of x, y or both x and y axis to be adjusted according to each site density probability set the argument to "free_x", "free_y" or "free" respectively. Default= "fixed" which uses the same scale across all sites.}
 
 \item{colorvalues}{Vector of color values for the density polygons. Defaults to a viridis palette if none provided.}
 
-\item{alpha_o}{defines the colors trasparency level for the density polygons. Default is 0.5}
+\item{adjust}{multiplicate the bandwidth adjustment of the density polygons. The less, the tiny your density polygons will be. Default is 2.}
 
-\item{adjust_o}{multiplicate the bandwidth adjustment of the density polygons. The less, the tiny your density polygons will be. Default is 2.}
-
-\item{limits_xo}{the limits (min and max values) of the x axis. Default is \code{c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE))}}
+\item{limits_x}{the limits (min and max values) of the x axis. Default is \code{c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE))}}
 
 \item{name_x}{a character indicating the name of your x axis (i.e. the name of your trait). Default is 'Trait value'}
 
 \item{name_y}{a character indicating the name of your y axis. Default is 'Probability Density'}
 
-\item{means_o}{if TRUE it plot traits means for each species in an additionlan plot column next to the traits distribution plots for each site. Default is FALSE, which make the function plot only the traits distribution for each site.}
+\item{means}{if TRUE it plot traits means for each species in an additionlan plot column next to the traits distribution plots for each site. Default is FALSE, which make the function plot only the traits distribution for each site.}
+
+\item{alpha_o}{defines the colors trasparency level for the density polygons. Default is 0.5}
 }
 \value{
 Density plots of species trait distribution plotted on the same graph
