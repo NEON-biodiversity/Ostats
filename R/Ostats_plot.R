@@ -58,12 +58,10 @@ Ostats_plot<-function(indiv_dat,
     sites2use <- unique(indiv_dat$siteID)
   }
 
-
-  #filter ostats results
+  #filter only for sites2use
   ostat_norm<-overlap_dat$overlaps_norm
   ostat_norm <- subset(ostat_norm, rownames(ostat_norm) %in% sites2use)
 
-  #filter only for sites2use
   trait <- subset(trait, siteID %in% sites2use)
   indiv_dat <- subset(indiv_dat, siteID %in% sites2use)
   taxonID<-subset(taxonID, siteID %in% sites2use) #filter the taxons in the sites2use
@@ -71,7 +69,6 @@ Ostats_plot<-function(indiv_dat,
 
   #organize data in a table
   table_trait_taxon<-data.frame(trait, taxonID, siteID)
-
 
 
   # If the user want to plot the trait means.
@@ -97,6 +94,8 @@ Ostats_plot<-function(indiv_dat,
     colorvalues <- sample(hcl.colors(10, palette = 'viridis'), size = length(unique(table_all$taxonID)), replace = TRUE)
   }
 
+  names(colorvalues) <- unique(taxonID)
+
   ggplot2::theme_set(
     ggplot2::theme_bw() + ggplot2::theme(panel.grid = ggplot2::element_blank(),
                                          axis.text = ggplot2::element_text(size = 12),
@@ -108,9 +107,6 @@ Ostats_plot<-function(indiv_dat,
 
   overlap_labels <- data.frame(siteID = row.names(ostat_norm),
                                lab = paste('Overlap =', round(ostat_norm[,1], 2)))
-
-  indiv_dat$siteID <- factor(indiv_dat$siteID)
-
 
   ggplot_dist<-ggplot2::ggplot(table_all) +
     ggplot2::stat_density(adjust = adjust, ggplot2::aes(x = trait, group = taxonID, fill=taxonID), alpha = alpha, geom='polygon', position = 'identity') +
