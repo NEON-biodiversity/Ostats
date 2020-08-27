@@ -235,7 +235,7 @@ In this function, the area under all density functions are normalized to 1. In o
 
 Other arguments are similar in use to the same arguments in *Ostats*. The user can customize *nperm*, *nullqs*, and pass arguments to *density()* function in *pairwise_overlap*.
 
-Ostats_regional so far only supports linear data calculation..
+Ostats_regional so far only supports linear data calculation.
 
 ## Overlap plots
 
