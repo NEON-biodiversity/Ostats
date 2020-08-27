@@ -212,6 +212,7 @@ names(reg_pool_traits) <- c("HARV", "BART")
 names(reg_pool_sp) <- c("HARV", "BART")
 
 
+
  
 Ostats_reg_example <- Ostats_regional(traits = as.matrix(sites2019$log_weight),
                                       plots = factor(sites2019$siteID),
