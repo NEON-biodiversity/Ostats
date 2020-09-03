@@ -7,47 +7,52 @@
 circular_overlap_24hour(a, b, normal = TRUE)
 }
 \arguments{
-\item{a}{a vector dataset with nrows= n individuals, with a column containing
-one measurement of a certain trait.}
+\item{a}{A vector whose length equals the number of individuals within a community with entries containing
+one measurement per individual of a certain trait.}
 
-\item{b}{another matrix dataset with the same trait measurements to be compared
-against a.}
+\item{b}{Another vector whose length equals the number of individuals within a community with entries containing the same trait measurements per individual to be compared against a.}
 
-\item{normal}{if TRUE, the area under all density functions is normalized to 1, if FALSE,
-the area under all density functions is proportional to the number of observations in
-that group.}
+\item{normal}{If set to TRUE, then the area under all density functions is normalized to one. If set to FALSE,
+then the area under all density functions is proportional to the number of observations in that group.}
 }
 \value{
-The funtion returns a vector of three values:
-\item{overlap_average}{the average overlap of a and b, calculated by the overlap
-area *2 divided by the sum of areas under the two functions.}
-\item{overlap_a}{the proportion of a that overlaps with b, calculated by the overlap
-area divided by area under the function generated from a.}
-\item{overlap_b}{the proportion of b that overlaps with a, calculated by the overlap
-area diveided by area under the function generated from b.}
+The function returns a vector of three values:
+\item{overlap_average}{The average overlap of a and b, calculated by the overlap
+area *2 divided by the sum of the areas under the two functions.}
+\item{overlap_a}{The proportion of a that overlaps with b, calculated by the overlap
+area divided by the area under the function generated from a.}
+\item{overlap_b}{The proportion of b that overlaps with a, calculated by the overlap
+area divided by the area under the function generated from b.}
 }
 \description{
-This function calculates circular overlap based on discrete hourly observations from
-0 to 23.
+This function calculates circular overlap based on discrete hourly observations from hours
+0 to 23 (24 hours per day).
 }
 \details{
-This function works for discrete data collected on the hour.Data is converted
-to a factor with levels(0:23). It then by manually calculates the density by taking
-the proportion of each hour. Intersection density function is then calculated by
+This function analyzes discrete data collected on the hour. Data are converted
+to a factor with levels(0:23). The function then by manually calculates the density by taking
+the proportion of each hour. The intersection density function is then calculated by
 taking the integral of the minimum of the two functions, from which the overlap
 outputs are calculated.
 }
 \examples{
+# Load dplyr library to subset ant_data.
 library(dplyr)
+
+# Vector a will represent all ant_data from experimental chamber 1.
 a <- filter(ant_data, chamber == 1)
+
+# Vector b will represent all ant_data from experimental chamber 2.
 b <- filter(ant_data, chamber == 2)
+
+# Calculate the circular overlap between vectors a and b.
 circular_overlap_24hour(a$time,b$time)
 
 }
 \seealso{
-\code{\link{pairwise_overlap}} to calculate linear overlap between two empirical
+\code{\link{pairwise_overlap}} To calculate the linear overlap between two empirical
 density estimates.
 
-\code{\link{circular_overlap}} to calculate continous circular overlap between
+\code{\link{circular_overlap}} To calculate continous circular overlap between
 two empirical density estimates.
 }

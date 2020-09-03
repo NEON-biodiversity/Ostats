@@ -14,10 +14,9 @@ circular_overlap(
 )
 }
 \arguments{
-\item{a}{A vector dataset with nrows equal to the number of n individuals in a community, with a column containing
-one measurement of a certain trait.}
+\item{a}{A vector of length whose length equals the number of individuals in a community, with a column containing one measurement of a certain trait.}
 
-\item{b}{Another vector dataset with nrows equal to the number of n individuals in a community with the same trait measurements to be compared against a.}
+\item{b}{Another vector whose length equals the number of individuals in a community with the same trait measurements to be compared against a.}
 
 \item{circular_units}{Units of the cicular measurement. Passed to \code{\link[circular]{circular}}.
 Defaults to \code{"radians"}.}
@@ -56,9 +55,13 @@ for the circular conversion.
 }
 \examples{
 # circular overlap of two random uniform vectors of radian angles
-
+# Create a vector x of length 100 (n=100) with rando values pulled from a uniform distribution with a lower limit of zero and an upper limit of pi*3/2.
 x <- runif(n = 100, min = 0, max = pi*3/2)
+
+# Create a vector y of length 100 (n=100) with rando values pulled from a uniform distribution with a lower limit of pi and an upper limit of 2*pi.
 y <- runif(n = 100, min = pi, max = 2*pi)
+
+# Calculate the circular overlap of vectors x and y using units of radians with a density bandwidth of one.
 circular_overlap(x, y, circular_units = "radians", density_args = list(bw = 1))
 
 }
