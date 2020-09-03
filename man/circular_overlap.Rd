@@ -14,46 +14,44 @@ circular_overlap(
 )
 }
 \arguments{
-\item{a}{a vector dataset with nrows= n individuals, with a column containing
+\item{a}{A vector dataset with nrows equal to the number of n individuals in a community, with a column containing
 one measurement of a certain trait.}
 
-\item{b}{another vector dataset with the same trait measurements to be compared
-against a.}
+\item{b}{Another vector dataset with nrows equal to the number of n individuals in a community with the same trait measurements to be compared against a.}
 
-\item{circular_units}{units of the measures. Passed to \code{\link[circular]{circular}}.
+\item{circular_units}{Units of the cicular measurement. Passed to \code{\link[circular]{circular}}.
 Defaults to \code{"radians"}.}
 
-\item{normal}{if TRUE, the area under all density functions is normalized to 1,
-if FALSE, the area under all density functions is proportional to the number of
+\item{normal}{If set to TRUE, the area under all density functions is normalized to one.
+If set to FALSE, the area under all density functions is proportional to the number of
 observations in that group.}
 
-\item{circular_args}{list of additional arguments to be passed to
+\item{circular_args}{A list of additional arguments to be passed to
 \code{\link[circular]{circular}}.}
 
-\item{density_args}{list of additional arguments to be passed to
+\item{density_args}{A list of additional arguments to be passed to
 \code{\link[circular]{density.circular}}.}
 }
 \value{
 The function returns a vector of three values:
-\item{overlap_average}{the average overlap of a and b, calculated by the overlap
-area *2 divided by the sum of areas under the two functions.}
-\item{overlap_a}{the proportion of a that overlaps with b, calculated by the overlap
-area divided by area under the function generated from a.}
-\item{overlap_b}{the proportion of b that overlaps with a, calculated by the overlap
-area divided by area under the function generated from b.}
+\item{overlap_average}{The average overlap of vectors a and b, calculated by the overlap
+area *2 divided by the sum of areas under the two density functions.}
+\item{overlap_a}{The proportion of vector a traits that overlap with vector b traits, calculated by the overlap
+area divided by the area under the density function generated from a.}
+\item{overlap_b}{The proportion of vector b traits that overlaps with vector a traits, calculated by the overlap
+area divided by the area under the density function generated from b.}
 }
 \description{
-This function converts input vectors to circular objects, generates kernel
-density estimates to calculate the area of overlap between the two
-distributions.
+This function converts input vectors of individual traits to circular objects and generates kernel
+density estimates to calculate the area of overlap between the two trait distributions.
 }
 \details{
 Circular conversion is carried out by using the function \code{\link[circular]{circular}}.
 Kernel density estimates are then generated. Additional options for kernel density
 estimation should be passed to \code{density_args}; otherwise, default values are used.
-Intersection density function is then calculated by taking the integral of
+The intersection density function is then calculated by taking the integral of
 the minimum of the two functions, from which the overlap outputs are calculated. The
-user must specify the bandwidth for the kernel density estimates as well as options
+user must specify the bandwidth for the kernel density estimates, as well as options
 for the circular conversion.
 }
 \examples{
@@ -65,9 +63,9 @@ circular_overlap(x, y, circular_units = "radians", density_args = list(bw = 1))
 
 }
 \seealso{
-\code{\link{pairwise_overlap}} to calculate linear overlap between two empirical
+\code{\link{pairwise_overlap}} To calculate linear overlap between two empirical
 density estimates.
 
-\code{\link{circular_overlap_24hour}} to calculate overlap for discrete hourly
+\code{\link{circular_overlap_24hour}} To calculate overlap for discrete hourly
 data.
 }
