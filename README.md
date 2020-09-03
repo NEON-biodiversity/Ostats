@@ -5,10 +5,12 @@ This is an R package with code needed to calculate O-statistics. This descriptio
 ## Authors
 
 * Quentin D. Read, SESYNC
+* Arya Yue
+* Isadora E. Fluck
+* Benjaming Baiser
 * John M. Grady
-* Sydne Record
 * Phoebe L. Zarnetske
-* others
+* Sydne Record
 
 ## How to install
 
