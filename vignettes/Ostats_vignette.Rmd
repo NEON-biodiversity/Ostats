@@ -100,7 +100,7 @@ Running the function may take several minutes, depending on the size of the data
                     data_type = "linear")
 ```
 
-The below code chunk shows an example of how the *density_args* inputs could be changed is so desired:
+The below code chunk shows an example of how the *density_args* inputs could be changed if so desired:
 
 ```{r eval=FALSE}
 # Example of specifying the arguments for making density estimates
