@@ -63,12 +63,20 @@ This function plots the overlap of traits among
  species for each community.
 }
 \examples{
-library(tidyverse)
-library(Ostats)
+#load data:
+#indiv_dat <- read_csv('https://ndownloader.figshare.com/files/9167548', col_names = T)
 
-indiv_dat <- read_csv('https://ndownloader.figshare.com/files/9167548', col_names = T)
+#set the arguments:
+#overlap_dat <- Ostats_bysite2015 #your results from the Ostat function - see \code{\link{Ostats}}
+#siteID <- indiv_dat$siteID
+#taxonID <- indiv_dat$taxonID
+#trait <- indiv_dat$logweight
 
-Ostats_plot(indiv_dat = indiv_dat, siteID = indiv_dat$siteID, taxonID = indiv_dat$taxonID, trait = indiv_dat$logweight, overlap_dat = Ostats_example, sites2use = c('HARV','JORN'))
+#to plot only selected sites:
+#sites2use<- c('BART','KONZ','JORN')
+
+#Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat, sites2use = sites2use, name_x = 'Body Weight (log-transformed)', means=T)
+
 }
 \seealso{
 \code{\link{Ostats}} to Calculate O-statistics (community-level
