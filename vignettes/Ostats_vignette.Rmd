@@ -276,12 +276,10 @@ If the graphs do not look normal, check whether the trait measurements have been
 
 ## Pairwise distances and plots
 
-## Arya or Isadora, please make an example set of code to run for this.
-
 The function *community_overlap_noitv* calculates a value for each community that reflects pairwise distances using means of traits for each species, not taking intraspecific variation into account. This can be a helpful comparison to illustrate what new inferences might be gained from looking at your study system through the lens of intraspecific trait variation (as opposed to simply considering mean trait values).
 
 ```{r eval=FALSE}
-#Please insert some code here for this example.
+#Isadroa, please insert some code here for this example if the means are not already plotted in the example of code above.
 ```
 
 ## Converting the output of *Ostats* to a table in long form.
