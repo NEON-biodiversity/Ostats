@@ -2,21 +2,24 @@
 % Please edit documentation in R/densityoverlap.R
 \name{community_overlap}
 \alias{community_overlap}
-\title{Median pairwise overlap across all Species in a community}
+\title{Median Pairwise Overlap across All Species in a Community}
 \usage{
 community_overlap(traits, sp, normal = TRUE, bw = NULL, N = NULL)
 }
 \arguments{
-\item{traits}{A vector whose length equals the number of individuals in a community with entries of one trait measurement for each individual.}
+\item{traits}{a vector of trait measurement.}
 
-\item{sp}{A vector with length equal to length(traits) indicating the taxon of each individual.}
+\item{sp}{a vector with length equal to length(traits) that indicates the
+taxon of each individual.}
 
-\item{bw}{The smoothing bandwidth to be used by the density function. The kernels are scaled, so
-that the smoothing bandwidth is the standard deviation of the smoothing kernel.}
+\item{bw}{the smoothing bandwidth to be used. The kernels are scaled such
+that this is the standard deviation of the smoothing kernel.}
 
-\item{norm}{Set to TRUE when the trait data are normally distributed. If the trait data are not normally distributed, then an additional normalization step is carried out by setting this parameter to FALSE and each density will be multiplied by the length of each vector.}
+\item{norm}{If TRUE, assume data are normally distributed; if FALSE,
+additional normalization step is carried out by multiplying each density
+entry by the length of each vector.}
 
-\item{n}{The number of equally spaced points at which the density is to be
+\item{n}{the number of equally spaced points at which the density is to be
 estimated.}
 }
 \value{
@@ -28,11 +31,14 @@ This function calculates the median of pairwise overlaps between density
 estimates of trait distributions of all species within a community.
 }
 \details{
-The funtion evaluates pairwise overlaps of density estimates of all species with abundances >1 in a community to calculate the median overlap across pairs for the community.
+The funtion evaluates pairwise overlaps of density estimates of all
+species in a community taking complete cases with species abundances greater
+than 1 from the original dataset to calculate the median for the community.
 }
 \seealso{
-\code{\link{pairwise_overlap}} To calculate overlap between two empirical
+\code{\link{pairwise_overlap}} to calculate overlap between two empirical
 density estimates.
 
-\code{\link{community_overlap_harmonicwmedian}} To use harmonic means of abundances of species pairs as weights to calculate the median overlap.
+\code{\link{community_overlap_harmonicwmedian}} to see a function that
+uses harmonic means of abundances of species pairs as weights to calculate median.
 }
