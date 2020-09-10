@@ -18,6 +18,8 @@ The study of functional traits in ecology enables a greater understanding of the
 When ITV is taken into account, trait values of individuals of each species may be portrayed as a distribution rather than as a single mean value. The degree of trait similarity between species can be measured as the amount of overlap in trait space between all species pairs in a community. Lower overlap indicates greater trait partitioning between pairs of species in a community. The Ostats package calculates a statistic to measure the degree of community-level trait overlap by fitting nonparametric kernel density functions to each species’ trait distribution
 and calculating their areas of overlap (Mouillot et al. 2005, Geange et al. 2011, Read et al. 2018). The median pairwise overlap for a community is calculated by first determining the overlap of each species pair in trait space, and then taking the median overlap of each species pair in a community. Functions in this package can be used to assess the level of species trait overlap and compare across communities. Effect size statistics can also be calculated against local or regional null models.
 
+Note that we have written an accompanying teaching module to Read et al. (2018), which walks through a figure set exercise for the manuscript (Grady et al. 2018). This teaching module may be helpful to review for interpretation of the overlap statistics and graphs.
+
 ***
 
 The Ostats package consists of 10 functions in total. Some of the most common ways to use them are:
@@ -185,8 +187,6 @@ head(reg_pool)
 
 In this example, we compare the small mammal data at 'HARV' in 2019 against the regional pool defined as the trait distributions of 'HARV' and 'BART' from 2013-2018. 
 
-###Sydne stopped here.
-
 ```{r echo = T, results='hide'}
 # Subset 2019 NEON small mammal data for 'HARV' and 'BART'
 sites2019 <- reg_pool %>%
@@ -248,9 +248,9 @@ There are various arguments to fine tune the plot you produce.
 
 * *name_y* Is a character string indicating the name of the y-axis with a default of 'Probability Density'.
 
-##Arya and/or Isadora, please see if you can fix this, so that it runs.
+* *means* Is a logical statement. If set to F or FALSE, which is the default value, then a single column of graphs is generated that illustrates the trait probability density curves for each species. If set to T or TRUE, then graphs of mean trait values are plotted in a second column for comparison of graphs with trait density curves. Note that setting means to TRUE is only recommended when you are plotting a 2-3 illustrative sites. If too many sites are plotted with mean set to TRUE then the graphs become small and difficult to read.
 
-```{r}
+```{r out.width="80%", warning=FALSE, error=FALSE, fig.align="center", fig.height=4.5, fig.width=7}
 # Example using the NEON small mammal dataset and Ostats_example
 
 #load data:
@@ -265,21 +265,15 @@ trait <- indiv_dat$logweight
 #to plot only selected sites:
 sites2use<- c('HARV','JORN') 
 
-Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat, sites2use = sites2use, name_x = 'Body Weight (log-transformed)', means=T)
+Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat, sites2use = sites2use, name_x = 'log10 Body Weight (g)', means=T)
 
 
 
 ```
+
+The graphs to the left show the intraspecific trait variation as illustrated by density curves, and the graphs to the right show mean trait values. For all graphs probability density is shown on the y-axis and log-transformed body weight on the x-axis. Each color represents a different species and colors are consistent across graphs. The top row illustrates trait values for HARV (Harvard Forest), whereas the bottom row illustrates trait values for JORN (Jornada). The leftmost graphs also show the median overlap value for the entire community. Note that there is more overlap in body weight values for HARV than for JORN. 
 
 If the graphs do not look normal, check whether the trait measurements have been log-transformed. Note that there is not currently functionality within the Ostats package to graph the outputs of the *Ostats* function when it is applied to circular data.
-
-## Pairwise distances and plots
-
-The function *community_overlap_noitv* calculates a value for each community that reflects pairwise distances using means of traits for each species, not taking intraspecific variation into account. This can be a helpful comparison to illustrate what new inferences might be gained from looking at your study system through the lens of intraspecific trait variation (as opposed to simply considering mean trait values).
-
-```{r eval=FALSE}
-#Isadroa, please insert some code here for this example if the means are not already plotted in the example of code above.
-```
 
 ## Converting the output of *Ostats* to a table in long form.
 
@@ -291,12 +285,13 @@ The function *community_overlap_noitv* calculates a value for each community tha
 Ostat2longform(Ostats_example)
 ```
 
-
 # Bibliography 
 
 Bolnick, D.I., P. Amarasekare, M.S. Araujo, R. Burger, J.M. Levine, M. Novak, V.H.W. Rudolf, S.J. Schreiber, M.C. Urban, and D.A. Vasseur. 2011. Why intraspecific trait variation matters in ecology. *Trends in Ecology and Evolution* 26(4):183-192. https://doi.org/10.1016/j.tree.2011.01.009 
 
 Geange, S.W., S. Pledger, K.C. Burns, and J.S. Shima. 2011. A unified analysis of niche overlap incorporating data of different types. *Methods in Ecology and Evolution* 2(2):175-184. https://doi.org/10.1111/j.2041-210X.2010.00070.x
+
+Grady, J.M., Q.D. Read, S. Record, P.L. Zarnetske, B. Baiser, K. Thorne, and J. Belmaker. 2018. Size, niches, and the latitudinal diversity gradient. *Teaching Issues and Experiments in Ecology* 14: Figure Set #1.
 
 Mouillot, D., W. Stubbs, M. Faure, O. Dumay, J.A. Tomasini, J.B. Wilson, and T. Do Chi. 2005. Niche overlap estimated based on quantitative functional traits: A new family of non-parametric indices. *Oecologia* 145(3):345-353. https://doi.org/10.1007/s00442-005-0151-z 
 

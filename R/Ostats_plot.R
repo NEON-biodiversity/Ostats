@@ -102,7 +102,7 @@ Ostats_plot<-function(indiv_dat,
   ggplot2::theme_set(
     ggplot2::theme_bw() + ggplot2::theme(panel.grid = ggplot2::element_blank(),
                                          axis.text = ggplot2::element_text(size = 12),
-                                         axis.title = ggplot2::element_text(size = 18),
+                                         axis.title = ggplot2::element_text(size = 12),
                                          axis.text.y = ggplot2::element_blank(),
                                          axis.ticks.y = ggplot2::element_blank(),
                                          legend.position = 'none',
