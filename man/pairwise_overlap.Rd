@@ -7,55 +7,66 @@
 pairwise_overlap(a, b, normal = TRUE, density_args = list())
 }
 \arguments{
-\item{a}{a vector dataset with nrows= n individuals, with a column containing
-one measurement of a certain trait.}
+\item{a}{A numeric vector the number of elements equal to the number of individuals of species a in a community. Elements represent one measurement per individual of a continuous, numeric trait.}
 
-\item{b}{another matrix dataset with the same trait measurements to be compared
-against a.}
+\item{b}{A numeric vector the number of elements equal to the number of individuals of species b in a community to be compared against species a. Elements represent one measurement per individual of a continuous, numeric trait.}
 
-\item{normal}{if TRUE, the area under all density functions is normalized to 1,
-if FALSE, the area under all density functions is proportional to the number of
-observations in that group.}
+\item{normal}{If TRUE, the area under all density functions is normalized to one. The default is set to TRUE. If FALSE, the area under all density functions is proportional to the number of observations in that group.}
 
-\item{density_args}{list of additional arguments to be passed to
-\code{\link[stats]{density}}.}
+\item{density_args}{A list of additional arguments to be passed to \code{\link[stats]{density}}, such as
+\code{bw}, \code{n}, or \code{adjust}. If none are provided, default values of bw = "nrd0", adjust = 1, and n = 512 are used.}
 }
 \value{
-The funtion returns a vector of three values:
-\item{overlap_average}{the average overlap of a and b, calculated by the overlap
-area *2 divided by the sum of areas under the two functions.}
-\item{overlap_a}{the proportion of a that overlaps with b, calculated by the overlap
-area divided by area under the function generated from a.}
-\item{overlap_b}{the proportion of b that overlaps with a, calculated by the overlap
-area diveided by area under the function generated from b.}
+The function returns a vector of three values:
+\item{overlap_average}{The average trait overlap of species a and species b, calculated by the overlap
+area multiplied by two then divided by the sum of the areas under the trait distributions of both species.}
+\item{overlap_a}{The proportion of species a's trait distribution that overlaps with species b's trait distribution, calculated by the overlap
+area of both species a and b divided by the area under species a's trait distribution.}
+\item{overlap_b}{The proportion of species b's trait distribution that overlaps with species a's trait distribution, calculated by the overlap
+area of both species a and b divided by the area under species b's trait distribution.}
 }
 \description{
 This function generates kernel density estimates for two datasets on a common
-grid to calculate the area of overlap between the two estimates.
-See \url{http://stats.stackexchange.com/questions/97596/how-to-calculate-overlap-between-empirical-probability-densities},
-this function is derived from code posted in the answer by user mmk.
+grid to calculate the area of overlap between the two estimates. This statistic for overlap in trait distributions was first presented in Mouillot et al. (2005). Code for the function in this package is inspired by \url{http://stats.stackexchange.com/questions/97596/how-to-calculate-overlap-between-empirical-probability-densities}, from code posted in the answer by user mmk.
 }
 \details{
-This function generates kernel density estimates using the
-\code{\link[stats]{density}}  function for two datasets on a common grid.
-Default values for \code{bw} and \code{n} are used if not provided in \code{density_args}.
-Intersection density function
-is then calculated by taking the integral of the minimum of the two functions,
-from which the overlap outputs are calculated.
+This function generates kernel density estimates using the \code{\link[stats]{density}} function for two datasets on a common grid. The default values for \code{bw}, \code{adjust}, and \code{n} are used if not provided in \code{density_args}. The intersection density function is then calculated by taking the integral of the minimum of the two functions, from which the overlap outputs are calculated.
 }
 \examples{
-#overlap of miles per gallon between 4-cylinder and 6-cylinder cars
-library(dplyr)
-a <- mtcars \%>\%
-  filter(cyl==6)
-a <- a[,1]
-b <- mtcars \%>\%
-  filter(cyl==4)
-b <- b[,1]
-pairwise_overlap(a,b)
+# Load necessary packages
+library(tidyverse)
+library(Ostats)
 
+# Load National Ecological Observatory Network small mammal data from Read et al. (2018)
+dat <- read_csv('https://ndownloader.figshare.com/files/9167548')
+
+# Subset data for one community (Harvard Forest [HARV]). Pull out only relevant data for site name, taxon names, and body weights. In this example, body weight is the trait.
+dat <- dat %>%
+  filter(siteID %in% c('HARV')) %>%
+  select(siteID, taxonID, weight) %>%
+  filter(!is.na(weight)) %>%
+  mutate(log_weight = log10(weight))
+
+# Subset trait data for the species with the four-letter code 'PEMA'
+PEMA <- dat %>%
+  filter(taxonID == "PEMA") %>%
+  select(log_weight)
+# Coerce PEMA, which is a list, into vector
+PEMA <- as.vector(unlist(PEMA))
+
+# Subset trait data for the species with the four-letter code 'MYGA'
+MYGA <- dat %>%
+  filter(taxonID == "MYGA") %>%
+  select(log_weight)
+# Coerce MYGA, which is a list, into vector
+MYGA <- as.vector(unlist(MYGA))
+
+# Calculate the pairwise overlap between the trait distributions of the two small mammal species PEMA and MYGA
+pairwise_overlap(PEMA, MYGA)
 }
 \references{
+Mouillot, D., W. Stubbs, M. Faure, O. Dumay, J.A. Tomasini, J.B. Wilson, and T. Do Chi. 2005. Niche overlap estimated based on quantitative functional traits: A new family of non-parametric indices. *Oecologia* 145(3):345-353. https://doi.org/10.1007/s00442-005-0151-z
+
 http://stats.stackexchange.com/questions/97596/how-to-calculate-overlap-between-empirical-probability-densities
 }
 \seealso{

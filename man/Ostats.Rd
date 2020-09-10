@@ -20,100 +20,86 @@ Ostats(
 )
 }
 \arguments{
-\item{traits}{a vector of trait measurement with nrow = n individuals.}
+\item{traits}{A numeric vector of trait measurements with length equal to the number of individuals. Each individual should have a trait measurement.}
 
-\item{plots}{a factor with length equal to nrow(traits) that indicates the
-community each individual belongs to.}
+\item{plots}{A factor vector with length equal to the number of elements in the traits vector that indicates the community in which each individual belongs.}
 
-\item{sp}{a factor with length equal to nrow(traits) that indicates the taxon
-of each individual.}
+\item{sp}{A factor vector with length equal to the number of elements in the traits vector that indicates the taxon of each individual.}
 
-\item{data_type}{data type can be "linear", "circular",or "circular_discrete".
-Defaults to "linear".}
+\item{data_type}{Data type can be "linear", "circular", or "circular_discrete". The data_type argument defaults to "linear" and is appropriate when the trait data are one dimensional (i.e., body masses of individuals). The alternative inputs for this argument are for circular data that are periodic or discoid (e.g., measured in radians or degrees). The argument "circular" is for continuous data and the argument "circular_discrete" is for non-continuous, hourly data.}
 
-\item{output}{specifies whether median or mean is calculated.}
+\item{output}{The arguments *output* specifies the whether the median or mean of all pairwise overlap values between distributions of species will be returned. The default value for output is "median".}
 
-\item{weight_type}{specifies weights to be used to calculate the median or mean.}
+\item{weight_type}{Specifies weights to be used to calculate the median or mean output. When the default value for *weight_type* = "hmean", the function calculates the pairwise overlaps of trait distributions of all species in each community as 2/(1/abundance of species a + 1/abundance of species b). The harmonic mean *weight_type* is set as the default as it minimizes the effect of outliers and rare species. If the argument weight_type = "none", no weights are used for the calculation of mean or median. If weight_type = "mean", raw abundances of species are used as weights.}
 
-\item{nperm}{the number of permutations to generate a null model.}
+\item{nperm}{The number of permutations,or randomly generated data null community subsets, to generate a null model. The default is set to 99 permutations.}
 
-\item{nullqs}{numeric vector of probabilities with values in [0,1] to set
-effect size quantiles.}
+\item{nullqs}{A numeric vector of length two containing the lower and upper effect size quantiles for the null models. The default lower and upper effect size quantiles, respectively, are 0.025 and 0.975. The values in this vector are probabilities, so they are bounded between zero and one.}
 
-\item{shuffle_weights}{If TRUE, shuffle weights given to pairwise overlaps
-within a community when generating null models.}
+\item{shuffle_weights}{If shuffle_weights is TRUE, the weights given to pairwise overlaps within a community are shuffled when generating null models. The default is set to FALSE, so that weights of pairwise overlaps are not shuffled.}
 
-\item{swap_means}{If TRUE, swap means of body sizes within a community when
-generating null models.}
+\item{swap_means}{If TRUE, the means of body sizes within a community are randomly assigned to species when generating null models. The default is set to FALSE, so that the body size means of species are not randomly swapped.}
 
-\item{circular_args}{optional list of additional arguments to pass to
-\code{\link[circular]{circular}}. Only used if the data type is "circular".}
+\item{circular_args}{Optional list of additional arguments to pass to
+\code{\link[circular]{circular}}. Only used if the data_type argument is set to "circular".}
 
-\item{density_args}{additional arguments to pass to \code{\link[stats]{density}}, such as
+\item{density_args}{Additional arguments to pass to \code{\link[stats]{density}}, such as
 \code{bw}, \code{n}, or \code{adjust}. If none are provided, default values
-are used.}
+of bw = "nrd0", adjust = 1, and n = 512 are used.}
 }
 \value{
-The funtion returns a list containing 4 objects:
-\item{overlaps_norm}{a matrix showing the median of weighted pairwise overlaps (at default) of trait
-  distributions of all species in each community (at default output
-  and weight_type), with the area under all density functions normalized to 1.}
-\item{overlaps_unnorm}{a matrix showing O-stats calculated with the area under all density
-  functions proportional to the number of observations in that group.}
-\item{overlaps_norm_ses}{5 matrices of effect size statistics against a null model
+The function returns a list containing 4 items:
+\item{overlaps_norm}{A matrix with one column and the number of rows equal to the number of communities showing community overlap values for each community with the area under all density functions normalized to 1.}
+\item{overlaps_unnorm}{A matrix with one column and the number of rows equal to the number of communities showing community overlap values for each community with the area under all density functions proportional to the number of observations in that group.}
+\item{overlaps_norm_ses}{Five matrices of effect size statistics against a null model
   with the area under all density functions normalized to 1.}
-\item{overlaps_unnorm_ses}{5 matrices of effect size statistics against a null model
+\item{overlaps_unnorm_ses}{Five matrices of effect size statistics against a null model
   with the area under all density functions proportional to the number
   of observations in that group.}
 }
 \description{
-This is the primary function in the Ostats package. It evaluates the
-O-statistics against a local null model.
+This is the primary function in the Ostats package. The Ostats package calculates a statistic to measure the degree of community-level trait overlap by fitting nonparametric kernel density functions to each species' trait distribution and calculating their areas of overlap (Mouillot et al. 2005, Geange et al. 2011, Read et al. 2018). For instance, the median pairwise overlap for a community is calculated by first determining the overlap of each species pair in trait space, and then taking the median overlap of each species pair in a community. This function will only work with univariate trait data. Grady et al. (2018) provides a teaching module that goes into detail about how to interpret the O-stats results presented in Read et al. (2018).
 }
 \details{
-This function evaluates the overlap statistics against a local null
-  model.The function community_overlap_merged calculates the community overlap
-  statistics in each community. At default, it calculates the median of pairwise
-  overlaps, weighted by harmonic mean of species abundaces of the species
-  pairs in each community. Two results are produced, one normalizing the area
-  under all density functions to 1, the other making the area under all density
-  functions proportional to the number of observations in that group.
+This function evaluates the overlap statistics of a univariate trait. The function community_overlap_merged that is embedded in the source code for the Ostats funcion calculates the community overlap statistics in each community. At default, it calculates the median of pairwise overlaps, weighted by harmonic mean of species abundances of the species pairs in each community.
 
-  When both shuffle_weights and swap_means are FALSE, null models are
-  generated by randomly assigning a taxon that is present in the community to
-  each individual. O-stats are then calculated to be compared against.
-
-  Effect size statistics are calculated between the observed O-stats
-  and the null model.
+The function also generates null models to explore the drivers of variation in body size overlap. The null model to test whether individual species' body size distributions are more evenly spaced along the trait axis than expected by chance, finding the z-score of each observed community evaluated against the distribution of a user defined number of null communities in which species body size means may be shuffled randomly, retaining the shape and width of the distribution around the mean for each species.
+When both shuffle_weights and swap_means are FALSE, null models are generated by randomly assigning a taxon that is present in the community to each individual. O-stats are then calculated to be compared against. Effect size statistics are then calculated between the observed O-stats and the null model.
 }
 \examples{
-# overlap statistics for body weights of species in NEON sites
+# Load necessary packages
 library(tidyverse)
 library(Ostats)
-# Load data from web archive
+
+# Load National Ecological Observatory Network small mammal data from Read et al. (2018)
 dat <- read_csv('https://ndownloader.figshare.com/files/9167548')
 
-# Keep only the relevant part of data
-dat <- dat \%>\%
-  filter(siteID \%in\% c('HARV','JORN')) \%>\%
-  select(siteID, taxonID, weight) \%>\%
-  filter(!is.na(weight)) \%>\%
+# Subset data for two sites (Harvard Forest [HARV] and Jornada [JORN]). Pull out only relevant data for site names, taxon names, and body weights. In this example, body weight is the trait.
+dat <- dat %>%
+  filter(siteID %in% c('HARV','JORN')) %>%
+  select(siteID, taxonID, weight) %>%
+  filter(!is.na(weight)) %>%
   mutate(log_weight = log10(weight))
 
-dat \%>\%
-  group_by(siteID, taxonID) \%>\%
+# Organize subsetted small mammal data by site and taxa names
+dat %>%
+  group_by(siteID, taxonID) %>%
   slice(1)
 
-#Run O-stats on the data with nperm = 2 (do not bother with null models)
+# Run O-stats on these linear data with nperm = 2 (do not bother with null models). For a longer example with null model generation, see the package vignette.
 Ostats_example <- Ostats(traits = as.matrix(dat[,'log_weight']),
                    sp = factor(dat$taxonID), data_type = "linear",
                    plots = factor(dat$siteID),
                    nperm = 2)
 }
 \references{
-Read, Q. D. et al. Among-species overlap in rodent body size
-  distributions predicts species richness along a temperature gradient.
-  Ecography 41, 1718-1727 (2018).
+Geange, S.W., S. Pledger, K.C. Burns, and J.S. Shima. 2011. A unified analysis of niche overlap incorporating data of different types. *Methods in Ecology and Evolution* 2(2):175-184. https://doi.org/10.1111/j.2041-210X.2010.00070.x
+
+Grady, J.M., Q.D. Read, S. Record, P.L. Zarnetske, B. Baiser, K. Thorne, and J. Belmaker. 2018. Size, niches, and the latitudinal diversity gradient. *Teaching Issues and Experiments in Ecology* 14: Figure Set #1.
+
+Mouillot, D., W. Stubbs, M. Faure, O. Dumay, J.A. Tomasini, J.B. Wilson, and T. Do Chi. 2005. Niche overlap estimated based on quantitative functional traits: A new family of non-parametric indices. *Oecologia* 145(3):345-353. https://doi.org/10.1007/s00442-005-0151-z
+
+Read, Q.D., J.M. Grady, P.L. Zarnetske, S. Record, B. Baiser, J. Belmaker, M.-N. Tuanmu, A. Strecker, L. Beaudrot, and K.M. Thibault. 2018. Among-species overlap in rodent body size distributions predicts species richness along a temperature gradient. *Ecography* 41(10):1718-1727. https://doi.org/10.1111/ecog.03641
 }
 \seealso{
 \code{\link{Ostats_regional}} to evaluate against a regional null
