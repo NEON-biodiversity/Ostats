@@ -50,26 +50,25 @@ be weighted by species abundances.
 }
 \details{
 The function evaluates weighted mean or median of overlaps of density
-estimates of all species in a community taking complete cases with species abundances
-greater than 1 from the dataset. The default calculates the median of pairwise overlaps
-for the whole community using the harmonic means of abundances of the species pairs as
-weights, which minimizes the effect of outliners and rare species.If the argument
-weight_type = "none", no weights are used for the calculation of mean/median. If
+estimates of all species (with abundances >1) in a community. The default calculates the median of pairwise overlaps for the whole community using the harmonic means of abundances of the species pairs as
+weights, which minimizes the effect of outliers and rare species. If the argument
+weight_type = "none", no weights are used for the calculation of the mean or median. If
 weight_type = "mean", arithmetic means of abundances are used as weights. To change the
-output to mean, specify the argument output = "mean".
+output to mean, rather than the default output of median, specify the argument output = "mean".
 }
 \examples{
+# Load necessary packages to run the example.
 library(tidyverse)
 library(Ostats)
 
-# Load data from web archive and Keep only the relevant part of data
+# Load small mammal data from Read et al. (2018) and subset data for Harvard Forest (HARV), selecting columns for site, taxon, and body weight (g). Create a new column that is the log10 transformation of body weight.
 dat <- read_csv('https://ndownloader.figshare.com/files/9167548') \%>\%
    filter(siteID \%in\% 'HARV') \%>\%
    select(siteID, taxonID, weight) \%>\%
    filter(!is.na(weight)) \%>\%
    mutate(log_weight = log10(weight))
 
-# Calculate median of pairwise overlaps for the community,weighted by harmonic means
+# Calculate median of pairwise overlaps for the community, weighted by harmonic means
 of abundances
 community_overlap_merged(traits = as.matrix(dat$log_weight),
    sp = factor(dat$taxonID))
@@ -81,12 +80,12 @@ Read, Q. D. et al. Among-species overlap in rodent body size
   Ecography 41, 1718-1727 (2018).
 }
 \seealso{
-\code{\link{pairwise_overlap}} to calculate overlap between two empirical
+\code{\link{pairwise_overlap}} To calculate overlap between two empirical
 density estimates.
 
-\code{\link{circular_overlap}} to calculate continous circular overlap between
+\code{\link{circular_overlap}} To calculate continous circular overlap between
 two empirical density estimates.
 
-\code{\link{circular_overlap_24hour}} to calculate overlap for discrete hourly
+\code{\link{circular_overlap_24hour}} To calculate overlap for discrete hourly
 data.
 }

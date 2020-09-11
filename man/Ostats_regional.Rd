@@ -68,8 +68,8 @@ This function evaluates the overlap statistics against a regional
 library(tidyverse)
 
 # Use the 2015 data from the two sites HARV and BART as the focal community
-sites2015 <- reg_pool %>%
-filter(siteID=='HARV'|siteID == 'BART') %>%
+sites2015 <- reg_pool \%>\%
+filter(siteID=='HARV'|siteID == 'BART') \%>\%
 filter(substring(as.character(endDate),1,4)=="2015")
 
 # Making the overall data (HARV and BART, sites from the same domain) the regional pool across space and time

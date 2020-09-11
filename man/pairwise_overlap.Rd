@@ -41,22 +41,22 @@ library(Ostats)
 dat <- read_csv('https://ndownloader.figshare.com/files/9167548')
 
 # Subset data for one community (Harvard Forest [HARV]). Pull out only relevant data for site name, taxon names, and body weights. In this example, body weight is the trait.
-dat <- dat %>%
-  filter(siteID %in% c('HARV')) %>%
-  select(siteID, taxonID, weight) %>%
-  filter(!is.na(weight)) %>%
+dat <- dat \%>\%
+  filter(siteID \%in\% c('HARV')) \%>\%
+  select(siteID, taxonID, weight) \%>\%
+  filter(!is.na(weight)) \%>\%
   mutate(log_weight = log10(weight))
 
 # Subset trait data for the species with the four-letter code 'PEMA'
-PEMA <- dat %>%
-  filter(taxonID == "PEMA") %>%
+PEMA <- dat \%>\%
+  filter(taxonID == "PEMA") \%>\%
   select(log_weight)
 # Coerce PEMA, which is a list, into vector
 PEMA <- as.vector(unlist(PEMA))
 
 # Subset trait data for the species with the four-letter code 'MYGA'
-MYGA <- dat %>%
-  filter(taxonID == "MYGA") %>%
+MYGA <- dat \%>\%
+  filter(taxonID == "MYGA") \%>\%
   select(log_weight)
 # Coerce MYGA, which is a list, into vector
 MYGA <- as.vector(unlist(MYGA))

@@ -75,15 +75,15 @@ library(Ostats)
 dat <- read_csv('https://ndownloader.figshare.com/files/9167548')
 
 # Subset data for two sites (Harvard Forest [HARV] and Jornada [JORN]). Pull out only relevant data for site names, taxon names, and body weights. In this example, body weight is the trait.
-dat <- dat %>%
-  filter(siteID %in% c('HARV','JORN')) %>%
-  select(siteID, taxonID, weight) %>%
-  filter(!is.na(weight)) %>%
+dat <- dat \%>\%
+  filter(siteID \%in\% c('HARV','JORN')) \%>\%
+  select(siteID, taxonID, weight) \%>\%
+  filter(!is.na(weight)) \%>\%
   mutate(log_weight = log10(weight))
 
 # Organize subsetted small mammal data by site and taxa names
-dat %>%
-  group_by(siteID, taxonID) %>%
+dat \%>\%
+  group_by(siteID, taxonID) \%>\%
   slice(1)
 
 # Run O-stats on these linear data with nperm = 2 (do not bother with null models). For a longer example with null model generation, see the package vignette.
