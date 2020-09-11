@@ -20,6 +20,13 @@ and calculating their areas of overlap (Mouillot et al. 2005, Geange et al. 2011
 
 Note that we have written an accompanying teaching module to Read et al. (2018), which walks through a figure set exercise for the manuscript (Grady et al. 2018). This teaching module may be helpful to review for interpretation of the overlap statistics and graphs.
 
+# Downloading the Ostats package
+
+The Ostats package is available on Github and can be installed using the devtools package with the line of code below.
+```{r eval=FALSE}
+devtools::install_github('NEON-biodiversity/Ostats')
+```
+
 ***
 
 The Ostats package consists of 10 functions in total. Some of the most common ways to use them are:
