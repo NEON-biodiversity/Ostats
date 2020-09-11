@@ -103,10 +103,10 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
   # a vector called sp which is a factor with length equal to nrow(traits),
 
   # warning and error messages to check the inputs
-  #if (ncol(traits) > 1) {stop("the function does not support calculation for multiple traits")}
-  #if (is.numeric(traits) == FALSE) {stop("the function only evaluates numerical data")}
-  #if (length(unique(plots) == 1) {warning("only one community is evaluated")}
-  #if (length(unique(sp)) == 1) {warning("only one taxon is present")}
+  if (ncol(traits) > 1) {stop("the function does not support calculation for multiple traits")}
+  if (is.numeric(traits) == FALSE) {stop("the function only evaluates numerical data")}
+  if (length(unique(plots) == 1) {warning("only one community is evaluated")}
+  if (length(unique(sp)) == 1) {warning("only one taxon is present")}
   # Declaration of data structures to hold the results
 
   # Data structures for observed O-Stats
