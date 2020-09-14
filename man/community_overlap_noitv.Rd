@@ -2,20 +2,19 @@
 % Please edit documentation in R/densityoverlap.R
 \name{community_overlap_noitv}
 \alias{community_overlap_noitv}
-\title{Abundance-weighted Median of Pairwise Distance between Species Trait Means
+\title{Abundance-weighted median of pairwise distance between species trait means
 in a Community}
 \usage{
 community_overlap_noitv(traits, sp, output = "median", weight_type = "hmean")
 }
 \arguments{
-\item{traits}{a vector of trait measurement.}
+\item{traits}{A numeric vector of trait measurements with length equal to the number of individuals. Each individual should have a trait measurement.}
 
-\item{sp}{a vector with length equal to length(traits) that indicates the
-taxon of each individual.}
+\item{sp}{A factor vector with length equal to the number of elements in the traits vector that indicates the taxon of each individual.}
 
-\item{output}{specifies whether median or mean is calculated.}
+\item{output}{The arguments *output* specifies the whether the median or mean of all pairwise overlap values between distributions of species will be returned. The default value for output is "median".}
 
-\item{weight_type}{specifies weights to be used to calculate the median or mean.}
+\item{weight_type}{Specifies weights to be used to calculate the median or mean output. When the default value for *weight_type* = "hmean", the function calculates the pairwise overlaps of trait distributions of all species in each community as 2/(1/abundance of species a + 1/abundance of species b). The harmonic mean *weight_type* is set as the default as it minimizes the effect of outliers and rare species. If the argument weight_type = "none", no weights are used for the calculation of mean or median. If weight_type = "mean", raw abundances of species are used as weights.}
 }
 \value{
 The function returns a mean or median of pairwise distances of all species in
@@ -26,18 +25,12 @@ of species pairs.
 This function calculates the median of pairwise distances between species
 trait means within a community, weighted by the mean of abundances of the
 species pairs. This reduces each species to a trait mean and the intraspecific
-trait variation (ITV) is ignored.
+trait variation (ITV) is ignored for comparison to an analysis with ITV considered.
 }
 \details{
 The function evaluates the means of trait measurements of each
-species in a community taking complete cases with species abundances greater
-than 1 from the original dataset, and calculates weighted mean or median of pairwise
-distances between all species in a community. The default calculates the median
-using the harmonic means of abundances of the species pairs as weights, which
-minimizes the effect of outliners and rare species.If the argument
-weight_type == "none", no weights are used for the calculation of mean/median. If
-weight_type == "mean", arithmetic means of abundances are used as weights. To change the
-output to mean, specify the argument output == "mean".
+species in a community with abundance >1 and calculates weighted mean or median of pairwise
+distances between all species in a community.
 }
 \note{
 This function so far only works for linear datasets.
@@ -60,7 +53,9 @@ community_overlap_noitv(traits = as.matrix(dat$log_weight),
 
 }
 \seealso{
-\code{\link{community_overlap_merged}} to see a function that takes
+\code{\link{community_overlap_merged}} To see a function that takes
 intraspecific trait variation (ITV) into account to calculate overlap statistics
 for a community.
+\code{\link{Ostats_plot}} For plotting community overlap for
+each community.
 }

@@ -14,11 +14,11 @@ get_ses(o, o_n, qs)
 \item{qs}{A numeric vector of probabilities with values between zero and one to set the effect size quantiles, usually set to 0.025 and 0.975}
 }
 \value{
-\item{ses}{a matrix containing values of standardized effect sizes for observed data of each of #' the locals (rows) and traits(columns) avaliated. To see if the overlap values can be expected by #' chance see returns ses_upper and ses_lower. If the value corresponding to the local in ses is between ses_upper and ses_lower, the overlapping between traits in community can be expected by chance.}
-\item{ses_lower}{a matrix containing null values extracted for the quantile of qs[1] (usually 0.025)}
-\item{ses_upper}{a matrix containing null values extracted for the quantile of qs[2] (usually 0.975)}
-\item{raw_lower}{a matrix containing null values extracted for the quantile of qs[1] (usually 0.025) without subtracting the mean and divided by standard deviation (see equation for calculating the standardize effect size on the function code)}
-\item{raw_upper}{a matrix containing null values extracted for the quantile of qs[2] (usually 0.975) without subtracting the mean and divided by standard deviation (see equation for calculating the standardize effect size on the function code)}
+\item{ses}{A matrix containing values of standardized effect sizes for observed data of each of #' the locals (rows) and traits(columns) avaliated. To see if the overlap values can be expected by #' chance see returns ses_upper and ses_lower. If the value corresponding to the local in ses is between ses_upper and ses_lower, the overlapping between traits in community can be expected by chance.}
+\item{ses_lower}{A matrix containing normalized null values extracted for the quantile of qs[1] (usually 0.025)}
+\item{ses_upper}{A matrix containing normalized null values extracted for the quantile of qs[2] (usually 0.975)}
+\item{raw_lower}{A matrix containing non-normalized null values extracted for the quantile of qs[1] (usually 0.025) without subtracting the mean and divided by standard deviation (see equation for calculating the standardize effect size in the function code.)}
+\item{raw_upper}{A matrix containing non-normalized null values extracted for the quantile of qs[2] (usually 0.975) without subtracting the mean and divided by standard deviation (see equation for calculating the standardize effect size in the function code.)}
 }
 \description{
 Calculates standardized effect sizes for the overlap statistics using null models. See the *Ostats* function documentation for a description of the local null models.
