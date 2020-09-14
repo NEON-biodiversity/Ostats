@@ -24,6 +24,7 @@ Ostats_plot(
 }
 \arguments{
 <<<<<<< HEAD
+<<<<<<< HEAD
 \item{indiv_dat}{Individual data: a data frame containing individual measurments for a certain
 trait,its species identity, and the community identity it belongs to.}
 
@@ -68,6 +69,36 @@ trait,its species identity, and the community identity it belongs to.}
 
 \item{means}{If TRUE, a separate set of plots depicting the traits means for each species in a community are plotted in addition to plots with the density curves illustrating intraspecific trait variation for each species.The default is set to FALSE, which make the function plot only the traits distributions for each species within a community.}
 
+=======
+\item{indiv_dat}{Individual trait data: a data frame containing individual trait measurments, the species identities of individuals, and the community to which each individual belongs.}
+
+\item{siteID}{A factor vector with length equal to the number of elements in the traits vector that indicates the community in which each individual belongs.}
+
+\item{taxonID}{A factor vector with length equal to the number of elements in the traits vector that indicates the taxon of each individual.}
+
+\item{trait}{A numeric vector of trait measurements with length equal to the number of individuals. Each individual should have a trait measurement.}
+
+\item{overlap_dat}{an object containing the output from the Ostats function - see \code{\link{Ostats}}}
+
+\item{sites2use}{A vector of site (i.e., community) names indicating the sites you want to plot. If NULL, the function will plot all the sites.}
+
+\item{n_col}{Number of columns for layout of plots. Default is 1.}
+
+\item{scale}{If you want the scale of x, y, or both x and y axis to be adjusted according to each site's density probability set the argument to "free_x", "free_y" or "free", respectively. The default is set to "fixed", which uses the same axis scale across all sites.}
+
+\item{colorvalues}{Vector of color values for the density curves. Defaults to a viridis palette if an alternate is not provided.}
+
+\item{adjust}{The bandwidth used by the kernel density function within Ostats is actually adjust*bw. The smaller this value, the smaller your density curves will be plotted. The default is set to two.}
+
+\item{limits_x}{The limits (min and max values) of the x-axis. Default is \code{c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE))}}
+
+\item{name_x}{A character string indicating the name of the x-axis (i.e., the name of the trait). The default is set to 'Trait value.'}
+
+\item{name_y}{A character string indicating the name of the y-axis. The default is set to 'Probability Density.'}
+
+\item{means}{If TRUE, a separate set of plots depicting the traits means for each species in a community are plotted in addition to plots with the density curves illustrating intraspecific trait variation for each species.The default is set to FALSE, which make the function plot only the traits distributions for each species within a community.}
+
+>>>>>>> 9bfcf86d2b466c22e8b67f1f85d6fcb8440e3e46
 \item{alpha_o}{Defines the color trasparency level for the density curves. The default is set to 0.5}
 }
 \value{
@@ -81,24 +112,34 @@ This function plots the overlap of traits among species for each community. Ther
 indiv_dat <- read_csv('https://ndownloader.figshare.com/files/9167548', col_names = T)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #set the arguments:
 #overlap_dat <- Ostats_bysite2015 #your results from the Ostat function - see \code{\link{Ostats}}
 #plots <- indiv_dat$siteID
 #sp <- indiv_dat$taxonID
 #traits <- indiv_dat$logweight
 =======
+=======
+>>>>>>> 9bfcf86d2b466c22e8b67f1f85d6fcb8440e3e46
 # Set the arguments.
 overlap_dat <- Ostats_example
 siteID <- indiv_dat$siteID
 taxonID <- indiv_dat$taxonID
 trait <- indiv_dat$logweight
+<<<<<<< HEAD
+>>>>>>> 9bfcf86d2b466c22e8b67f1f85d6fcb8440e3e46
+=======
 >>>>>>> 9bfcf86d2b466c22e8b67f1f85d6fcb8440e3e46
 
 # To plot only selected sites
 sites2use<- c('HARV','JORN')
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #Ostats_plot(indiv_dat = indiv_dat, plots = plots, sp = sp, traits = traits, overlap_dat = overlap_dat, sites2use = sites2use, name_x = 'Body Weight (log-transformed)', means=T)
+=======
+Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat, sites2use = sites2use, name_x = 'log10 Body Weight (g)', means=T)
+>>>>>>> 9bfcf86d2b466c22e8b67f1f85d6fcb8440e3e46
 =======
 Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat, sites2use = sites2use, name_x = 'log10 Body Weight (g)', means=T)
 >>>>>>> 9bfcf86d2b466c22e8b67f1f85d6fcb8440e3e46
