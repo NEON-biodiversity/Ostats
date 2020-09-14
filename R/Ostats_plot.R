@@ -28,7 +28,6 @@
 #'@examples
 #'#load data:
 <<<<<<< HEAD
-<<<<<<< HEAD
 #'#indiv_dat <- read_csv('https://ndownloader.figshare.com/files/9167548', col_names = T)
 #'
 #'#set the arguments:
@@ -50,11 +49,11 @@
 #'overlap_dat <- Ostats_example
 >>>>>>> 9bfcf86d2b466c22e8b67f1f85d6fcb8440e3e46
 #'
-#'siteID <- indiv_dat$siteID
-#'taxonID <- indiv_dat$taxonID
-#'trait <- indiv_dat$logweight
+#'plots <- indiv_dat$siteID
+#'sp <- indiv_dat$taxonID
+#'traits <- indiv_dat$logweight
 #'sites2use<- c('HARV','JORN')
-#'Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat, sites2use = sites2use, name_x = 'Body Weight (log-transformed)', means=T)
+#'Ostats_plot(indiv_dat = indiv_dat, plots = plots, sp = sp, traits = traits, overlap_dat = overlap_dat, sites2use = sites2use, name_x = 'Body Weight (log-transformed)', means=T)
 
 #'@export
 #'
@@ -78,7 +77,7 @@ Ostats_plot<-function(indiv_dat,
 
   # Unless a subset of sites is provided, use all sites in dataset.
   if (is.null(sites2use)) {
-    sites2use <- unique(indiv_dat$plots)
+    sites2use <- unique(plots)
   }
 
   #filter only for sites2use
