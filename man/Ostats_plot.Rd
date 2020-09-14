@@ -2,13 +2,13 @@
 % Please edit documentation in R/Ostats_plot.R
 \name{Ostats_plot}
 \alias{Ostats_plot}
-\title{Plotting Community Overlap}
+\title{Plotting community overlap}
 \usage{
 Ostats_plot(
   indiv_dat,
-  siteID,
-  taxonID,
-  trait,
+  plots,
+  sp,
+  traits,
   overlap_dat,
   sites2use = NULL,
   n_col = 1,
@@ -16,66 +16,92 @@ Ostats_plot(
   colorvalues = NULL,
   alpha = 0.5,
   adjust = 2,
-  limits_x = c(0.5 * min(trait, na.rm = TRUE), 1.5 * max(trait, na.rm = TRUE)),
-  name_x = "Trait value",
+  limits_x = c(0.5 * min(traits, na.rm = TRUE), 1.5 * max(traits, na.rm = TRUE)),
+  name_x = "traits value",
   name_y = "Probability Density",
   means = FALSE
 )
 }
 \arguments{
+<<<<<<< HEAD
 \item{indiv_dat}{Individual data: a data frame containing individual measurments for a certain
-traits,its species identity, and the community identity it belongs to.}
+trait,its species identity, and the community identity it belongs to.}
 
-\item{siteID}{Site identity: a column in indiv_dat data frame that indicates the names of each community.}
+\item{plots}{Site identity: a column in indiv_dat data frame that indicates the names of each community.}
 
-\item{taxonID}{Taxon identity: a column in indiv_dat data frame that indicates species or taxa names.}
+\item{sp}{Taxon identity: a column in indiv_dat data frame that indicates species or taxa names.}
 
-\item{trait}{The trait you want to overlap among species: a column in indiv_dat data frame containing trait measurements for each individual.}
+\item{traits}{you want to overlap among species: a column in indiv_dat data frame containing traits measurements for each individual.}
+=======
+\item{indiv_dat}{Individual trait data: a data frame containing individual trait measurments, the species identities of individuals, and the community to which each individual belongs.}
 
-\item{overlap_dat}{an object containing the results from the Ostats function - see \code{\link{Ostats}}}
+\item{siteID}{A factor vector with length equal to the number of elements in the traits vector that indicates the community in which each individual belongs.}
 
-\item{sites2use}{a vector that select the sites you want to plot. If NULL, the function will plot all the sites.}
+\item{taxonID}{A factor vector with length equal to the number of elements in the traits vector that indicates the taxon of each individual.}
 
-\item{n_col}{Number of columns for layout of individual panels. Default is 1.}
+\item{trait}{A numeric vector of trait measurements with length equal to the number of individuals. Each individual should have a trait measurement.}
+>>>>>>> 9bfcf86d2b466c22e8b67f1f85d6fcb8440e3e46
 
-\item{scale}{If you want the scale of x, y or both x and y axis to be adjusted according to each site density probability set the argument to "free_x", "free_y" or "free" respectively. Default= "fixed" which uses the same scale across all sites.}
+\item{overlap_dat}{an object containing the output from the Ostats function - see \code{\link{Ostats}}}
 
-\item{colorvalues}{Vector of color values for the density polygons. Defaults to a viridis palette if none provided.}
+\item{sites2use}{A vector of site (i.e., community) names indicating the sites you want to plot. If NULL, the function will plot all the sites.}
 
-\item{adjust}{multiplicate the bandwidth adjustment of the density polygons. The less, the tiny your density polygons will be. Default is 2.}
+\item{n_col}{Number of columns for layout of plots. Default is 1.}
 
-\item{limits_x}{the limits (min and max values) of the x axis. Default is \code{c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE))}}
+\item{scale}{If you want the scale of x, y, or both x and y axis to be adjusted according to each site's density probability set the argument to "free_x", "free_y" or "free", respectively. The default is set to "fixed", which uses the same axis scale across all sites.}
 
-\item{name_x}{a character indicating the name of your x axis (i.e. the name of your trait). Default is 'Trait value'}
+\item{colorvalues}{Vector of color values for the density curves. Defaults to a viridis palette if an alternate is not provided.}
 
-\item{name_y}{a character indicating the name of your y axis. Default is 'Probability Density'}
+\item{adjust}{The bandwidth used by the kernel density function within Ostats is actually adjust*bw. The smaller this value, the smaller your density curves will be plotted. The default is set to two.}
 
-\item{means}{if TRUE it plot traits means for each species in an additionlan plot column next to the traits distribution plots for each site. Default is FALSE, which make the function plot only the traits distribution for each site.}
+<<<<<<< HEAD
+\item{limits_x}{the limits (min and max values) of the x axis. Default is \code{c(0.5*min(traits,na.rm=TRUE), 1.5*max(traits,na.rm=TRUE))}}
 
-\item{alpha_o}{defines the colors trasparency level for the density polygons. Default is 0.5}
+\item{name_x}{a character indicating the name of your x axis (i.e. the name of your trait). Default is 'traits value'}
+=======
+\item{limits_x}{The limits (min and max values) of the x-axis. Default is \code{c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE))}}
+
+\item{name_x}{A character string indicating the name of the x-axis (i.e., the name of the trait). The default is set to 'Trait value.'}
+>>>>>>> 9bfcf86d2b466c22e8b67f1f85d6fcb8440e3e46
+
+\item{name_y}{A character string indicating the name of the y-axis. The default is set to 'Probability Density.'}
+
+\item{means}{If TRUE, a separate set of plots depicting the traits means for each species in a community are plotted in addition to plots with the density curves illustrating intraspecific trait variation for each species.The default is set to FALSE, which make the function plot only the traits distributions for each species within a community.}
+
+\item{alpha_o}{Defines the color trasparency level for the density curves. The default is set to 0.5}
 }
 \value{
-Density plots of species trait distribution plotted on the same graph
- for each community to show how they overlap each other. The overlap value obtained as output from the function \code{\link{Ostats}}, is labelled on each community graph.
+Density plots of species trait distribution plotted on the same graph for each community to show how they overlap each other. The overlap value obtained as output from the function \code{\link{Ostats}}, is labelled on each community graph.
 }
 \description{
-This function plots the overlap of traits among
- species for each community.
+This function plots the overlap of traits among species for each community. There is additional functionality to also plot the trait means for each species in each community for comparison with the trait distributions.
 }
 \examples{
-#load data:
-#indiv_dat <- read_csv('https://ndownloader.figshare.com/files/9167548', col_names = T)
+# Load the data.
+indiv_dat <- read_csv('https://ndownloader.figshare.com/files/9167548', col_names = T)
 
+<<<<<<< HEAD
 #set the arguments:
 #overlap_dat <- Ostats_bysite2015 #your results from the Ostat function - see \code{\link{Ostats}}
-#siteID <- indiv_dat$siteID
-#taxonID <- indiv_dat$taxonID
-#trait <- indiv_dat$logweight
+#plots <- indiv_dat$siteID
+#sp <- indiv_dat$taxonID
+#traits <- indiv_dat$logweight
+=======
+# Set the arguments.
+overlap_dat <- Ostats_example
+siteID <- indiv_dat$siteID
+taxonID <- indiv_dat$taxonID
+trait <- indiv_dat$logweight
+>>>>>>> 9bfcf86d2b466c22e8b67f1f85d6fcb8440e3e46
 
-#to plot only selected sites:
-#sites2use<- c('BART','KONZ','JORN')
+# To plot only selected sites
+sites2use<- c('HARV','JORN')
 
-#Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat, sites2use = sites2use, name_x = 'Body Weight (log-transformed)', means=T)
+<<<<<<< HEAD
+#Ostats_plot(indiv_dat = indiv_dat, plots = plots, sp = sp, traits = traits, overlap_dat = overlap_dat, sites2use = sites2use, name_x = 'Body Weight (log-transformed)', means=T)
+=======
+Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat, sites2use = sites2use, name_x = 'log10 Body Weight (g)', means=T)
+>>>>>>> 9bfcf86d2b466c22e8b67f1f85d6fcb8440e3e46
 
 }
 \seealso{

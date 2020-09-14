@@ -48,7 +48,7 @@
 #' circular_overlap(x, y, circular_units = "radians", density_args = list(bw = 1))
 #'
 #' @export
-circular_overlap <- function(a, b, circular_units = 'radians', normal = TRUE, circular_args = list, density_args = list()) {
+circular_overlap <- function(a, b, circular_units = 'radians', normal = TRUE, circular_args = list(), density_args = list()) {
 
   # clean input
   a <- as.numeric(na.omit(a))

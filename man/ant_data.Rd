@@ -5,16 +5,17 @@
 \alias{ant_data}
 \title{Sample Circular Data}
 \format{
-Data on ant occurences by species by hour in two experimental chambers. An object of class \code{data.frame} with 4837 rows and 3 columns. See Stuble et al. (2014) for more details.
+An object of class \code{data.frame} with 4837 rows and 3 columns.
 }
 \usage{
-data(ant_data)
+ant_data
 }
 \description{
-This is a sample dataset with 4837 rows with discrete hourly data collection from a study
+This is a sample dataset with discrete hourly data collection from a study
 in which ants were observed during 24-hour periods in multiple experimental
-chambers. Each row represents an observation of an individual ant, with the first column being its
-species identity, the second column being the experimental chamber in which it was observed, and the third column being the time it was observed rounded to the nearest hour.The experimental setup is described in Stuble et al. 2014.
+chambers. Each row represents an observation of an individual ant, with its
+species identity and the time it was observed, rounded to the nearest hour.
+The experimental setup is described in Stuble et al. 2014.
 }
 \references{
 Stuble, K.L., Patterson, C.M., Rodriguez-Cabal, M.A., Ribbons,
