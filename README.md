@@ -1,6 +1,7 @@
 # Ostats: O-statistics, or pairwise community-level niche overlap statistics
 
-This is an R package with code needed to calculate O-statistics. This description is a placeholder.
+The Ostats package calculates overlap statistic to measure the degree of community-level trait overlap by fitting nonparametric kernel density functions to each species' trait distribution and calculating their areas of overlap (Mouillot et al. 2005, Geange et al. 2011, Read et al. 2018). For instance, the median pairwise overlap for a community is calculated by first determining the overlap of each species pair in trait space, and then taking the median overlap of each species pair in a community. This function will only work with univariate trait data. Grady et al. (2018) provides a teaching module that goes into detail about how to interpret the O-stats results presented in Read et al. (2018).
+
 
 ## Authors
 
