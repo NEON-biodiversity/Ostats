@@ -23,4 +23,12 @@ devtools::install_github('NEON-biodiversity/Ostats')
 
 ## References
 
-Read, Q. D., J. M. Grady, P. L. Zarnetske, S. Record, B. Baiser, J. Belmaker, M.-N. Tuanmu, A. Strecker, L. Beaudrot, and K. M. Thibault. 2018. Among-species overlap in rodent body size distributions predicts species richness along a temperature gradient. Ecography. DOI:10.1111/ecog.03641
+Geange, S.W., S. Pledger, K.C. Burns, and J.S. Shima. 2011. A unified analysis of niche overlap incorporating data of different types. *Methods in Ecology and Evolution* 2(2):175-184. https://doi.org/10.1111/j.2041-210X.2010.00070.x
+
+Grady, J.M., Q.D. Read, S. Record, P.L. Zarnetske, B. Baiser, K. Thorne, and J. Belmaker. 2018. Size, niches, and the latitudinal diversity gradient. *Teaching Issues and Experiments in Ecology* 14: Figure Set #1.
+
+Mouillot, D., W. Stubbs, M. Faure, O. Dumay, J.A. Tomasini, J.B. Wilson, and T. Do Chi. 2005. Niche overlap estimated based on quantitative functional traits: A new family of non-parametric indices. *Oecologia* 145(3):345-353. https://doi.org/10.1007/s00442-005-0151-z
+
+Read, Q.D., J.M. Grady, P.L. Zarnetske, S. Record, B. Baiser, J. Belmaker, M.-N. Tuanmu, A. Strecker, L. Beaudrot, and K.M. Thibault. 2018. Among-species overlap in rodent body size distributions predicts species richness along a temperature gradient. *Ecography* 41(10):1718-1727. https://doi.org/10.1111/ecog.03641
+
+
