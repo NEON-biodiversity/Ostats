@@ -41,7 +41,7 @@
 #'   and the null model.
 
 #'
-#' @return The funtion returns a list containing 4 objects:
+#' @return The function returns a list containing 4 objects:
 #' \item{overlaps_norm}{a matrix showing the median of weighted pairwise overlaps (at default) of trait
 #'   distributions of all species in each community (at default output
 #'   and weight_type), with the area under all density functions normalized to 1.}
