@@ -2,7 +2,7 @@
 % Please edit documentation in R/Ostats_plot.R
 \name{Ostats_plot}
 \alias{Ostats_plot}
-\title{Plotting Community Overlap}
+\title{Plotting community overlap}
 \usage{
 Ostats_plot(
   indiv_dat,
@@ -23,55 +23,57 @@ Ostats_plot(
 )
 }
 \arguments{
-\item{indiv_dat}{Individual data: a data frame containing individual measurments for a certain
-traits,its species identity, and the community identity it belongs to.}
+\item{indiv_dat}{Individual trait data: a data frame containing individual trait measurments, the species identities of individuals, and the community to which each individual belongs.}
 
-\item{siteID}{Site identity: a column in indiv_dat data frame that indicates the names of each community.}
+\item{siteID}{A factor vector with length equal to the number of elements in the traits vector that indicates the community in which each individual belongs.}
 
-\item{taxonID}{Taxon identity: a column in indiv_dat data frame that indicates species or taxa names.}
+\item{taxonID}{A factor vector with length equal to the number of elements in the traits vector that indicates the taxon of each individual.}
 
-\item{trait}{The trait you want to overlap among species: a column in indiv_dat data frame containing trait measurements for each individual.}
+\item{trait}{A numeric vector of trait measurements with length equal to the number of individuals. Each individual should have a trait measurement.}
 
-\item{overlap_dat}{an object containing the results from the Ostats function - see \code{\link{Ostats}}}
+\item{overlap_dat}{an object containing the output from the Ostats function - see \code{\link{Ostats}}}
 
-\item{sites2use}{a vector that select the sites you want to plot. If NULL, the function will plot all the sites.}
+\item{sites2use}{A vector of site (i.e., community) names indicating the sites you want to plot. If NULL, the function will plot all the sites.}
 
-\item{n_col}{Number of columns for layout of individual panels. Default is 1.}
+\item{n_col}{Number of columns for layout of plots. Default is 1.}
 
-\item{scale}{If you want the scale of x, y or both x and y axis to be adjusted according to each site density probability set the argument to "free_x", "free_y" or "free" respectively. Default= "fixed" which uses the same scale across all sites.}
+\item{scale}{If you want the scale of x, y, or both x and y axis to be adjusted according to each site's density probability set the argument to "free_x", "free_y" or "free", respectively. The default is set to "fixed", which uses the same axis scale across all sites.}
 
-\item{colorvalues}{Vector of color values for the density polygons. Defaults to a viridis palette if none provided.}
+\item{colorvalues}{Vector of color values for the density curves. Defaults to a viridis palette if an alternate is not provided.}
 
-\item{adjust}{multiplicate the bandwidth adjustment of the density polygons. The less, the tiny your density polygons will be. Default is 2.}
+\item{adjust}{The bandwidth used by the kernel density function within Ostats is actually adjust*bw. The smaller this value, the smaller your density curves will be plotted. The default is set to two.}
 
-\item{limits_x}{the limits (min and max values) of the x axis. Default is \code{c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE))}}
+\item{limits_x}{The limits (min and max values) of the x-axis. Default is \code{c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE))}}
 
-\item{name_x}{a character indicating the name of your x axis (i.e. the name of your trait). Default is 'Trait value'}
+\item{name_x}{A character string indicating the name of the x-axis (i.e., the name of the trait). The default is set to 'Trait value.'}
 
-\item{name_y}{a character indicating the name of your y axis. Default is 'Probability Density'}
+\item{name_y}{A character string indicating the name of the y-axis. The default is set to 'Probability Density.'}
 
-\item{means}{if TRUE it plot traits means for each species in an additionlan plot column next to the traits distribution plots for each site. Default is FALSE, which make the function plot only the traits distribution for each site.}
+\item{means}{If TRUE, a separate set of plots depicting the traits means for each species in a community are plotted in addition to plots with the density curves illustrating intraspecific trait variation for each species.The default is set to FALSE, which make the function plot only the traits distributions for each species within a community.}
 
-\item{alpha_o}{defines the colors trasparency level for the density polygons. Default is 0.5}
+\item{alpha_o}{Defines the color trasparency level for the density curves. The default is set to 0.5}
 }
 \value{
-Density plots of species trait distribution plotted on the same graph
- for each community to show how they overlap each other. The overlap value obtained as output from the function \code{\link{Ostats}}, is labelled on each community graph.
+Density plots of species trait distribution plotted on the same graph for each community to show how they overlap each other. The overlap value obtained as output from the function \code{\link{Ostats}}, is labelled on each community graph.
 }
 \description{
-This function plots the overlap of traits among
- species for each community.
+This function plots the overlap of traits among species for each community. There is additional functionality to also plot the trait means for each species in each community for comparison with the trait distributions.
 }
 \examples{
-#load data:
+# Load the data.
 indiv_dat <- read_csv('https://ndownloader.figshare.com/files/9167548', col_names = T)
-overlap_dat <- Ostats_example
 
+# Set the arguments.
+overlap_dat <- Ostats_example
 siteID <- indiv_dat$siteID
 taxonID <- indiv_dat$taxonID
 trait <- indiv_dat$logweight
+
+# To plot only selected sites
 sites2use<- c('HARV','JORN')
-Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat, sites2use = sites2use, name_x = 'Body Weight (log-transformed)', means=T)
+
+Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat, sites2use = sites2use, name_x = 'log10 Body Weight (g)', means=T)
+
 }
 \seealso{
 \code{\link{Ostats}} to Calculate O-statistics (community-level

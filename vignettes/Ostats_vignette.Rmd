@@ -264,18 +264,17 @@ There are various arguments to fine tune the plot you produce.
 ```{r out.width="80%", warning=FALSE, error=FALSE, fig.align="center", fig.height=4.5, fig.width=7}
 # Example using the NEON small mammal dataset and Ostats_example
 
-#load data:
+# Load the data:
 indiv_dat <- read_csv('https://ndownloader.figshare.com/files/9167548', col_names = T)
 
-#set the arguments:
+# Set the arguments:
 overlap_dat <- Ostats_example 
 siteID <- indiv_dat$siteID
 taxonID <- indiv_dat$taxonID
 trait <- indiv_dat$logweight
 
-#to plot only selected sites:
+# To plot only selected sites:
 sites2use<- c('HARV','JORN') 
-
 Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat, sites2use = sites2use, name_x = 'log10 Body Weight (g)', means=T)
 
 
