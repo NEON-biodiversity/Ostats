@@ -27,7 +27,6 @@
 #'
 #'@examples
 #'#load data:
-<<<<<<< HEAD
 #'#indiv_dat <- read_csv('https://ndownloader.figshare.com/files/9167548', col_names = T)
 #'
 #'#set the arguments:
@@ -39,21 +38,12 @@
 #'#to plot only selected sites:
 #'#sites2use<- c('BART','KONZ','JORN')
 #'
-#'#Ostats_plot(indiv_dat = indiv_dat, plots = plots, sp = sp, traits = traits, overlap_dat = overlap_dat, sites2use = sites2use, name_x = 'Body Weight (log-transformed)', means=T)
-=======
-#'indiv_dat <- read_csv('https://ndownloader.figshare.com/files/9167548', col_names = T)
-#'overlap_dat <- Ostats_example
->>>>>>> 9bfcf86d2b466c22e8b67f1f85d6fcb8440e3e46
-=======
-#'indiv_dat <- read_csv('https://ndownloader.figshare.com/files/9167548', col_names = T)
-#'overlap_dat <- Ostats_example
->>>>>>> 9bfcf86d2b466c22e8b67f1f85d6fcb8440e3e46
+#'#to plot all sites:
+#'sites2use<- NULL
 #'
-#'plots <- indiv_dat$siteID
-#'sp <- indiv_dat$taxonID
-#'traits <- indiv_dat$logweight
-#'sites2use<- c('HARV','JORN')
-#'Ostats_plot(indiv_dat = indiv_dat, plots = plots, sp = sp, traits = traits, overlap_dat = overlap_dat, sites2use = sites2use, name_x = 'Body Weight (log-transformed)', means=T)
+#'
+#'#Ostats_plot(indiv_dat = indiv_dat, plots = plots, sp = sp, traits = traits, overlap_dat = overlap_dat, sites2use = sites2use, means=T)
+
 
 #'@export
 #'
