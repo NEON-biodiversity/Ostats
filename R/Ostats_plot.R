@@ -90,13 +90,17 @@ Ostats_plot<-function(indiv_dat,
 
     #make a column with repeted means for each specie
     table_all<-cbind(table_traits_taxon, table_traits_taxon[,2])
-    for(i in 1:length(unique(sp))){
-      name<-unique(table_all[,4])[i]
+    table_all<-data.frame(table_all,stringsAsFactors = FALSE)
+
+    n<-length(unique(taxon_mean$Group.1))
+    for(i in 1:n){
+      name<-unique(taxon_mean$Group.1)[i]
       T_F<-taxon_mean[,1]==name
       mean_name<-taxon_mean[,2][T_F]
-      table_all[,4]<-gsub(name, mean_name, table_all[,4])
+      table_all <- within(table_all, table_traits_taxon...2.[sp==name] <- mean_name)
     }
-    names(table_all)[names(table_all) == "table_traits_taxon[, 2]"] <- "means"
+
+    names(table_all)[names(table_all) == "table_traits_taxon...2."] <- "means"
 
   }
 
@@ -106,7 +110,7 @@ Ostats_plot<-function(indiv_dat,
     colorvalues <- sample(hcl.colors(10, palette = 'viridis'), size = length(unique(table_all$sp)), replace = TRUE)
   }
 
-  names(colorvalues) <- unique(sp)
+  names(colorvalues) <- unique(taxon_mean$Group.1)
 
   ggplot2::theme_set(
     ggplot2::theme_bw() + ggplot2::theme(panel.grid = ggplot2::element_blank(),
