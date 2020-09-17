@@ -239,7 +239,7 @@ Ostats_regional so far only supports linear data calculation.
 
 The graphing function *Ostats_plot* depends on ggplot2 and can be used to graph species trait overlaps of each community for multiple communities. 
 
-The input dataset indiv_dat needs to have at least three columns: one for taxon identification, one for trait measurements, and one to indicate which community the individual belongs to. Overlap_dat is the output of Ostats function for the same data. It is used to label the graphs with community overlap values.
+The input dataset *indiv_dat* needs to have at least three columns: one for taxon identification, one for trait measurements, and one to indicate which community the individual belongs to. Overlap_dat is the output of Ostats function for the same data. It is used to label the graphs with community overlap values.
 
 There are various arguments to fine tune the plot you produce.
 
@@ -275,7 +275,14 @@ trait <- indiv_dat$logweight
 
 # To plot only selected sites:
 sites2use<- c('HARV','JORN') 
-Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat, sites2use = sites2use, name_x = 'log10 Body Weight (g)', means=T)
+Ostats_plot(indiv_dat = indiv_dat, 
+            plots = siteID, 
+            sp = taxonID, 
+            traits = trait, 
+            overlap_dat = overlap_dat, 
+            sites2use = sites2use, 
+            name_x = 'log10 Body Weight (g)', 
+            means = TRUE)
 
 
 
