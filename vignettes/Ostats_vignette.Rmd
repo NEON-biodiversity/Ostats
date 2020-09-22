@@ -284,8 +284,6 @@ Ostats_plot(indiv_dat = indiv_dat,
             name_x = 'log10 Body Weight (g)', 
             means = TRUE)
 
-
-
 ```
 
 The graphs to the left show the intraspecific trait variation as illustrated by density curves, and the graphs to the right show mean trait values. For all graphs probability density is shown on the y-axis and log-transformed body weight on the x-axis. Each color represents a different species and colors are consistent across graphs. The top row illustrates trait values for HARV (Harvard Forest), whereas the bottom row illustrates trait values for JORN (Jornada). The leftmost graphs also show the median overlap value for the entire community. Note that there is more overlap in body weight values for HARV than for JORN. 
