@@ -52,7 +52,7 @@ The function *Ostats* is the primary function in this package. This function fir
 
 The input of the function *Ostats* is taken from a dataset with a column for species identification, a column that indicates which community the individual belongs to, and a column with trait measurements, often log-transformed. The code chunk below generates an input dataset for Ostats, used to calculate the Overlap statistics for sites Harvard Forest (HARV) and Jornada (JORN) from the National Ecological Observatory Network (NEON) (Read et al., 2018). NEON is a National Science Foundation funded network of 81 terrestrial and aquatic field sites strategically located across climatic domains in the United States where standardized protocols are used to sample a variety of ecological observations including small mammal body sizes. Harvard Forest is located in the northeastnern U.S. in Massachusetts in a temperate hardwood forest ecosystem, and Jornada is located in the southwestern U.S. in New Mexico in a desert ecosystem.  
 
-```{r include=FALSE}
+```{r}
 # Load the Ostats and tidyverse packages. tidyverse will be used for data wrangling. 
 library(Ostats)
 library(tidyverse)
