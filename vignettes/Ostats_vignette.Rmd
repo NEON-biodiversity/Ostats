@@ -52,7 +52,7 @@ The function *Ostats* is the primary function in this package. This function fir
 
 The input of the function *Ostats* is taken from a dataset with a column for species identification, a column that indicates which community the individual belongs to, and a column with trait measurements, often log-transformed. The code chunk below generates an input dataset for Ostats, used to calculate the Overlap statistics for sites Harvard Forest (HARV) and Jornada (JORN) from the National Ecological Observatory Network (NEON) (Read et al., 2018). NEON is a National Science Foundation funded network of 81 terrestrial and aquatic field sites strategically located across climatic domains in the United States where standardized protocols are used to sample a variety of ecological observations including small mammal body sizes. Harvard Forest is located in the northeastnern U.S. in Massachusetts in a temperate hardwood forest ecosystem, and Jornada is located in the southwestern U.S. in New Mexico in a desert ecosystem.  
 
-```{r include=FALSE}
+```{r}
 # Load the Ostats and tidyverse packages. tidyverse will be used for data wrangling. 
 library(Ostats)
 library(tidyverse)
@@ -239,7 +239,7 @@ Ostats_regional so far only supports linear data calculation.
 
 The graphing function *Ostats_plot* depends on ggplot2 and can be used to graph species trait overlaps of each community for multiple communities. 
 
-The input dataset indiv_dat needs to have at least three columns: one for taxon identification, one for trait measurements, and one to indicate which community the individual belongs to. Overlap_dat is the output of Ostats function for the same data. It is used to label the graphs with community overlap values.
+The input dataset *indiv_dat* needs to have at least three columns: one for taxon identification, one for trait measurements, and one to indicate which community the individual belongs to. Overlap_dat is the output of Ostats function for the same data. It is used to label the graphs with community overlap values.
 
 There are various arguments to fine tune the plot you produce.
 
@@ -275,9 +275,14 @@ trait <- indiv_dat$logweight
 
 # To plot only selected sites:
 sites2use<- c('HARV','JORN') 
-Ostats_plot(indiv_dat = indiv_dat, siteID = siteID, taxonID = taxonID, trait = trait, overlap_dat = overlap_dat, sites2use = sites2use, name_x = 'log10 Body Weight (g)', means=T)
-
-
+Ostats_plot(indiv_dat = indiv_dat, 
+            plots = siteID, 
+            sp = taxonID, 
+            traits = trait, 
+            overlap_dat = overlap_dat, 
+            sites2use = sites2use, 
+            name_x = 'log10 Body Weight (g)', 
+            means = TRUE)
 
 ```
 
