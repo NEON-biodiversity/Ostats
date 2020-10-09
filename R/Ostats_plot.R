@@ -107,7 +107,8 @@ Ostats_plot<-function(indiv_dat,
 
   # If a color vector is not provided, create a default palette.
   if (is.null(colorvalues)) {
-    colorvalues <- sample(hcl.colors(10, palette = 'viridis'), size = length(unique(table_all$sp)), replace = TRUE)
+    colorvalues <- sample(rainbow(10, s = 1, v = 1, start = 0, end = max(1, 10 - 1)/10,
+                                  alpha, rev = FALSE), size = length(unique(table_all$sp)), replace = TRUE)
   }
 
   names(colorvalues) <- unique(taxon_mean$Group.1)
