@@ -13,9 +13,9 @@ vignette: >
 ---
 # Overview
 
-The study of functional traits in ecology enables a greater understanding of the mechanisms underlying patterns of biodiversity. While trait-based research has traditionally focused on mean trait values for a species, there is growing awareness of the need to pay greater attention to intraspecific trait variation (ITV; Violle et al. 2012). From an evolutionary standpoint, ITV is important because it reflects differences within a species on which natural selection acts, and ecologically these differences within and among species in traits may give rise to differences in species interactions (Bolnick et al. 2011, Read et al. 2018).
+The study of functional traits in ecology enables a greater understanding of the mechanisms underlying patterns of biodiversity. While trait-based research has traditionally focused on mean trait values for a species, there is a growing awareness of the need to pay greater attention to intraspecific trait variation (ITV; Violle et al. 2012). From an evolutionary standpoint, ITV is important because it reflects differences within a species on which natural selection acts, and ecologically these differences within and among species traits may give rise to differences in species interactions (Bolnick et al. 2011, Read et al. 2018).
 
-When ITV is taken into account, trait values of individuals of each species may be portrayed as a distribution rather than as a single mean value. The degree of trait similarity between species can be measured as the amount of overlap in trait space between all species pairs in a community. Lower overlap indicates greater trait partitioning between pairs of species in a community. The Ostats package calculates a statistic to measure the degree of community-level trait overlap by fitting nonparametric kernel density functions to each species’ trait distribution
+When ITV is taken into account, trait values of individuals of each species may be represented as a distribution rather than as a single mean value. The degree of trait similarity between species can be measured as the amount of overlap in trait space between all species pairs in a community. Lower overlap indicates greater trait partitioning between pairs of species in a community. The Ostats package calculates a statistic to measure the degree of community-level trait overlap by fitting nonparametric kernel density functions to each species’ trait distribution
 and calculating their areas of overlap (Mouillot et al. 2005, Geange et al. 2011, Read et al. 2018). The median pairwise overlap for a community is calculated by first determining the overlap of each species pair in trait space, and then taking the median overlap of each species pair in a community. Functions in this package can be used to assess the level of species trait overlap and compare across communities. Effect size statistics can also be calculated against local or regional null models.
 
 Note that we have written an accompanying teaching module to Read et al. (2018), which walks through a figure set exercise for the manuscript (Grady et al. 2018). This teaching module may be helpful to review for interpretation of the overlap statistics and graphs.
@@ -37,7 +37,7 @@ The Ostats package consists of 10 functions in total. Some of the most common wa
 
   * Calculating overlap statistics against a regional species pool null model when there is a regional species pool dataset available, using *Ostats_regional* which depends on *pairwise_overlap* and *get_ses*. 
 
-  * The plotting function *Ostats_plot* is used to produce a visual display of species trait overlap in each community. 
+  * The plotting function *Ostats_plot* is used to produce a visualization of species trait overlap in each community. 
 
   * *community_overlap_noitv* calculates a value for each community that reflects pairwise distances using means of traits for each species, not taking ITV into account.
 
@@ -45,12 +45,11 @@ The Ostats package consists of 10 functions in total. Some of the most common wa
 
 ## Calculating the overlap statistics for linear data against a local null model
 
-The function *Ostats* is the primary function in this package. This function first generates density estimates for species trait distributions and calculates the intersection of two density functions to produce pairwise overlap values using *pairwise_overlap*. *Ostats* then calculates a community overlap value from the pairwise overlap values of all species pairs in the community using *community_overlap_merged*. Following these steps, to explore the drivers of variation in body size overlap, the *Ostats* function calculates effect sizes from a null model (z‐score) to test whether trait sorting within the bounds of trait space underlies decreased overlap.
-
+The function *Ostats* is the primary function in this package. This function first generates density estimates for species trait distributions and calculates the intersection of two density functions to produce pairwise overlap values using *pairwise_overlap*. *Ostats* then calculates a community overlap value from the pairwise overlap values of all species pairs in the community using *community_overlap_merged*. Finally, the Ostats function calculates effect sizes from a null model (z‐score) to test whether trait sorting within the bounds of trait space underlies decreased overlap, allowing the user to explore the drivers of variation in body size overlap.
 
 ### How to find the degree of overlap in body sizes for all small mammal species present in a particular community, and compare it with other communities?
 
-The input of the function *Ostats* is taken from a dataset with a column for species identification, a column that indicates which community the individual belongs to, and a column with trait measurements, often log-transformed. The code chunk below generates an input dataset for Ostats, used to calculate the Overlap statistics for sites Harvard Forest (HARV) and Jornada (JORN) from the National Ecological Observatory Network (NEON) (Read et al., 2018). NEON is a National Science Foundation funded network of 81 terrestrial and aquatic field sites strategically located across climatic domains in the United States where standardized protocols are used to sample a variety of ecological observations including small mammal body sizes. Harvard Forest is located in the northeastnern U.S. in Massachusetts in a temperate hardwood forest ecosystem, and Jornada is located in the southwestern U.S. in New Mexico in a desert ecosystem.  
+The input of the function *Ostats* is taken from a dataset with a column for species identification, a column that indicates which community the individual belongs to, and a column with trait measurements, often log-transformed. The code chunk below generates an input dataset for Ostats, used to calculate the Overlap statistics for sites Harvard Forest (HARV) and Jornada (JORN) from the National Ecological Observatory Network (NEON) (Read et al., 2018). NEON is a National Science Foundation funded network of 81 terrestrial and aquatic field sites strategically located across climatic domains in the United States where standardized protocols are used to sample a variety of ecological observations including small mammal body sizes. Harvard Forest is located in the northeastnern U.S. (Massachusetts) and encompasses a temperate hardwood forest ecosystem. Jornada is located in the southwestern U.S. (New Mexico) and encompasses a desert ecosystem.  
 
 ```{r}
 # Load the Ostats and tidyverse packages. tidyverse will be used for data wrangling. 
@@ -88,20 +87,20 @@ In the below example, all arguments are set to their default values.
 
 * The argument *data_type* has a default value of "linear", as the data processed are one dimensional (i.e., body masses of individual small mammals). The alternative input for this argument is circular for data that are periodic or discoid (e.g., measured in radians or degrees). 
 
-* The arguments *output* specifies the whether the median or mean of all pairwise overlap values between distributions of species will be returned. The default value for output is "median". The choice between median and mean for the output will depend on the variability in the input data and it is a good idea to see how much this choice influences the results of the analysis. For examples of analyses using the median and mean, respectively, see Read et al. 2018 and Mouillot et al. 2015.  
+* The arguments *output* specifies whether the median or mean of all pairwise overlap values between distributions of species will be returned. The default value for output is "median". The choice between median and mean for the output will depend on the variability in the input data and it is a good idea to see how much this choice influences the results of the analysis. For examples of analyses using the median and mean, respectively, see Read et al. 2018 and Mouillot et al. 2015.  
 
 * The *weight_type* argument specifies whether or not the abundances of each species within a community will be used to calculate the median or mean output returned by the Ostats function. When the default value for *weight_type* = "hmean", the function calculates the pairwise overlaps of trait distributions of all species in each community as 2/(1/abundance of species a + 1/abundance of species b). The harmonic mean *weight_type* is set as the default as it minimizes the effect of outliers and rare species. If the argument weight_type = "none", no weights are used for the calculation of mean or median. If weight_type = "mean", raw abundances of species are used as weights. 
 
 
-To explore the drivers of variation in body size overlap, the *Ostats* function can implement a null model to test whether individual species’ body size distributions are more evenly spaced along the trait axis than expected by chance, finding the z‐score of each observed community evaluated against the distribution of a user defined number of null communities in which species body size means may be shuffled randomly, retaining the shape and width of the distribution around the mean for each species.
+To explore the drivers of variation in body size overlap, the *Ostats* function can implement a null model to test whether individual species’ body size distributions are more evenly spaced along the trait axis than expected by chance. This approach evaluates the z‐score of each observed community against the distribution of a user defined number of null communities. In these null communities, species body size means may be shuffled randomly, retaining the shape and width of the distribution around the mean for each species.
 
 * The argument *nperm* sets the number of permutations, or randomly generated data null community subsets, for the null model. The default number of permutations is 99. The argument *nullqs* sets the quantile limits for effect size statistics calculation. This argument should be a numeric vector of probabilities with values between zero and one. The default lower and upper effect size quantiles, respectively, are 0.025 and 0.975. 
 
-* The *shuffle_weights* and *swap_means* arguments allow the user to modify the implementation of the null models. At default, *shuffle_weights* = FALSE and *swap_means* = FALSE, and the null model is generated by randomly assigning a taxon that is present in the community to each individual. To change the way of null model generation, the user can make use of these to arguments. If *shuffle_weights* is TRUE, the *Ostats* function shuffles weights given to pairwise overlaps within a community when generating null models. If *swap_means* is TRUE, the means of body sizes are randomly assigned to species within a community.
+* The *shuffle_weights* and *swap_means* arguments allow the user to modify the implementation of the null models. At default, *shuffle_weights* = FALSE and *swap_means* = FALSE, and the null model is generated by randomly assigning a taxon that is present in the community to each individual. To change the way the null model is generated, the user can make use of these two arguments. If *shuffle_weights* is TRUE, the *Ostats* function shuffles weights given to pairwise overlaps within a community when generating null models. If *swap_means* is TRUE, the means of body sizes are randomly assigned to species within a community.
 
 * The *density_args* is an argument for the user to add any additional arguments to pass to \code{\link[stats]{density}}, such as \code{bw}, \code{n}, or \code{adjust}. If none are provided, default values are used (i.e., bw = "nrd0", adjust = 1, and n = 512, where bw is the smoothing bandwidth to be used, adjust is a numeric value the bandwidth is multiplied by to get the actual bandwidth implemented by the *density* function, and n is the number of equally spaced points at which the density is to be estimated).
 
-Running the function may take several minutes, depending on the size of the dataset and the null model generation. A progress bar is provided to help the user monitor the time til the function completes the job. Note that in the code chunk below, the 'traits' argument is defined as a matrix with one column and as many rows as there are individuals in the dataset. The 'sp' and 'plots' arguments are each vectors of length number of individuals in the dataset where all elements are specified as factors. Here since the data are body sizes as measured by mass in grams, the data are considered linear for the argument 'data_type.'
+Running the function may take several minutes, depending on the size of the dataset and the null model generation. A progress bar is provided to help the user monitor the time until the function completes the job. Note that in the code chunk below, the 'traits' argument is defined as a matrix with one column and as many rows as there are individuals in the dataset. The 'sp' and 'plots' arguments are each vectors of length number of individuals in the dataset where all elements are specified as factors. In this example, since the data are body sizes as measured by mass in grams, the data are considered linear for the argument 'data_type.'
 
 ```{r echo = T, results='hide'}
 # Run O-stats on the small mammal data with all arguments set to default
@@ -135,7 +134,7 @@ The second item in the list resulting from running the *Ostats* function is *ove
 Ostats_example$overlaps_unnorm
 ```
 
-Elements in the *overlaps_norm* and *overlaps_unnorm* matrices are overlap values for each community, with one and zero indicating either complete or no overlap between species pairs within the community, respectively. A higher overlap value means greater similarity among species trait distributions. The difference between *overlaps_norm* and *overlaps_unnorm* is that *overlaps_norm* does not take species abundance into account to show relative differences between species across communities. Harvard Forest (HARV) has a high community overlap value indicating greater similarity among species trait distributions, whereas Jornada (JORN) has a very low community overlap value indicating low similarity in species trait distributions. These results are consistent across both *overlaps_norm* and *overlaps_unnorm*. 
+Elements in the *overlaps_norm* and *overlaps_unnorm* matrices are overlap values for each community, where one indicates complete overlap and zero indicates no overlap between species pairs within the community. A higher overlap value means greater similarity among species trait distributions. The difference between *overlaps_norm* and *overlaps_unnorm* is that *overlaps_norm* does not take species abundance into account to show relative differences between species across communities. Harvard Forest (HARV) has a high community overlap value indicating greater similarity among species trait distributions, whereas Jornada (JORN) has a very low community overlap value indicating low similarity in species trait distributions. These results are consistent across both *overlaps_norm* and *overlaps_unnorm*. 
 
 The last two items in the list generated by the *Ostats* function contain the effect size statistics from the null models. The third and fourth items in the list are *overlaps_norm_ses* and *overlaps_unnorm_ses*, which each consist of five matrices of effect size statistics against a null model. The difference between these two final items are that in *overlaps_norm_ses* the area under all density functions is normalized to 1, whereas in *overlaps_unnorm_ses* the area under all density functions is proportional to the number of observations per community. The code below displays the outputs of these third and fourth items:
 
@@ -145,24 +144,24 @@ Ostats_example$overlaps_norm_ses
 Ostats_example$overlaps_unnorm_ses
 ```
 
-These effect size values are used to compare the observed overlap statistics with a local null model (z-score test). As aforementioned, the upper and lower limits are set at 95% at default. If the ses (standard effect sizes) value is lower than the lower limit for that community, it suggests that the community overlap value observed is lower than expected by chance from a null model. Similarly, if the community overlap value is higher than the upper limit, the community has a higher overlap than expected by chance. In this example, regardless of whether normalized or non-normalized values are calculated, the community overlap of Harvard Forest (HARV) falls within the upper and lower quantiles, suggesting that the overlap value at HARV is not significantly different from the overlap values calculated from randomly generated community trait distributions. On the other hand, Jornarda (JORN) has a much lower value than the lower standardized effect size quantile limit, suggesting that JORN small mammal body size distributions are less similar than expected by chance based on the null models.
+These effect size values are used to compare the observed overlap statistics with a local null model (z-score test). As aforementioned, the upper and lower limits are set at 95% by default. If the ses (standard effect sizes) value is lower than the lower limit for that community, it suggests that the community overlap value observed is lower than expected by chance from a null model. Similarly, if the community overlap value is higher than the upper limit, the community has a higher overlap than expected by chance. In this example, regardless of whether normalized or non-normalized values are calculated, the community overlap of Harvard Forest (HARV) falls within the upper and lower quantiles, suggesting that the overlap value at HARV is not significantly different from the overlap values calculated from randomly generated community trait distributions. On the other hand, Jornarda (JORN) has a much lower value than the lower ses quantile limit, suggesting that JORN small mammal body size distributions are less similar than expected by chance based on the null models.
 
 ## Overlap statistics for circular data against a local null model
 
-The function *Ostats* can also be used to calculate overlap statistics of circular data, such as angular data (e.g., direction and orientation) or time. Two different kinds of circular calculations are available. One is to use \code{\link[circular]{circular}} embedded in the function *circular_overlap* to calculate density estimates, when the data are continuous. A second applies to hourly data and manually calculate the density by taking the proportion of each hour using the function *circular_overlap_24hour*, when the data are circular but only collected hourly, making the data discrete.
+The function *Ostats* can also be used to calculate overlap statistics of circular data, such as angular data (e.g., direction and orientation) or time. Two different kinds of circular calculations are available. One is to use \code{\link[circular]{circular}} embedded in the function *circular_overlap* to calculate density estimates, when the data are continuous. A second applies to hourly data and manually calculates the density by taking the proportion of each hour using the function *circular_overlap_24hour*, when the data are circular but only collected hourly, making the data discrete.
 
-To specify a circular analysis, the user sets data_type = "circular" when the data are circular and continuous, and data_type = "circular_discrete" if the data are circular, but discreate (i.e., collected every hour).
+To specify a circular analysis, set the argument of *Ostats* data_type = "circular" if the data are circular and continuous, or set data_type = "circular_discrete" if the data are circular and discrete (i.e., collected every hour).
 
 ### How to find the degree of overlap in time occurences for ant species present in a chamber, and compare across chambers of different conditions?
 
-To illustrate the calculation of overlap statistics applied to discrete, circular data the *Ostats* package provides a sample dataset called 'ant_data.' This is a subset of the data analysed in Stuble et al. (2014), wherein ant commmunities were exposed to chambers with different air temperatures to explore the effects of increased temperature on seed dispersal by ants. The 'ant_data' dataframe consists of three columns: 1) species (given as genus and species with a space between the two names), 2) chamber (i.e., 1 or 2), and 3) time (numeric data ranging from 0-23 to represent the 24 hours in a day).   
+To illustrate the calculation of overlap statistics applied to discrete, circular data the *Ostats* package provides a sample dataset called 'ant_data.' This is a subset of the data analysed in Stuble et al. (2014), wherein ant communities were exposed to chambers with different air temperatures to explore the effects of increased temperature on seed dispersal by ants. The 'ant_data' dataframe consists of three columns: 1) species (given as genus and species with a space between the two names), 2) chamber (i.e., 1 or 2), and 3) time (numeric data ranging from 0-23 to represent the 24 hours in a day).   
 
 ```{r}
 # Take a look at the first six rows of the ant data
 head(ant_data)
 ```
 
-The arguments are the same as the *Ostats* function linear data calculation. In the below example with 'ant_data', the input data are a record of ants in two chambers and their hour  of occurrence. For continuous circular data, data_type = "circular" is used, and *circular_args* can be used to pass additional arguments to \code{\link[circular]{circular}}.
+The arguments are the same in the *Ostats* function linear data calculation. In the example below with 'ant_data', the input data are a record of ants in two chambers and their hour  of occurrence. For ant_data that contains circular discrete time, we specify “circular_discrete” for the data_type argument. However, for continuous circular data, data_type = "circular" is used. Finally, *circular_args* can be used to pass additional arguments too \code{\link[circular]{circular}}.
 
 ```{r echo = T, results='hide'}
 # Calculate overlap statistics for hourly data using the ant_data dataset
@@ -172,27 +171,28 @@ circular_example <- Ostats(traits = as.matrix(ant_data$time),
                     data_type = "circular_discrete")
 ```
 
-The of the output is the same as the *Ostats* function linear data calculation. The code below shows the normalized and non-normalized overlap values for the two chambers, respectively, in the first four lines followed by the standardized effect sizes from the null models. 
+The output is the same as the *Ostats* function linear data calculation. The code below shows the normalized and non-normalized overlap values for the two chambers, respectively, in the first four lines followed by the standardized effect sizes from the null models. 
 
 ```{r}
 # View overlaps_norm
 circular_example$overlaps_norm
 # View overlaps_unnorm
 circular_example$overlaps_unnorm
-# View normalized and non-normalized standardized effect size outputs from null model analysis
+#View normalized standardized effect size outputs from null model analysis
 circular_example$overlaps_norm_ses
+#View non-normalized standardized effect size outputs from null model analysis
 circular_example$overlaps_unnorm_ses
 ```
 
 Regardless of whether the normalized or non-normalized overlap values are considered, the amount of overlap for both chambers is neither very high nor very low. For both chamber communities, the ses value is lower than the lower limit for each community, suggesting that the community overlap values observed for each chamber are lower than expected by chance from a null model, regardless of whether normalized or non-normalized ses values are considered.
 
-## Overlap Statistics for linear data against a regional null model 
+## Overlap statistics for linear data against a regional null model 
 
-*Ostats_regional* is a function that calculates overlap statistics against a regional null model, if the user has trait measurements for the regional species pool. The null model is generated by randomly sampling data from the regional species pool. In this function, the area under all density functions are normalized to 1. In other words, norm = TRUE is applied without the option of taking species abundances into account, which is more appropriate if the species abundances are highly variable. Other arguments are similar in use to the same arguments in *Ostats*. The user can customize *nperm*, *nullqs*, and pass arguments to *density()* function in *pairwise_overlap*.
+*Ostats_regional* is a function that calculates overlap statistics against a regional null model, if the user has trait measurements for the regional species pool. The null model is generated by randomly sampling data from the regional species pool. In this function, the area under all density functions is normalized to 1. This means that the argument norm = TRUE is applied without the option of taking species abundances into account, which is more appropriate if the species abundances are highly variable. Other arguments in *Ostats* regional are similar in use to *Ostats*. The user can customize *nperm*, *nullqs*, and pass arguments to *density()* function in *pairwise_overlap*.
 
 ### How to calculate and compare overlap of body sizes for all small mammal species in a community against available data for a larger regional pool?
 
-In the example below, the sample dataset 'reg_pool' is used as a regional pool dataset across space and time. Each row represents an individual small mammal that was trapped and weighed, with its species identity and body mass in grams. The weight measurements have already been log-transformed. It includes small mammal capture records for two NEON sites Bartlett Forest (BART) and Harvard Forest (HARV) from 2013 to 2018. Data for these two sites can be used as regional data because both sites are from the same ecoclimatic domain classified by NEON (the Northeast Domain).
+In the example below, the sample dataset 'reg_pool' is used as a regional pool dataset across space and time. Each row represents an individual small mammal that was trapped and weighed, with its species identity and body mass in grams. The weight measurements have already been log-transformed. It includes small mammal capture records for two NEON sites Harvard Forest (HARV) and  Bartlett Forest (BART) from 2013 to 2018. Data for these two sites can be used as regional data because both sites are from the same ecoclimatic domain classified by NEON (the Northeast Domain).
 
 ```{r}
 # Take a look at the first six rows of the reg_pool dataframe
@@ -205,11 +205,11 @@ In this example, we compare the small mammal data at 'HARV' in 2018 against the 
 # Create year column for subsetting
 reg_pool <- reg_pool %>%
   mutate(year = format(as.Date(endDate), '%Y'))
-# Subset 2019 NEON small mammal data for 'HARV' and 'BART'
+# Subset 2018 NEON small mammal data for 'HARV' and 'BART'
 HARV2018 <- reg_pool %>%
   filter(siteID %in% c('HARV'), year %in% 2018)
 
-# Subset 2013-2018 NEON small mammal data for 'HARV' and 'BART' sites, which will serve as the regional pool data in space and time for comparison with 'HARV' and 'BART' 2019 data.
+# Subset 2013-2018 NEON small mammal data for 'HARV' and 'BART' sites, which will serve as the regional pool data in space and time for comparison with 'HARV' and 'BART' 2018 data.
 regHARV <- reg_pool %>%
   filter(siteID  %in% 'HARV')
 
@@ -231,7 +231,7 @@ Ostats_reg_example <- Ostats_regional(traits = as.matrix(HARV2018$log_weight),
                                       reg_pool_sp = reg_pool_sp)
 ```
 
-The function evaluates the overlap statistics against a regional species pool null model. This regional null model test whether individual species’ body size distributions were more evenly spaced along the body size axis than expected by chance, finding the z‐score of each observed community evaluated against the distribution of 999 null communities drawn from body size measurements from the regional species pool in which species body size means were shuffled randomly, retaining the shape and width of the distribution around the mean for each species. 
+The function evaluates the overlap statistics against a regional species pool null model. This regional null model tests whether individual species’ body size distributions were more evenly spaced along the body size axis than expected by chance. This approach evaluates the z‐score of each observed community against the distribution of 999 null communities drawn from body size measurements from the regional species pool in which species body size means were shuffled randomly. This process retains the shape and width of the distribution around the mean for each species. 
 
 Effect size statistics are calculated against a total-pool null model and a by-species null model, respectively. The total-pool null model is generated by sampling n trait measurements (n = number of trait measurements for the community) from the regional pool of traits measurements and calculates the pairwise overlap between the random sample and the regional pool. The by-species null model is calculated by sampling trait measurements of the same species from the regional pool for each species present in the community to calculate pairwise overlap between the sample and the whole regional pool.
 
@@ -240,7 +240,7 @@ Ostats_reg_example
 ```
 The output of the function Ostats_regional is similar to that of Ostats function, with a list containing overlaps_reg, standardized effect size statistics for the total-pool null model and for the by-species null model. In this example for the total-pool and by-species null models, regardless of whether normalized or non-normalized values are calculated, the community overlap of Harvard Forest (HARV) in 2018 has lower value than the lower standardized effect size quantile limit relative to the regional pool of HARV and BART over time, suggesting that HARV small mammal body size distributions are less similar than expected by chance. 
 
-Ostats_regional so far only supports linear data calculation.
+Currently, Ostats_regional only supports linear data calculation.
 
 ## Overlap plots
 
@@ -258,15 +258,15 @@ There are various arguments to fine tune the plot you produce.
 
 * *alpha_o* defines the transparency level for colors that fill the density curves with the default being 0.5.
 
-* *adjust_o* Is a value that is multiplied by the bandwidth adjustment of the density curves. The small this value is, the smaller the density curves will be. The default is 2.
+* *adjust_o* is a value that is multiplied by the bandwidth adjustment of the density curves. The smaller this value is, the smaller the density curves will be. The default is 2.
 
-* *limits_o* This arguments sets the limits (min and max values) of the x-axis. The default x-axis limits are: a minimum of 0.5 times the minimum observed trait measurement (with NAs removed) and a maximum of 1.5 times the maximum observed trait measurement. Or in other words: c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE)).
+* *limits_o* This argument sets the limits (min and max values) of the x-axis. The default x-axis limits are: a minimum of 0.5 times the minimum observed trait measurement (with NAs removed) and a maximum of 1.5 times the maximum observed trait measurement. Or in other words: c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE)).
 
-* *name_x* Is a character string indicating the name of the x-axis (i.e., the name of the trait) with a default of 'Trait value'.
+* *name_x* is a character string indicating the name of the x-axis (i.e., the name of the trait) with a default of 'Trait value'.
 
-* *name_y* Is a character string indicating the name of the y-axis with a default of 'Probability Density'.
+* *name_y* is a character string indicating the name of the y-axis with a default of 'Probability Density'.
 
-* *means* Is a logical statement. If set to F or FALSE, which is the default value, then a single column of graphs is generated that illustrates the trait probability density curves for each species. If set to T or TRUE, then graphs of mean trait values are plotted in a second column for comparison of graphs with trait density curves. Note that setting means to TRUE is only recommended when you are plotting a 2-3 illustrative sites. If too many sites are plotted with mean set to TRUE then the graphs become small and difficult to read.
+* *means* is a logical statement. If set to F or FALSE, which is the default value, then a single column of graphs is generated that illustrates the trait probability density curves for each species. If set to T or TRUE, then graphs of mean trait values are plotted in a second column for comparison of graphs with trait density curves. Note that setting means to TRUE is only recommended when you are plotting a 2-3 illustrative sites. If too many sites are plotted with mean set to TRUE then the graphs become small and difficult to read.
 
 ```{r out.width="80%", warning=FALSE, error=FALSE, fig.align="center", fig.height=4.5, fig.width=7}
 # Example using the NEON small mammal dataset and Ostats_example
@@ -293,9 +293,9 @@ Ostats_plot(indiv_dat = indiv_dat,
 
 ```
 
-The graphs to the left show the intraspecific trait variation as illustrated by density curves, and the graphs to the right show mean trait values. For all graphs probability density is shown on the y-axis and log-transformed body weight on the x-axis. Each color represents a different species and colors are consistent across graphs. The top row illustrates trait values for HARV (Harvard Forest), whereas the bottom row illustrates trait values for JORN (Jornada). The leftmost graphs also show the median overlap value for the entire community. Note that there is more overlap in body weight values for HARV than for JORN. 
+The graphs to the left show the intraspecific trait variation as illustrated by density curves, and the graphs to the right show mean trait values. For all graphs probability density is shown on the y-axis and log-transformed body weight on the x-axis. Each color represents a different species and colors are consistent across graphs. The top row illustrates trait values for HARV (Harvard Forest), whereas the bottom row illustrates trait values for JORN (Jornada). The left column of graphs also show the median overlap value for the entire community. Note that there is more overlap in body weight values for HARV than for JORN. 
 
-If the graphs do not look normal, check whether the trait measurements have been log-transformed. Note that there is not currently functionality within the Ostats package to graph the outputs of the *Ostats* function when it is applied to circular data.
+If the graphs do not look like a normal curve, check whether the trait measurements have been log-transformed. Note that currently there is no functionality within the Ostats package to graph the outputs of the *Ostats* function when it is applied to circular data.
 
 ## Converting the output of *Ostats* to a table in long form.
 
