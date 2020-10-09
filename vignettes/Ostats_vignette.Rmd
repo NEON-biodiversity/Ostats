@@ -74,7 +74,8 @@ dat %>%
    slice(1)
 ```
 
-The input dataset looks like this, arranged by siteID and taxonID:
+Below is the input dataset. Each row represents an individual small mammal that was trapped and weighed, with information of its local of capture (siteID), species identity (taxonID), body mass in grams and the log value of the body mass in grams. 
+
 
 ```{r}
 # View first six rows of dat object
