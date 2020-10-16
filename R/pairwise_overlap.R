@@ -14,10 +14,11 @@
 #'  if FALSE, the area under all density functions is proportional to the number of
 #'  observations in that group.
 #' @param density_args list of additional arguments to be passed to
-#'   \code{\link[stats]{density}}.
+#'   \code{\link[stats]{density}} in the univariate case, or
+#'   \code{\link[hypervolume]{hypervolume}} in the multivariate case.
 #'
 #' @details This function generates kernel density estimates using the
-#' \code{\link[stats]{density}}  function for two datasets on a common grid.
+#' \code{\link[stats]{density}} function for two datasets on a common grid.
 #' Default values for \code{bw} and \code{n} are used if not provided in \code{density_args}.
 #' Intersection density function
 #' is then calculated by taking the integral of the minimum of the two functions,
@@ -49,50 +50,91 @@
 #' @export
 pairwise_overlap <- function(a, b, normal = TRUE, density_args = list()) {
 
-  # clean input
-  a <- as.numeric(na.omit(a))
-  b <- as.numeric(na.omit(b))
+  # Check structure of inputs a and b.
+  # If they are unidimensional use density(), if >1 dimension use hypervolume()
+  # If the dimensions don't match (number of columns in a != number of columns in b), return error.
+  if (is.vector(a) & is.vector(b)) {
+    # Univariate case
 
-  # define limits of a common grid, adding a buffer so that tails aren't cut off
-  lower <- min(c(a, b)) - 1
-  upper <- max(c(a, b)) + 1
+    # clean input
+    a <- as.numeric(na.omit(a))
+    b <- as.numeric(na.omit(b))
 
-  # generate kernel densities
-  # Bandwidth method defaults to nrd0 if not given, n defaults to 512 if not given
-  if ('bw' %in% names(density_args)) {
-    bw <- density_args[['bw']]
+    # define limits of a common grid, adding a buffer so that tails aren't cut off
+    lower <- min(c(a, b)) - 1
+    upper <- max(c(a, b)) + 1
+
+    # generate kernel densities
+    # Bandwidth method defaults to nrd0 if not given, n defaults to 512 if not given
+    if ('bw' %in% names(density_args)) {
+      bw <- density_args[['bw']]
+    } else {
+      bw <- 'nrd0'
+    }
+    if ('n' %in% names(density_args)) {
+      n <- density_args[['n']]
+    } else {
+      n <- 512
+    }
+
+    da <- density(a, from=lower, to=upper, bw=bw, n=n)
+    db <- density(b, from=lower, to=upper, bw=bw, n=n)
+    d <- data.frame(x=da$x, a=da$y, b=db$y)
+
+    # If not normalized, multiply each density entry by the length of each vector
+    if (normal!=TRUE) {
+      d$a <- d$a * length(a)
+      d$b <- d$b * length(b)
+    }
+
+    # calculate intersection densities
+    d$w <- pmin(d$a, d$b)
+
+    # integrate areas under curves
+    total <- sfsmisc::integrate.xy(d$x, d$a) + sfsmisc::integrate.xy(d$x, d$b)
+    intersection <- sfsmisc::integrate.xy(d$x, d$w)
+
+    # compute overlap coefficient
+    overlap_average <- 2 * intersection / total
+    overlap_a <- intersection / sfsmisc::integrate.xy(d$x, d$a)
+    overlap_b <- intersection / sfsmisc::integrate.xy(d$x, d$b)
+
+    return(c(overlap_average = overlap_average, overlap_a = overlap_a, overlap_b = overlap_b))
+
   } else {
-    bw <- 'nrd0'
+    if (dim(a)[2] != dim(b)[2]) {
+      stop('Number of columns across species do not match.')
+    }
+
+    # clean input
+    a <- a[complete.cases(a), ]
+    b <- b[complete.cases(b), ]
+
+    # Scale input if normalized
+    if (normal) {
+      a <- scale(a)
+      b <- scale(b)
+    }
+
+    # FIXME allow user to pass arguments here
+    # Convert each of the input matrices to hypervolume.
+    hv_a <- hypervolume::hypervolume(a, method = 'gaussian', verbose = FALSE)
+    hv_b <- hypervolume::hypervolume(b, method = 'gaussian', verbose = FALSE)
+
+    # FIXME allow user to pass arguments here
+    # Calculate hypervolume set operations
+    hv_set_ab <- hypervolume::hypervolume_set(hv_a, hv_b, num.points.max = NULL, verbose = FALSE, check.memory = FALSE, distance.factor = 1)
+
+    # Calculate hypervolume overlap statistic
+    hv_overlap_ab <- hypervolume::hypervolume_overlap_statistics(hv_set_ab)
+
+    # Return Sorensen similarity (equivalent to univariate overlap statistic)
+    # Return other values to correspond with our univariate version
+    out <- c(hv_overlap_ab['sorensen'], 1 - hv_overlap_ab['frac_unique_1'], 1 - hv_overlap_ab['frac_unique_2'])
+    names(out) <- c('overlap_average', 'overlap_a', 'overlap_b')
+    return(out)
+
   }
-  if ('n' %in% names(density_args)) {
-    n <- density_args[['n']]
-  } else {
-    n <- 512
-  }
-
-  da <- density(a, from=lower, to=upper, bw=bw, n=n)
-  db <- density(b, from=lower, to=upper, bw=bw, n=n)
-  d <- data.frame(x=da$x, a=da$y, b=db$y)
-
-  # If not normalized, multiply each density entry by the length of each vector
-  if (normal!=TRUE) {
-    d$a <- d$a * length(a)
-    d$b <- d$b * length(b)
-  }
-
-  # calculate intersection densities
-  d$w <- pmin(d$a, d$b)
-
-  # integrate areas under curves
-  total <- sfsmisc::integrate.xy(d$x, d$a) + sfsmisc::integrate.xy(d$x, d$b)
-  intersection <- sfsmisc::integrate.xy(d$x, d$w)
-
-  # compute overlap coefficient
-  overlap_average <- 2 * intersection / total
-  overlap_a <- intersection / sfsmisc::integrate.xy(d$x, d$a)
-  overlap_b <- intersection / sfsmisc::integrate.xy(d$x, d$b)
-
-  return(c(overlap_average = overlap_average, overlap_a = overlap_a, overlap_b = overlap_b))
 
 }
 
