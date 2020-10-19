@@ -47,7 +47,7 @@ The Ostats package consists of 10 functions in total. Some of the most common wa
 
 The function *Ostats* is the primary function in this package. This function first generates density estimates for species trait distributions and calculates the intersection of two density functions to produce pairwise overlap values using *pairwise_overlap*. *Ostats* then calculates a community overlap value from the pairwise overlap values of all species pairs in the community using *community_overlap_merged*. Finally, the Ostats function calculates effect sizes from a null model (z‐score) to test whether trait sorting within the bounds of trait space underlies decreased overlap, allowing the user to explore the drivers of variation in body size overlap.
 
-### How to find the degree of overlap in body sizes for all small mammal species present in a particular community, and compare it with other communities?
+### EXAMPLE: How to find the degree of overlap in body sizes for all small mammal species present in a particular community, and compare it with other communities?
 
 The input of the function *Ostats* is taken from a dataset with a column for species identification, a column that indicates which community the individual belongs to, and a column with trait measurements, often log-transformed. The code chunk below generates an input dataset for Ostats, used to calculate the Overlap statistics for sites Harvard Forest (HARV) and Jornada (JORN) from the National Ecological Observatory Network (NEON) (Read et al., 2018). NEON is a National Science Foundation funded network of 81 terrestrial and aquatic field sites strategically located across climatic domains in the United States where standardized protocols are used to sample a variety of ecological observations including small mammal body sizes. Harvard Forest is located in the northeastnern U.S. (Massachusetts) and encompasses a temperate hardwood forest ecosystem. Jornada is located in the southwestern U.S. (New Mexico) and encompasses a desert ecosystem.  
 
@@ -84,16 +84,15 @@ Below is the input dataset. Each row represents an individual small mammal that 
 
 ### Arguments for the function *Ostats*
 
-In the below example, all arguments are set to their default values. 
+In the below example, all arguments are set to their default values.
+
+To explore the drivers of variation in body size overlap, the *Ostats* function can implement a null model to test whether individual species’ body size distributions are more evenly spaced along the trait axis than expected by chance. This approach evaluates the z‐score of each observed community against the distribution of a user defined number of null communities. In these null communities, species body size means may be shuffled randomly, retaining the shape and width of the distribution around the mean for each species.
 
 * The argument *data_type* has a default value of "linear", as the data processed are one dimensional (i.e., body masses of individual small mammals). The alternative input for this argument is circular for data that are periodic or discoid (e.g., measured in radians or degrees). 
 
 * The arguments *output* specifies whether the median or mean of all pairwise overlap values between distributions of species will be returned. The default value for output is "median". The choice between median and mean for the output will depend on the variability in the input data and it is a good idea to see how much this choice influences the results of the analysis. For examples of analyses using the median and mean, respectively, see Read et al. 2018 and Mouillot et al. 2015.  
 
 * The *weight_type* argument specifies whether or not the abundances of each species within a community will be used to calculate the median or mean output returned by the Ostats function. When the default value for *weight_type* = "hmean", the function calculates the pairwise overlaps of trait distributions of all species in each community as 2/(1/abundance of species a + 1/abundance of species b). The harmonic mean *weight_type* is set as the default as it minimizes the effect of outliers and rare species. If the argument weight_type = "none", no weights are used for the calculation of mean or median. If weight_type = "mean", raw abundances of species are used as weights. 
-
-
-To explore the drivers of variation in body size overlap, the *Ostats* function can implement a null model to test whether individual species’ body size distributions are more evenly spaced along the trait axis than expected by chance. This approach evaluates the z‐score of each observed community against the distribution of a user defined number of null communities. In these null communities, species body size means may be shuffled randomly, retaining the shape and width of the distribution around the mean for each species.
 
 * The argument *nperm* sets the number of permutations, or randomly generated data null community subsets, for the null model. The default number of permutations is 99. The argument *nullqs* sets the quantile limits for effect size statistics calculation. This argument should be a numeric vector of probabilities with values between zero and one. The default lower and upper effect size quantiles, respectively, are 0.025 and 0.975. 
 
@@ -153,7 +152,7 @@ The function *Ostats* can also be used to calculate overlap statistics of circul
 
 To specify a circular analysis, set the argument of *Ostats* data_type = "circular" if the data are circular and continuous, or set data_type = "circular_discrete" if the data are circular and discrete (i.e., collected every hour).
 
-### How to find the degree of overlap in time occurences for ant species present in a chamber, and compare across chambers of different conditions?
+### EXAMPLE: How to find the degree of overlap in time occurences for ant species present in a chamber, and compare across chambers of different conditions?
 
 To illustrate the calculation of overlap statistics applied to discrete, circular data the *Ostats* package provides a sample dataset called 'ant_data.' This is a subset of the data analysed in Stuble et al. (2014), wherein ant communities were exposed to chambers with different air temperatures to explore the effects of increased temperature on seed dispersal by ants. The 'ant_data' dataframe consists of three columns: 1) species (given as genus and species with a space between the two names), 2) chamber (i.e., 1 or 2), and 3) time (numeric data ranging from 0-23 to represent the 24 hours in a day).   
 
@@ -191,7 +190,7 @@ Regardless of whether the normalized or non-normalized overlap values are consid
 
 *Ostats_regional* is a function that calculates overlap statistics against a regional null model, if the user has trait measurements for the regional species pool. The null model is generated by randomly sampling data from the regional species pool. In this function, the area under all density functions is normalized to 1. This means that the argument norm = TRUE is applied without the option of taking species abundances into account, which is more appropriate if the species abundances are highly variable. Other arguments in *Ostats* regional are similar in use to *Ostats*. The user can customize *nperm*, *nullqs*, and pass arguments to *density()* function in *pairwise_overlap*.
 
-### How to calculate and compare overlap of body sizes for all small mammal species in a community against available data for a larger regional pool?
+### EXAMPLE: How to calculate and compare overlap of body sizes for all small mammal species in a community against available data for a larger regional pool?
 
 In the example below, the sample dataset 'reg_pool' is used as a regional pool dataset across space and time. Each row represents an individual small mammal that was trapped and weighed, with its species identity and body mass in grams. The weight measurements have already been log-transformed. It includes small mammal capture records for two NEON sites Harvard Forest (HARV) and  Bartlett Forest (BART) from 2013 to 2018. Data for these two sites can be used as regional data because both sites are from the same ecoclimatic domain classified by NEON (the Northeast Domain).
 
