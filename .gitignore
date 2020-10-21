@@ -4,3 +4,4 @@
 .Rhistory
 /revdep
 inst/doc
+internal_docs/*.pdf

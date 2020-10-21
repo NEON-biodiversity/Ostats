@@ -46,30 +46,32 @@ library(Ostats)
 iris_traits <- iris[,1:4]
 iris_sp <- iris[,5]
 iris_plots <- rep('plot1', nrow(iris))
+
+n_null <- 99 # N. of null permutations
 ```
 
 ## Calculate overlaps
 
 First calculate the four individual overlap statistics with associated null models for each trait separately.
 
-```{r separate overlap, message = FALSE, echo = FALSE}
+```{r separate overlap, message = FALSE, results = 'hide'}
 set.seed(333)
 
 iris_overlap_separate <- Ostats(traits = as.matrix(iris_traits), 
                                 sp = as.factor(iris_sp), 
                                 plots = as.factor(iris_plots), 
-                                nperm = 99)
+                                nperm = n_null)
 ```
  
 Next calculate a single multivariate overlap statistic across all four traits.
 
-```{r multivariate overlap, message = FALSE, echo = FALSE}
+```{r multivariate overlap, message = FALSE, results = 'hide'}
 set.seed(222)
 
 iris_overlap_multivariate <- Ostats_multivariate(traits = as.matrix(iris_traits), 
                                                  sp = as.factor(iris_sp), 
                                                  plots = as.factor(iris_plots), 
-                                                 nperm = 99, 
+                                                 nperm = n_null, 
                                                  hypervolume_args = list(verbose = FALSE, method = 'box'))
 ```
 
@@ -77,13 +79,13 @@ iris_overlap_multivariate <- Ostats_multivariate(traits = as.matrix(iris_traits)
 
 The four raw overlap statistics for each trait individually are:
 
-```{r}
+```{r, echo = FALSE}
 write.table(t(signif(iris_overlap_separate$overlaps_norm,2)), col.names = FALSE)
 ```
 
 The four univariate null model z-scores are:
 
-```{r}
+```{r, echo = FALSE}
 write.table(t(signif(iris_overlap_separate$overlaps_norm_ses$ses,3)), col.names = FALSE)
 ```
 
@@ -91,7 +93,40 @@ The multivariate overlap statistic for all traits combined is `r signif(iris_ove
 
 ## Plots
 
-add some plots
+These are the density plots for each trait separately. It shows that the sepal traits have much higher overlap than the petal traits.
+
+```{r plot individual, echo = FALSE, message = FALSE}
+library(tidyverse)
+
+theme_set(theme_minimal())
+
+iris_long <- iris %>% pivot_longer(-Species)
+
+ggplot(iris_long, aes(x = value, group = Species, fill = Species)) +
+  facet_wrap(~ name) +
+  geom_density(alpha = 0.75) +
+  scale_fill_viridis_d()
+
+```
+
+Using built-in plotting functions from the `hypervolume` package we can at least attempt to visualize the 4-D hypervolumes.
+More or less it shows that the overlap mostly occurs on the sepal dimensions, which I suppose confirms what we see in the univariate plots.
+
+```{r get hypervolumes, echo = FALSE, message = FALSE, results = 'hide'}
+library(hypervolume)
+
+iris_hypes <- iris %>%
+  group_by(Species) %>%
+  group_map(~ hypervolume(.[, 1:4], name = .$Species[1]), keep = TRUE)
+```
+
+```{r plot hypervolumes, echo = FALSE}
+iris_hypes_list <- do.call(hypervolume_join, iris_hypes)
+
+plot(iris_hypes_list, colors = viridis::viridis(3))
+
+```
+
 
 
 ## To do

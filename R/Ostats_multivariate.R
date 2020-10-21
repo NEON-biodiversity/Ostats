@@ -36,9 +36,9 @@ Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_typ
   pb <- txtProgressBar(min = 0, max = nlevels(plots), style = 3)
 
   for (s in 1:nlevels(plots)) {
-      overlap_norm_s <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sp[plots == levels(plots)[s]], data_type = data_type, output = output, weight_type = weight_type, normal=TRUE, density_args = hypervolume_args), TRUE)
+      overlap_norm_s <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sp[plots == levels(plots)[s]], output = output, weight_type = weight_type, normal=TRUE, density_args = hypervolume_args), TRUE)
       overlaps_norm[s, 1] <- if (inherits(overlap_norm_s, 'try-error')) NA else overlap_norm_s
-      overlap_unnorm_s <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sp[plots == levels(plots)[s]], data_type = data_type, output = output, weight_type = weight_type, normal=FALSE, density_args = hypervolume_args), TRUE)
+      overlap_unnorm_s <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sp[plots == levels(plots)[s]], output = output, weight_type = weight_type, normal=FALSE, density_args = hypervolume_args), TRUE)
       overlaps_unnorm[s, 1] <- if (inherits(overlap_unnorm_s, 'try-error')) NA else overlap_unnorm_s
 
     setTxtProgressBar(pb, s)
@@ -56,8 +56,8 @@ Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_typ
     setTxtProgressBar(pb, i)
     for (s in 1:nlevels(plots)) {
 
-        if (shuffle_weights == FALSE & swap_means == FALSE) overlap_norm_si <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sample(sp[plots == levels(plots)[s]]), data_type=data_type, output = output, weight_type = weight_type, normal=TRUE,  density_args = hypervolume_args), TRUE)
-        if (shuffle_weights == TRUE) overlap_norm_si <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sp[plots == levels(plots)[s]], data_type=data_type, output = output, weight_type = weight_type, normal=TRUE, randomize_weights = TRUE, density_args = hypervolume_args), TRUE)
+        if (shuffle_weights == FALSE & swap_means == FALSE) overlap_norm_si <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sample(sp[plots == levels(plots)[s]]), output = output, weight_type = weight_type, normal=TRUE, density_args = hypervolume_args), TRUE)
+        if (shuffle_weights == TRUE) overlap_norm_si <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sp[plots == levels(plots)[s]], output = output, weight_type = weight_type, normal=TRUE, randomize_weights = TRUE, density_args = hypervolume_args), TRUE)
         if (swap_means == TRUE) {
           traits_s <- traits[plots==levels(plots)[s], ]
           sp_s <- sp[plots==levels(plots)[s]]

@@ -34,17 +34,16 @@ iris_plots <- rep('foobar', nrow(iris))
 
 O1 <- Ostats_multivariate(traits = as.matrix(iris_traits), sp = as.factor(iris_sp), plots = as.factor(iris_plots), nperm = 5, hypervolume_args = list(verbose = FALSE, method = 'box'))
 
-traits <- as.matrix(iris_traits)
-sp <- as.factor(iris_sp)
-plots <- as.factor(iris_plots)
-nperm <- 5
-hypervolume_args = list(verbose = FALSE, method = 'box')
-data_type <- 'linear'
-weight_type <- 'hmean'
-output <- 'median'
-swap_means <- FALSE
-shuffle_weights <- FALSE
+traits = as.matrix(iris_traits)
+plots = as.factor(iris_plots)
+sp = as.factor(iris_sp)
+output = "median"
+weight_type= "hmean"
+nperm = 99
 nullqs = c(0.025, 0.975)
+shuffle_weights = FALSE
+swap_means = FALSE
+hypervolume_args = list()
 
 # Comparison with the non multivariate version
 O1separate <- Ostats(traits = as.matrix(iris_traits), sp = as.factor(iris_sp), plots = as.factor(iris_plots), nperm = 5)
