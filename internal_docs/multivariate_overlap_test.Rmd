@@ -72,7 +72,8 @@ iris_overlap_multivariate <- Ostats_multivariate(traits = as.matrix(iris_traits)
                                                  sp = as.factor(iris_sp), 
                                                  plots = as.factor(iris_plots), 
                                                  nperm = n_null, 
-                                                 hypervolume_args = list(verbose = FALSE, method = 'box'))
+                                                 hypervolume_args = list(verbose = FALSE, 
+                                                                         method = 'box'))
 ```
 
 ## Results
@@ -112,7 +113,7 @@ ggplot(iris_long, aes(x = value, group = Species, fill = Species)) +
 Using built-in plotting functions from the `hypervolume` package we can at least attempt to visualize the 4-D hypervolumes.
 More or less it shows that the overlap mostly occurs on the sepal dimensions, which I suppose confirms what we see in the univariate plots.
 
-```{r get hypervolumes, echo = FALSE, message = FALSE, results = 'hide'}
+```{r get hypervolumes, echo = FALSE, message = FALSE, warning = FALSE, results = 'hide'}
 library(hypervolume)
 
 iris_hypes <- iris %>%
@@ -120,7 +121,7 @@ iris_hypes <- iris %>%
   group_map(~ hypervolume(.[, 1:4], name = .$Species[1]), keep = TRUE)
 ```
 
-```{r plot hypervolumes, echo = FALSE}
+```{r plot hypervolumes, echo = FALSE, message = FALSE, warning = FALSE}
 iris_hypes_list <- do.call(hypervolume_join, iris_hypes)
 
 plot(iris_hypes_list, colors = viridis::viridis(3))
