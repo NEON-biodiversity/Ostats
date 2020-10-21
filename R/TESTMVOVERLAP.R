@@ -25,3 +25,23 @@ pairwise_overlap(iris_spp$setosa[,1:4], iris_spp$virginica[,1:4])
 
 set.seed(1113)
 pairwise_overlap(iris_spp$versicolor[,1:4], iris_spp$virginica[,1:4])
+
+#### test Ostats_multivariate()!
+
+iris_traits <- iris[,1:4]
+iris_sp <- iris[,5]
+iris_plots <- rep('foobar', nrow(iris))
+
+O1 <- Ostats_multivariate(traits = as.matrix(iris_traits), sp = as.factor(iris_sp), plots = as.factor(iris_plots), nperm = 5, hypervolume_args = list(verbose = FALSE, method = 'box'))
+
+traits <- as.matrix(iris_traits)
+sp <- as.factor(iris_sp)
+plots <- as.factor(iris_plots)
+nperm <- 10
+hypervolume_args = list(verbose = FALSE, method = 'box')
+data_type <- 'linear'
+weight_type <- 'hmean'
+output <- 'median'
+
+# Comparison with the non multivariate version
+O1separate <- Ostats(traits = as.matrix(iris_traits), sp = as.factor(iris_sp), plots = as.factor(iris_plots), nperm = 5)

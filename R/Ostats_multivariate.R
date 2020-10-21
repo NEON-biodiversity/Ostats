@@ -6,7 +6,7 @@
 # Also note at the moment that the argument hypervolume_args is passed to density_args for consistency with argument names.
 # It is all internal so not really an issue.
 
-Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_type= "hmean", nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE, hvpervolume_args = list()) {
+Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_type= "hmean", nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE, hypervolume_args = list()) {
   # Required input: a matrix called traits (nrows=n individuals, ncols=n traits),
   # a vector called plots which is a factor with length equal to nrow(traits),
   # a vector called sp which is a factor with length equal to nrow(traits),
@@ -18,16 +18,16 @@ Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_typ
 
   # Declaration of data structures to hold the results
   # Data structures for observed O-Stats
-  overlaps_norm <- numeric(nlevels(plots))
-  overlaps_unnorm <- numeric(nlevels(plots))
+  overlaps_norm <- matrix(nrow = nlevels(plots), ncol = 1)
+  overlaps_unnorm <- matrix(nrow = nlevels(plots), ncol = 1)
 
   # Data structures for null O-Stats
-  overlaps_norm_null <- matrix(nrow = nlevels(plots), ncol = nperm)
-  overlaps_unnorm_null <- matrix(nrow = nlevels(plots), ncol = nperm)
+  overlaps_norm_null <- array(dim = c(nlevels(plots), 1, nperm))
+  overlaps_unnorm_null <- array(dim = c(nlevels(plots), 1, nperm))
 
-  # Name the output.
-  names(overlaps_norm) <- levels(plots)
-  names(overlaps_unnorm) <- levels(plots)
+  # Name rows of the outputs (in multivariate case we do not name columns after traits).
+  dimnames(overlaps_norm) <- list(levels(plots))
+  dimnames(overlaps_unnorm) <- list(levels(plots))
 
   # Calculation of observed O-Stats
 
@@ -36,9 +36,9 @@ Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_typ
 
   for (s in 1:nlevels(plots)) {
       overlap_norm_s <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sp[plots == levels(plots)[s]], data_type = data_type, output = output, weight_type = weight_type, normal=TRUE, density_args = hypervolume_args), TRUE)
-      overlaps_norm[s] <- if (inherits(overlap_norm_s, 'try-error')) NA else overlap_norm_s
+      overlaps_norm[s, 1] <- if (inherits(overlap_norm_s, 'try-error')) NA else overlap_norm_s
       overlap_unnorm_s <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sp[plots == levels(plots)[s]], data_type = data_type, output = output, weight_type = weight_type, normal=FALSE, density_args = hypervolume_args), TRUE)
-      overlaps_unnorm[s] <- if (inherits(overlap_unnorm_s, 'try-error')) NA else overlap_unnorm_s
+      overlaps_unnorm[s, 1] <- if (inherits(overlap_unnorm_s, 'try-error')) NA else overlap_unnorm_s
 
     setTxtProgressBar(pb, s)
   }
@@ -71,9 +71,9 @@ Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_typ
           overlap_norm_si <- try(community_overlap_merged(traits = traits_null, sp = sp_null, data_type=data_type, output = output, weight_type = weight_type,normal=TRUE, randomize_weights = FALSE, circular_args = circular_args, density_args = hypervolume_args), TRUE)
         }
 
-        overlaps_norm_null[s, i] <- if (inherits(overlap_norm_si, 'try-error')) NA else overlap_norm_si
+        overlaps_norm_null[s, 1, i] <- if (inherits(overlap_norm_si, 'try-error')) NA else overlap_norm_si
         overlap_unnorm_si <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sample(sp[plots == levels(plots)[s]]),data_type=data_type, output = output, weight_type = weight_type, normal=FALSE, circular_args = circular_args, density_args = hypervolume_args), TRUE)
-        overlaps_unnorm_null[s,  i] <- if (inherits(overlap_unnorm_si, 'try-error')) NA else overlap_unnorm_si
+        overlaps_unnorm_null[s, 1, i] <- if (inherits(overlap_unnorm_si, 'try-error')) NA else overlap_unnorm_si
 
     }
   }
