@@ -125,17 +125,22 @@ pairwise_overlap <- function(a, b, normal = TRUE, density_args = list()) {
       b <- scale(b)
     }
 
-    # Convert each of the input matrices to hypervolume.
-    # User-input arguments are passed using do.call. This may be error prone so could be improved later.
-    hv_a <- do.call(hypervolume::hypervolume, args = c(list(data = a), density_args))
-    hv_b <- do.call(hypervolume::hypervolume, args = c(list(data = b), density_args))
+    # Suppress all progress messages from hypervolume functions, including those from underlying C functions.
+    invisible(capture.output(suppressWarnings(suppressMessages({
 
-    # Calculate hypervolume set operations
-    # This uses default arguments except for verbose. I think it is not a good idea to allow these arguments to be changed.
-    hv_set_ab <- hypervolume::hypervolume_set(hv_a, hv_b, num.points.max = NULL, verbose = density_args[['verbose']], check.memory = FALSE, distance.factor = 1)
+      # Convert each of the input matrices to hypervolume.
+      # User-input arguments are passed using do.call. This may be error prone so could be improved later.
+      hv_a <- do.call(hypervolume::hypervolume, args = c(list(data = a), density_args))
+      hv_b <- do.call(hypervolume::hypervolume, args = c(list(data = b), density_args))
 
-    # Calculate hypervolume overlap statistic
-    hv_overlap_ab <- hypervolume::hypervolume_overlap_statistics(hv_set_ab)
+      # Calculate hypervolume set operations
+      # This uses default arguments except for verbose. I think it is not a good idea to allow these arguments to be changed.
+      hv_set_ab <- hypervolume::hypervolume_set(hv_a, hv_b, num.points.max = NULL, verbose = density_args[['verbose']], check.memory = FALSE, distance.factor = 1)
+
+      # Calculate hypervolume overlap statistic
+      hv_overlap_ab <- hypervolume::hypervolume_overlap_statistics(hv_set_ab)
+
+    }))))
 
     # Return Sorensen similarity (equivalent to univariate overlap statistic)
     # Return other values to correspond with our univariate version
@@ -147,34 +152,3 @@ pairwise_overlap <- function(a, b, normal = TRUE, density_args = list()) {
 
 }
 
-### TEST VERSION: MULTIVARIATE
-pairwise_overlap_mv <- function(a, b, normal = TRUE, density_args = list()) {
-
-  # clean input
-  a <- a[complete.cases(a), ]
-  b <- b[complete.cases(b), ]
-
-  # Scale input if normalized
-  if (normal) {
-    a <- scale(a)
-    b <- scale(b)
-  }
-
-  # FIXME allow user to pass arguments here
-  # Convert each of the input matrices to hypervolume.
-  hv_a <- hypervolume::hypervolume(a, method = 'gaussian', verbose = FALSE)
-  hv_b <- hypervolume::hypervolume(b, method = 'gaussian', verbose = FALSE)
-
-  # FIXME allow user to pass arguments here
-  # Calculate hypervolume set operations
-  hv_set_ab <- hypervolume::hypervolume_set(hv_a, hv_b, num.points.max = NULL, verbose = FALSE, check.memory = FALSE, distance.factor = 1)
-
-  # Calculate hypervolume overlap statistic
-  hv_overlap_ab <- hypervolume::hypervolume_overlap_statistics(hv_set_ab)
-
-  # Return Sorensen similarity (equivalent to univariate overlap statistic)
-  # Return other values to correspond with our univariate version
-  out <- c(hv_overlap_ab['sorensen'], 1 - hv_overlap_ab['frac_unique_1'], 1 - hv_overlap_ab['frac_unique_2'])
-  names(out) <- c('overlap_average', 'overlap_a', 'overlap_b')
-  return(out)
-}

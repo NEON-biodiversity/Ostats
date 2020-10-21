@@ -37,11 +37,14 @@ O1 <- Ostats_multivariate(traits = as.matrix(iris_traits), sp = as.factor(iris_s
 traits <- as.matrix(iris_traits)
 sp <- as.factor(iris_sp)
 plots <- as.factor(iris_plots)
-nperm <- 10
+nperm <- 5
 hypervolume_args = list(verbose = FALSE, method = 'box')
 data_type <- 'linear'
 weight_type <- 'hmean'
 output <- 'median'
+swap_means <- FALSE
+shuffle_weights <- FALSE
+nullqs = c(0.025, 0.975)
 
 # Comparison with the non multivariate version
 O1separate <- Ostats(traits = as.matrix(iris_traits), sp = as.factor(iris_sp), plots = as.factor(iris_plots), nperm = 5)

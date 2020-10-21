@@ -18,7 +18,8 @@ if FALSE, the area under all density functions is proportional to the number of
 observations in that group.}
 
 \item{density_args}{list of additional arguments to be passed to
-\code{\link[stats]{density}}.}
+\code{\link[stats]{density}} in the univariate case, or
+\code{\link[hypervolume]{hypervolume}} in the multivariate case.}
 }
 \value{
 The funtion returns a vector of three values:
@@ -37,7 +38,7 @@ this function is derived from code posted in the answer by user mmk.
 }
 \details{
 This function generates kernel density estimates using the
-\code{\link[stats]{density}}  function for two datasets on a common grid.
+\code{\link[stats]{density}} function for two datasets on a common grid.
 Default values for \code{bw} and \code{n} are used if not provided in \code{density_args}.
 Intersection density function
 is then calculated by taking the integral of the minimum of the two functions,
