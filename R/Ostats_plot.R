@@ -42,7 +42,10 @@
 #'sites2use<- NULL
 #'
 #'
-#'#Ostats_plot(indiv_dat = indiv_dat, plots = plots, sp = sp, traits = traits, overlap_dat = overlap_dat, sites2use = sites2use, means=T)
+#'#Ostats_plot(indiv_dat = indiv_dat,
+#'            plots = plots, sp = sp, traits = traits,
+#'            overlap_dat = overlap_dat,
+#'            sites2use = sites2use, means=T)
 
 
 #'@export
