@@ -12,7 +12,7 @@
 #'@param sites2use a vector that select the sites you want to plot. If NULL, the function will plot all the sites.
 #'@param n_col Number of columns for layout of individual panels. Default is 1.
 #'@param colorvalues Vector of color values for the density polygons. Defaults to a viridis palette if none provided.
-#'@param alpha_o defines the colors trasparency level for the density polygons. Default is 0.5
+#'@param alpha defines the colors trasparency level for the density polygons. Default is 0.5
 #'@param adjust multiplicate the bandwidth adjustment of the density polygons. The less, the tiny your density polygons will be. Default is 2.
 #'@param limits_x the limits (min and max values) of the x axis. Default is \code{c(0.5*min(traits,na.rm=TRUE), 1.5*max(traits,na.rm=TRUE))}
 #'@param scale If you want the scale of x, y or both x and y axis to be adjusted according to each site density probability set the argument to "free_x", "free_y" or "free" respectively. Default= "fixed" which uses the same scale across all sites.
