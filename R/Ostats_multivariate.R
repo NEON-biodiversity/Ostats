@@ -62,6 +62,9 @@ Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_typ
     warning(paste("Argument random_seed was not supplied; setting seed to", random_seed))
   }
 
+  # If the abundances of species are different, print a warning.
+  if (length(unique(table(sp))) > 1) warning("Species abundances differ. Consider sampling equivalent numbers of individuals per species.")
+
   # Set random seed.
   set.seed(random_seed)
 
