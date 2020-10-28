@@ -51,8 +51,8 @@
 circular_overlap <- function(a, b, circular_units = 'radians', normal = TRUE, circular_args = list(), density_args = list()) {
 
   # clean input
-  a <- as.numeric(na.omit(a))
-  b <- as.numeric(na.omit(b))
+  a <- as.numeric(stats::na.omit(a))
+  b <- as.numeric(stats::na.omit(b))
 
   # convert input to circular
   acirc <- do.call(circular::circular, c(list(x = a, units = circular_units), circular_args))

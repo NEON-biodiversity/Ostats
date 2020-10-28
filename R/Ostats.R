@@ -3,7 +3,9 @@
 #' This is the primary function in the Ostats package. It evaluates the
 #' O-statistics against a local null model.
 #'
-#' @param traits a vector of trait measurement with nrow = n individuals.
+#' @param traits a vector or matrix of trait measurements. The number of elements
+#'   in the vector or number of rows in the matrix is the number of individuals,
+#'   and the number of columns of the matrix is the number of traits.
 #' @param plots a factor with length equal to nrow(traits) that indicates the
 #'   community each individual belongs to.
 #' @param sp a factor with length equal to nrow(traits) that indicates the taxon
@@ -19,6 +21,9 @@
 #'   within a community when generating null models.
 #' @param swap_means If TRUE, swap means of body sizes within a community when
 #'   generating null models.
+#' @param random_seed User may supply a random seed to enable reproducibility
+#'   of null model output. A warning is issued, and a random seed is generated
+#'   based on the local time, if the user does not supply a seed.
 #' @param circular_args optional list of additional arguments to pass to
 #'  \code{\link[circular]{circular}}. Only used if the data type is "circular".
 #' @param density_args additional arguments to pass to \code{\link[stats]{density}}, such as
@@ -60,17 +65,12 @@
 #' @author Quentin D. Read, John M. Grady, Arya Y. Yue, Isadora Fluck E., Ben Baiser,
 #' Angela Strecker, Phoebe L. Zarnetske, and Sydne Record
 #'
+#' @seealso \code{\link{Ostats_multivariate}} for multidimensional overlap.
 #' @seealso \code{\link{Ostats_regional}} to evaluate against a regional null
 #'   model.
-#'
-#' @seealso \code{\link{Ostats_circular}} for circular distributions.
-#' @seealso \code{\link{community_overlap_merged}} for median of
-#' pairwise overlaps of species trait distributions within a community.
-#' @seealso \code{\link{get_ses}} for standardized effect sizes from null
-#' model values.
 #' @seealso \code{\link{Ostats_plot}} for plotting community overlap for
 #' each community.
-#'
+#' #'
 #' @examples
 #' # overlap statistics for body weights of species in NEON sites
 #' library(tidyverse)
@@ -97,7 +97,7 @@
 #' @export
 #'
 #'
-Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", weight_type= "hmean", nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE, circular_args = list(), density_args = list()) {
+Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", weight_type= "hmean", nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE, random_seed = NULL, circular_args = list(), density_args = list()) {
   # Required input: a matrix called traits (nrows=n individuals, ncols=n traits),
   # a vector called plots which is a factor with length equal to nrow(traits),
   # a vector called sp which is a factor with length equal to nrow(traits),
@@ -105,6 +105,15 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
   # warning and error messages to check the inputs
   if(!is.numeric(traits)) stop("the function only evaluates numerical data.")
   if(length(unique(sp)) == 1) stop("only one taxon is present; overlap cannot be calculated.")
+
+  # If user did not supply a random seed, generate one and print a warning.
+  if (is.null(random_seed)) {
+    random_seed <- round(as.numeric(Sys.time()) %% 12345)
+    warning(paste("Argument random_seed was not supplied; setting seed to", random_seed))
+  }
+
+  # Set random seed.
+  set.seed(random_seed)
 
   # Declaration of data structures to hold the results
   # Data structures for observed O-Stats
@@ -122,7 +131,7 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
   # Calculation of observed O-Stats
 
   print('Calculating observed local O-stats for each community . . .')
-  pb <- txtProgressBar(min = 0, max = nlevels(plots), style = 3)
+  pb <- utils::txtProgressBar(min = 0, max = nlevels(plots), style = 3)
 
   for (s in 1:nlevels(plots)) {
     for (t in 1:ncol(traits)) {
@@ -131,20 +140,20 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
       overlap_unnorm_st <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type = data_type, output = output, weight_type = weight_type, normal=FALSE, circular_args = circular_args, density_args = density_args), TRUE)
       overlaps_unnorm[s, t] <- if (inherits(overlap_unnorm_st, 'try-error')) NA else overlap_unnorm_st
     }
-    setTxtProgressBar(pb, s)
+    utils::setTxtProgressBar(pb, s)
     #if (length(unique(sp)) == 1) {warning(paste("only one taxon is present for the community", plots[i], sep = " ")}
   }
 
   close(pb)
 
   print('Calculating null distributions of O-stats . . . ')
-  pb <- txtProgressBar(min = 0, max = nperm, style = 3)
+  pb <- utils::txtProgressBar(min = 0, max = nperm, style = 3)
 
   # Null model generation and calculation of null O-Stats
 
   # Local null model: generation and calculation done in the same loop
   for (i in 1:nperm) {
-    setTxtProgressBar(pb, i)
+    utils::setTxtProgressBar(pb, i)
     for (s in 1:nlevels(plots)) {
       for (t in 1:ncol(traits)) {
         if (shuffle_weights == FALSE & swap_means == FALSE) overlap_norm_sti <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]), data_type=data_type, output = output, weight_type = weight_type, normal=TRUE, circular_args = circular_args, density_args = density_args), TRUE)
@@ -276,20 +285,20 @@ Ostats_regional <-function(traits, plots, sp, reg_pool_traits, reg_pool_sp, nper
 	# Calculation of observed O-Stats
 
 	print('Calculating observed regional O-stats for each community . . .')
-	pb <- txtProgressBar(min = 0, max = nlevels(plots), style = 3)
+	pb <- utils::txtProgressBar(min = 0, max = nlevels(plots), style = 3)
 
 	for (s in 1:nlevels(plots)) {
 		for (t in 1:ncol(traits)) {
 			overlap_reg_st <- try(pairwise_overlap(a = traits[plots == levels(plots)[s], t], b = `[[`(reg_pool_traits, levels(plots)[s])[, t], normal = TRUE, density_args = density_args), TRUE)
 			overlaps_reg[s, t] <- if(inherits(overlap_reg_st, 'try-error')) NA else overlap_reg_st[1]
 		}
-		setTxtProgressBar(pb, s)
+		utils::setTxtProgressBar(pb, s)
 	}
 
 	close(pb)
 
 	print('Calculating total-pool and species-pool null distributions of regional O-stats . . . ')
-	pb <- txtProgressBar(min = 0, max = nperm, style = 3)
+	pb <- utils::txtProgressBar(min = 0, max = nperm, style = 3)
 
 	# Null model generation and calculation of null O-Stats
 
@@ -323,7 +332,7 @@ Ostats_regional <-function(traits, plots, sp, reg_pool_traits, reg_pool_sp, nper
 
 			}
 		}
-		setTxtProgressBar(pb, i)
+		utils::setTxtProgressBar(pb, i)
 	}
 
 	close(pb)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Ostats_multivariate.R
 \name{Ostats_multivariate}
 \alias{Ostats_multivariate}
-\title{Test version of multivariate O-stats}
+\title{Calculate multivariate O-statistics}
 \usage{
 Ostats_multivariate(
   traits,
@@ -14,14 +14,68 @@ Ostats_multivariate(
   nullqs = c(0.025, 0.975),
   shuffle_weights = FALSE,
   swap_means = FALSE,
+  random_seed = NULL,
   hypervolume_args = list()
 )
 }
+\arguments{
+\item{traits}{matrix of trait measurements. The number of rows in the matrix
+is the number of individuals,
+and the number of columns of the matrix is the number of traits.}
+
+\item{plots}{a factor with length equal to nrow(traits) that indicates the
+community each individual belongs to.}
+
+\item{sp}{a factor with length equal to nrow(traits) that indicates the taxon
+of each individual.}
+
+\item{output}{specifies whether median or mean is calculated.}
+
+\item{weight_type}{specifies weights to be used to calculate the median or mean.}
+
+\item{nperm}{the number of permutations to generate a null model.}
+
+\item{nullqs}{numeric vector of probabilities with values in [0,1] to set
+effect size quantiles.}
+
+\item{shuffle_weights}{If TRUE, shuffle weights given to pairwise overlaps
+within a community when generating null models.}
+
+\item{swap_means}{If TRUE, swap means of body sizes within a community when
+generating null models.}
+
+\item{random_seed}{User may supply a random seed to enable reproducibility
+of null model output. A warning is issued, and a random seed is generated
+based on the local time, if the user does not supply a seed.}
+
+\item{density_args}{additional arguments to pass to \code{\link[hypervolume]{hypervolume}},
+such as \code{method} If none are provided, default values
+are used.}
+}
+\value{
+The function returns a list containing 4 objects:
+\item{overlaps_norm}{a matrix showing the median of weighted pairwise overlaps (at default) of trait
+  distributions of all species in each community (at default output
+  and weight_type), with the area under all density functions normalized to 1.}
+\item{overlaps_unnorm}{a matrix showing O-stats calculated with the area under all density
+  functions proportional to the number of observations in that group.}
+\item{overlaps_norm_ses}{5 matrices of effect size statistics against a null model
+  with the area under all density functions normalized to 1.}
+\item{overlaps_unnorm_ses}{5 matrices of effect size statistics against a null model
+  with the area under all density functions proportional to the number
+  of observations in that group.}
+}
 \description{
-QDR 19 Oct 2020
+Notes: (REPLACE THIS WITH ACTUAL DOCUMENTATION LATER)
 I decided to make this a separate function for now, but it could potentially be merged into the main Ostats() function later
 However, the data structures are somewhat different so it would take a bit of coding to merge them.
-This does not support circular data.
-Also note at the moment that the argument hypervolume_args is passed to density_args for consistency with argument names.
-It is all internal so not really an issue.
+Currently we do not support circular multivariate data.
+Also note that the argument hypervolume_args passes additional arguments to hypervolume::hypervolume.
+That corresponds to the argument density_args in the function Ostats() --- which passes them to density().
+}
+\details{
+TBD (can copy from Ostats)
+}
+\seealso{
+\code{\link{Ostats}} for univariate data.
 }

@@ -1,16 +1,53 @@
 #' Calculate multivariate O-statistics
 #'
-#' Notes:
+#' Notes: (REPLACE THIS WITH ACTUAL DOCUMENTATION LATER)
 #' I decided to make this a separate function for now, but it could potentially be merged into the main Ostats() function later
 #' However, the data structures are somewhat different so it would take a bit of coding to merge them.
 #' Currently we do not support circular multivariate data.
 #' Also note that the argument hypervolume_args passes additional arguments to hypervolume::hypervolume.
 #' That corresponds to the argument density_args in the function Ostats() --- which passes them to density().
 #'
+#' @param traits matrix of trait measurements. The number of rows in the matrix
+#'   is the number of individuals,
+#'   and the number of columns of the matrix is the number of traits.
+#' @param plots a factor with length equal to nrow(traits) that indicates the
+#'   community each individual belongs to.
+#' @param sp a factor with length equal to nrow(traits) that indicates the taxon
+#'   of each individual.
+#' @param output specifies whether median or mean is calculated.
+#' @param weight_type specifies weights to be used to calculate the median or mean.
+#' @param nperm the number of permutations to generate a null model.
+#' @param nullqs numeric vector of probabilities with values in [0,1] to set
+#'   effect size quantiles.
+#' @param shuffle_weights If TRUE, shuffle weights given to pairwise overlaps
+#'   within a community when generating null models.
+#' @param swap_means If TRUE, swap means of body sizes within a community when
+#'   generating null models.
+#' @param random_seed User may supply a random seed to enable reproducibility
+#'   of null model output. A warning is issued, and a random seed is generated
+#'   based on the local time, if the user does not supply a seed.
+#' @param density_args additional arguments to pass to \code{\link[hypervolume]{hypervolume}},
+#' such as \code{method} If none are provided, default values
+#' are used.
+#'
+#' @details TBD (can copy from Ostats)
+#'
+#' @return The function returns a list containing 4 objects:
+#' \item{overlaps_norm}{a matrix showing the median of weighted pairwise overlaps (at default) of trait
+#'   distributions of all species in each community (at default output
+#'   and weight_type), with the area under all density functions normalized to 1.}
+#' \item{overlaps_unnorm}{a matrix showing O-stats calculated with the area under all density
+#'   functions proportional to the number of observations in that group.}
+#' \item{overlaps_norm_ses}{5 matrices of effect size statistics against a null model
+#'   with the area under all density functions normalized to 1.}
+#' \item{overlaps_unnorm_ses}{5 matrices of effect size statistics against a null model
+#'   with the area under all density functions proportional to the number
+#'   of observations in that group.}
+#'
 #' @seealso \code{\link{Ostats}} for univariate data.
 #'
 #' @export
-Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_type = "hmean", nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE, hypervolume_args = list()) {
+Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_type = "hmean", nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE, random_seed = NULL, hypervolume_args = list()) {
   # Required input: a matrix called traits (nrows=n individuals, ncols=n traits),
   # a vector called plots which is a factor with length equal to nrow(traits),
   # a vector called sp which is a factor with length equal to nrow(traits),
@@ -18,6 +55,15 @@ Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_typ
   # warning and error messages to check the inputs
   if(is.numeric(traits) == FALSE) stop("the function only evaluates numerical data.")
   if(length(unique(sp)) == 1) warning("only one taxon is present; overlap cannot be calculated.")
+
+  # If user did not supply a random seed, generate one and print a warning.
+  if (is.null(random_seed)) {
+    random_seed <- round(as.numeric(Sys.time()) %% 12345)
+    warning(paste("Argument random_seed was not supplied; setting seed to", random_seed))
+  }
+
+  # Set random seed.
+  set.seed(random_seed)
 
   # Declaration of data structures to hold the results
   # Data structures for observed O-Stats
@@ -35,7 +81,7 @@ Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_typ
   # Calculation of observed O-Stats
 
   print('Calculating observed local O-stats for each community . . .')
-  pb <- txtProgressBar(min = 0, max = nlevels(plots), style = 3)
+  pb <- utils::txtProgressBar(min = 0, max = nlevels(plots), style = 3)
 
   for (s in 1:nlevels(plots)) {
       overlap_norm_s <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sp[plots == levels(plots)[s]], output = output, weight_type = weight_type, normal=TRUE, density_args = hypervolume_args), TRUE)
@@ -43,19 +89,19 @@ Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_typ
       overlap_unnorm_s <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sp[plots == levels(plots)[s]], output = output, weight_type = weight_type, normal = FALSE, density_args = hypervolume_args), TRUE)
       overlaps_unnorm[s, 1] <- if (inherits(overlap_unnorm_s, 'try-error')) NA else overlap_unnorm_s
 
-    setTxtProgressBar(pb, s)
+    utils::setTxtProgressBar(pb, s)
   }
 
   close(pb)
 
   print('Calculating null distributions of O-stats . . . ')
-  pb <- txtProgressBar(min = 0, max = nperm, style = 3)
+  pb <- utils::txtProgressBar(min = 0, max = nperm, style = 3)
 
   # Null model generation and calculation of null O-Stats
 
   # Local null model: generation and calculation done in the same loop
   for (i in 1:nperm) {
-    setTxtProgressBar(pb, i)
+    utils::setTxtProgressBar(pb, i)
     for (s in 1:nlevels(plots)) {
 
         if (shuffle_weights == FALSE & swap_means == FALSE) overlap_norm_si <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sample(sp[plots == levels(plots)[s]]), output = output, weight_type = weight_type, normal=TRUE, density_args = hypervolume_args), TRUE)

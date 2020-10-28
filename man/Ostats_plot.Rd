@@ -42,6 +42,8 @@ trait,its species identity, and the community identity it belongs to.}
 
 \item{colorvalues}{Vector of color values for the density polygons. Defaults to a viridis palette if none provided.}
 
+\item{alpha}{defines the colors trasparency level for the density polygons. Default is 0.5}
+
 \item{adjust}{multiplicate the bandwidth adjustment of the density polygons. The less, the tiny your density polygons will be. Default is 2.}
 
 \item{limits_x}{the limits (min and max values) of the x axis. Default is \code{c(0.5*min(traits,na.rm=TRUE), 1.5*max(traits,na.rm=TRUE))}}
@@ -51,8 +53,6 @@ trait,its species identity, and the community identity it belongs to.}
 \item{name_y}{a character indicating the name of your y axis. Default is 'Probability Density'}
 
 \item{means}{if TRUE it plot traits means for each species in an additionlan plot column next to the traits distribution plots for each site. Default is FALSE, which make the function plot only the traits distribution for each site.}
-
-\item{alpha_o}{defines the colors trasparency level for the density polygons. Default is 0.5}
 }
 \value{
 Density plots of species trait distribution plotted on the same graph
@@ -79,7 +79,10 @@ This function plots the overlap of traits among
 sites2use<- NULL
 
 
-#Ostats_plot(indiv_dat = indiv_dat, plots = plots, sp = sp, traits = traits, overlap_dat = overlap_dat, sites2use = sites2use, means=T)
+#Ostats_plot(indiv_dat = indiv_dat,
+           plots = plots, sp = sp, traits = traits,
+           overlap_dat = overlap_dat,
+           sites2use = sites2use, means=T)
 }
 \seealso{
 \code{\link{Ostats}} to Calculate O-statistics (community-level

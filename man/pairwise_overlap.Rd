@@ -7,11 +7,12 @@
 pairwise_overlap(a, b, normal = TRUE, density_args = list())
 }
 \arguments{
-\item{a}{a vector dataset with nrows= n individuals, with a column containing
-one measurement of a certain trait.}
+\item{a}{a numeric vector or matrix. Overlap is calculated between a and b.
+  If a and b are vectors, \code{\link[stats]{density}} is used to calculate unidimensional overlap.
+  If a and b are matrices, with each column representing a trait or dimension,
+\code{\link[hypervolume]{hypervolume}} is used to calculate multidimensional overlap.}
 
-\item{b}{another matrix dataset with the same trait measurements to be compared
-against a.}
+\item{b}{a numeric vector or matrix. The number of columns of a and b must be equal.}
 
 \item{normal}{if TRUE, the area under all density functions is normalized to 1,
 if FALSE, the area under all density functions is proportional to the number of
@@ -28,7 +29,7 @@ area *2 divided by the sum of areas under the two functions.}
 \item{overlap_a}{the proportion of a that overlaps with b, calculated by the overlap
 area divided by area under the function generated from a.}
 \item{overlap_b}{the proportion of b that overlaps with a, calculated by the overlap
-area diveided by area under the function generated from b.}
+area divided by area under the function generated from b.}
 }
 \description{
 This function generates kernel density estimates for two datasets on a common

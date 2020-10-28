@@ -58,8 +58,8 @@ pairwise_overlap <- function(a, b, normal = TRUE, density_args = list()) {
     # Univariate case
 
     # clean input
-    a <- as.numeric(na.omit(a))
-    b <- as.numeric(na.omit(b))
+    a <- as.numeric(stats::na.omit(a))
+    b <- as.numeric(stats::na.omit(b))
 
     # define limits of a common grid, adding a buffer so that tails aren't cut off
     lower <- min(c(a, b)) - 1
@@ -78,8 +78,8 @@ pairwise_overlap <- function(a, b, normal = TRUE, density_args = list()) {
       n <- 512
     }
 
-    da <- density(a, from=lower, to=upper, bw=bw, n=n)
-    db <- density(b, from=lower, to=upper, bw=bw, n=n)
+    da <- stats::density(a, from=lower, to=upper, bw=bw, n=n)
+    db <- stats::density(b, from=lower, to=upper, bw=bw, n=n)
     d <- data.frame(x=da$x, a=da$y, b=db$y)
 
     # If not normalized, multiply each density entry by the length of each vector
@@ -117,8 +117,8 @@ pairwise_overlap <- function(a, b, normal = TRUE, density_args = list()) {
     }
 
     # clean input
-    a <- a[complete.cases(a), ]
-    b <- b[complete.cases(b), ]
+    a <- a[stats::complete.cases(a), ]
+    b <- b[stats::complete.cases(b), ]
 
     # Scale input if normalized
     if (normal) {
@@ -127,7 +127,7 @@ pairwise_overlap <- function(a, b, normal = TRUE, density_args = list()) {
     }
 
     # Suppress all progress messages from hypervolume functions, including those from underlying C functions.
-    invisible(capture.output(suppressWarnings(suppressMessages({
+    invisible(utils::capture.output(suppressWarnings(suppressMessages({
 
       # Convert each of the input matrices to hypervolume.
       # User-input arguments are passed using do.call. This may be error prone so could be improved later.

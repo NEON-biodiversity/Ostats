@@ -63,13 +63,15 @@
 #' ###set the "o" argument - the overlap between observed data
 #' for (s in 1:nlevels(plots)) {
 #'  for (t in 1:ncol(traits)) {
-#'    overlap_norm_st <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t],
-#'                                                   sp = sp[plots == levels(plots)[s]],
-#'                                                   data_type ="linear"), TRUE)
+#'    overlap_norm_st <- try(
+#'      community_overlap_merged(traits = traits[plots == levels(plots)[s], t],
+#'                               sp = sp[plots == levels(plots)[s]],
+#'                               data_type ="linear"), TRUE)
 #'    overlaps_norm[s, t] <- if (inherits(overlap_norm_st, 'try-error')) NA else overlap_norm_st
-#'    overlap_unnorm_st <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t],
-#'                                                     sp = sp[plots == levels(plots)[s]],
-#'                                                     data_type ="linear"), TRUE)
+#'    overlap_unnorm_st <- try(
+#'      community_overlap_merged(traits = traits[plots == levels(plots)[s], t],
+#'                               sp = sp[plots == levels(plots)[s]],
+#'                               data_type ="linear"), TRUE)
 #'    overlaps_unnorm[s, t] <- if (inherits(overlap_unnorm_st, 'try-error')) NA else overlap_unnorm_st
 #'  }
 #' }
@@ -83,14 +85,16 @@
 #'  for (s in 1:nlevels(plots)) {
 #'    for (t in 1:ncol(traits)) {
 #'      if (!shuffle_weights & !swap_means)
-#'      overlap_norm_sti <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t],
-#'                                                      sp = sample(sp[plots == levels(plots)[s]]),
-#'                                                      data_type = "linear"), TRUE)
+#'      overlap_norm_sti <- try(
+#'        community_overlap_merged(traits = traits[plots == levels(plots)[s], t],
+#'                                 sp = sample(sp[plots == levels(plots)[s]]),
+#'                                 data_type = "linear"), TRUE)
 #'      if (shuffle_weights)
-#'      overlap_norm_sti <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t],
-#'                                                      sp = sp[plots == levels(plots)[s]],
-#'                                                      randomize_weights = TRUE,
-#'                                                      data_type = "linear"), TRUE)
+#'      overlap_norm_sti <- try(
+#'        community_overlap_merged(traits = traits[plots == levels(plots)[s], t],
+#'                                 sp = sp[plots == levels(plots)[s]],
+#'                                 randomize_weights = TRUE,
+#'                                 data_type = "linear"), TRUE)
 #'      if (swap_means) {
 #'        traits_st <- traits[plots==levels(plots)[s], t]
 #'        sp_st <- sp[plots==levels(plots)[s]]
@@ -102,18 +106,20 @@
 #'        traitmeans_null <- sample(traitmeans)
 #'        sp_null <- rep(names(traitmeans_null), table(sp_st))
 #'        traits_null <- traitdeviations + traitmeans_null[sp_null]
-#'        overlap_norm_sti <- try(community_overlap_merged(traits = traits_null,
-#'                                                        sp = sp_null,
-#'                                                        normal =TRUE,
-#'                                                        randomize_weights = FALSE,
-#'                                                        data_type = "linear"), TRUE)
+#'        overlap_norm_sti <- try(
+#'        community_overlap_merged(traits = traits_null,
+#'                                 sp = sp_null,
+#'                                 normal =TRUE,
+#'                                 randomize_weights = FALSE,
+#'                                 data_type = "linear"), TRUE)
 #'      }
 #'
 #'      overlaps_norm_null[s, t, i] <- if (inherits(overlap_norm_sti, 'try-error')) NA
 #'                                     else overlap_norm_sti
-#'      overlap_unnorm_sti <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s] , t],
-#'                                                        sp = sample(sp[plots == levels(plots)[s]]),
-#'                                                        data_type = "linear"), TRUE)
+#'      overlap_unnorm_sti <- try(
+#'        community_overlap_merged(traits = traits[plots == levels(plots)[s] , t],
+#'                                 sp = sample(sp[plots == levels(plots)[s]]),
+#'                                 data_type = "linear"), TRUE)
 #'      overlaps_unnorm_null[s, t, i] <- if (inherits(overlap_unnorm_sti, 'try-error')) NA
 #'                                       else overlap_unnorm_sti
 #'    }
@@ -130,12 +136,12 @@ get_ses <- function(o, o_n, qs) {
     for (j in 1:ncol(o)) {
       if(!is.na(o[i,j])) {
         obs <- o[i,j]
-        nullvals <- na.omit(o_n[i, j, ])
-        ses[i,j] <- (obs - mean(nullvals))/sd(nullvals)
-        ses_lower[i,j] <- (quantile(nullvals, probs=qs[1]) - mean(nullvals))/sd(nullvals)
-        ses_upper[i,j] <- (quantile(nullvals, probs=qs[2]) - mean(nullvals))/sd(nullvals)
-        raw_lower[i,j] <- quantile(nullvals, probs=qs[1])
-        raw_upper[i,j] <- quantile(nullvals, probs=qs[2])
+        nullvals <- stats::na.omit(o_n[i, j, ])
+        ses[i,j] <- (obs - mean(nullvals))/stats::sd(nullvals)
+        ses_lower[i,j] <- (stats::quantile(nullvals, probs=qs[1]) - mean(nullvals))/stats::sd(nullvals)
+        ses_upper[i,j] <- (stats::quantile(nullvals, probs=qs[2]) - mean(nullvals))/stats::sd(nullvals)
+        raw_lower[i,j] <- stats::quantile(nullvals, probs=qs[1])
+        raw_upper[i,j] <- stats::quantile(nullvals, probs=qs[2])
       }
     }
   }

@@ -71,7 +71,7 @@ community_overlap_merged <- function(traits, sp, data_type = "linear", normal = 
   # Clean input, removing missing values and species with <2 values.
   sp <- as.character(sp)
   dat <- cbind(as.data.frame(traits), sp = sp)
-  dat <- dat[complete.cases(dat), ]
+  dat <- dat[stats::complete.cases(dat), ]
   abunds <- table(dat$sp)
   abunds <- abunds[abunds>1]
   dat <- dat[dat$sp %in% names(abunds), ]
@@ -108,15 +108,15 @@ community_overlap_merged <- function(traits, sp, data_type = "linear", normal = 
   if (randomize_weights == TRUE){
     abund_pairs <- sample(abund_pairs)}
   if (output == "median" && weight_type == "none"){
-    final_output <- median(overlaps)}
+    final_output <- stats::median(overlaps)}
   if (output == "median" && weight_type == "hmean"){
     final_output <- matrixStats::weightedMedian(x = as.vector(overlaps), w = abund_pairs)}
   if (output == "median" && weight_type == "mean"){
     final_output <- matrixStats::weightedMedian(x = overlaps, w = abund_pairs)}
   if (output == "mean" && weight_type == "hmean"){
-    final_output <- weighted.mean(x = overlaps, w = abund_pairs)}
+    final_output <- stats::weighted.mean(x = overlaps, w = abund_pairs)}
   if (output == "mean" && weight_type == "mean"){
-    final_output <- weighted.mean(x = overlaps, w = abund_pairs)}
+    final_output <- stats::weighted.mean(x = overlaps, w = abund_pairs)}
   if (output == "mean" && weight_type == "none"){
     final_output <- mean(overlaps)}
 

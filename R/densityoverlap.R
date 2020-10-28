@@ -56,7 +56,7 @@
 community_overlap_noitv <- function(traits, sp, output = "median", weight_type= "hmean") {
   sp <- as.character(sp)
   dat <- data.frame(traits=traits, sp=sp, stringsAsFactors = FALSE)
-  dat <- dat[complete.cases(dat), ]
+  dat <- dat[stats::complete.cases(dat), ]
   abunds <- table(dat$sp)
   abunds <- abunds[abunds>1]
   dat <- dat[dat$sp %in% names(abunds), ]
@@ -81,15 +81,15 @@ community_overlap_noitv <- function(traits, sp, output = "median", weight_type= 
   }
 
   if (output == "median" && weight_type == "none")
-    return(median(overlaps))
+    return(stats::median(overlaps))
   else if (output == "median" && weight_type == "hmean")
     return(matrixStats::weightedMedian(x = overlaps, w = abund_pairs))
   else if (output == "median" && weight_type == "mean")
     return(matrixStats::weightedMedian(x = overlaps, w = abund_pairs))
   else if (output == "mean" && weight_type == "hmean")
-    return(weighted.mean(x = overlaps, w = abund_pairs))
+    return(stats::weighted.mean(x = overlaps, w = abund_pairs))
   else if (output == "mean" && weight_type == "mean")
-    return(weighted.mean(x = overlaps, w = abund_pairs))
+    return(stats::weighted.mean(x = overlaps, w = abund_pairs))
   else if (output == "mean" && weight_type == "none")
     return(mean(overlaps))
   else return("invalid arguments for weight_type or output")

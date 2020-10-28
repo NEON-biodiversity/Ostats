@@ -1,7 +1,4 @@
 context("pairwise_overlap")
-library(tidyverse)
-library(Ostats)
-library(sfsmisc)
 #Ostats example
 #how do I make it into a test?
 #attempt with pairwise_overlap

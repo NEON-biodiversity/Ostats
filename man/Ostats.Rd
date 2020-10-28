@@ -15,12 +15,15 @@ Ostats(
   nullqs = c(0.025, 0.975),
   shuffle_weights = FALSE,
   swap_means = FALSE,
+  random_seed = NULL,
   circular_args = list(),
   density_args = list()
 )
 }
 \arguments{
-\item{traits}{a vector of trait measurement with nrow = n individuals.}
+\item{traits}{a vector or matrix of trait measurements. The number of elements
+in the vector or number of rows in the matrix is the number of individuals,
+and the number of columns of the matrix is the number of traits.}
 
 \item{plots}{a factor with length equal to nrow(traits) that indicates the
 community each individual belongs to.}
@@ -45,6 +48,10 @@ within a community when generating null models.}
 
 \item{swap_means}{If TRUE, swap means of body sizes within a community when
 generating null models.}
+
+\item{random_seed}{User may supply a random seed to enable reproducibility
+of null model output. A warning is issued, and a random seed is generated
+based on the local time, if the user does not supply a seed.}
 
 \item{circular_args}{optional list of additional arguments to pass to
 \code{\link[circular]{circular}}. Only used if the data type is "circular".}
@@ -116,19 +123,14 @@ Read, Q. D. et al. Among-species overlap in rodent body size
   Ecography 41, 1718-1727 (2018).
 }
 \seealso{
+\code{\link{Ostats_multivariate}} for multidimensional overlap.
+
 \code{\link{Ostats_regional}} to evaluate against a regional null
   model.
 
-\code{\link{Ostats_circular}} for circular distributions.
-
-\code{\link{community_overlap_merged}} for median of
-pairwise overlaps of species trait distributions within a community.
-
-\code{\link{get_ses}} for standardized effect sizes from null
-model values.
-
 \code{\link{Ostats_plot}} for plotting community overlap for
 each community.
+#'
 }
 \author{
 Quentin D. Read, John M. Grady, Arya Y. Yue, Isadora Fluck E., Ben Baiser,
