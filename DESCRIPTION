@@ -16,7 +16,9 @@ Imports:
     sfsmisc,
     matrixStats,
     circular,
-    hypervolume
+    hypervolume,
+    ggplot2,
+    gridExtra
 RoxygenNote: 7.1.0
 Suggests: 
     testthat (>= 2.1.0),

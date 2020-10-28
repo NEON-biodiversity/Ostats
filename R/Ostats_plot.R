@@ -87,7 +87,7 @@ Ostats_plot<-function(indiv_dat,
 
 
   # If the user want to plot the traits means.
-  if(means==TRUE){
+  if(means){
     #values per species
     taxon_mean<-aggregate(table_traits_taxon[,1], list(table_traits_taxon[,2]), mean, na.rm = TRUE)
 
@@ -137,7 +137,7 @@ Ostats_plot<-function(indiv_dat,
     ggplot2::scale_y_continuous(name = name_y, expand = c(0,0))
 
 
-  if (means==TRUE) {
+  if (means) {
     ggplot_means<-ggplot2::ggplot(table_all)+
       ggplot2::geom_vline(data=table_all, ggplot2::aes(xintercept=as.numeric(means),  colour=sp,  group=sp, alpha = alpha), size=0.5)+
       ggplot2::facet_wrap(~ plots, ncol=n_col ,nrow = length(sites2use), scales = scale) +
@@ -150,7 +150,7 @@ Ostats_plot<-function(indiv_dat,
 
 
 
-  if (means==TRUE){
+  if (means){
     gridExtra::grid.arrange(ggplot_dist, ggplot_means, ncol=2)
 
   } else {
