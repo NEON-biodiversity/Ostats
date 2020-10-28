@@ -1,0 +1,137 @@
+---
+title: "Demo hypervolume overlap"
+author: "Quentin D. Read"
+date: "10/21/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This document shows some work I've done to get a preliminary working version of multivariate community overlap statistic. It is based on the R package `hypervolume` created by Ben Blonder and colleagues. Previously, our `Ostats` package did not support multivariate overlap; instead, it calculated the community median pairwise overlap statistic separately for each trait. I created a branch called `hypervolumetest` on our repo where I have developed an "alpha" version of a multivariate overlap function.
+
+I mainly modified the `pairwise_overlap()` function to determine whether its trait input is univariate or multivariate. If univariate, it returns the single-variable overlap statistic as before, using `density()` to get the smoothed density functions for each species and finding their overlap. But if the input is multivariate, it will use functions from the `hypervolume` package to get smoothed hypervolumes for each species and find their overlaps. Below is a snippet of the important part of the code where those computations are done. As you can see it really just runs a few basic functions from the `hypervolume` package.
+
+```{r overlap snippet, eval=FALSE}
+# Convert each of the input matrices to hypervolume.
+hv_a <- do.call(hypervolume::hypervolume, args = c(list(data = a), density_args))
+hv_b <- do.call(hypervolume::hypervolume, args = c(list(data = b), density_args))
+
+# Calculate hypervolume set operations
+# This uses default arguments except for verbose. 
+hv_set_ab <- hypervolume::hypervolume_set(hv_a, hv_b, 
+                                          num.points.max = NULL, 
+                                          verbose = density_args[['verbose']], 
+                                          check.memory = FALSE, 
+                                          distance.factor = 1)
+
+# Calculate hypervolume overlap statistic
+hv_overlap_ab <- hypervolume::hypervolume_overlap_statistics(hv_set_ab)
+```
+
+After that, the output of `pairwise_overlap` is just a single value between 0 and 1 just the same as for the univariate case. So the rest of the calculation of community-weighted stuff is the same as before! I had to slightly modify `community_overlap_merged()` to take different types of input. For now I didn't modify `Ostats()` to take different input; instead, I just made a different function called `Ostats_multivariate()`.
+
+Here I run the `Ostats_multivariate()` function on the classic `iris` example dataset provided with base R.
+
+## Load package and data
+
+The version of the `Ostats` package loaded here is the one in the development branch `hypervolumetest`.
+
+We are using the four iris morphological traits for the three species, considering the entire iris dataset as a single "plot" or community.
+
+```{r load stuff}
+library(Ostats)
+
+iris_traits <- iris[,1:4]
+iris_sp <- iris[,5]
+iris_plots <- rep('plot1', nrow(iris))
+
+n_null <- 99 # N. of null permutations
+```
+
+## Calculate overlaps
+
+First calculate the four individual overlap statistics with associated null models for each trait separately.
+
+```{r separate overlap, message = FALSE, results = 'hide'}
+set.seed(333)
+
+iris_overlap_separate <- Ostats(traits = as.matrix(iris_traits), 
+                                sp = as.factor(iris_sp), 
+                                plots = as.factor(iris_plots), 
+                                nperm = n_null)
+```
+ 
+Next calculate a single multivariate overlap statistic across all four traits.
+
+```{r multivariate overlap, message = FALSE, results = 'hide'}
+set.seed(222)
+
+iris_overlap_multivariate <- Ostats_multivariate(traits = as.matrix(iris_traits), 
+                                                 sp = as.factor(iris_sp), 
+                                                 plots = as.factor(iris_plots), 
+                                                 nperm = n_null, 
+                                                 hypervolume_args = list(verbose = FALSE, 
+                                                                         method = 'box'))
+```
+
+## Results
+
+The four raw overlap statistics for each trait individually are:
+
+```{r, echo = FALSE}
+write.table(t(signif(iris_overlap_separate$overlaps_norm,2)), col.names = FALSE)
+```
+
+The four univariate null model z-scores are:
+
+```{r, echo = FALSE}
+write.table(t(signif(iris_overlap_separate$overlaps_norm_ses$ses,3)), col.names = FALSE)
+```
+
+The multivariate overlap statistic for all traits combined is `r signif(iris_overlap_multivariate$overlaps_norm[1], 2)`. Its corresponding z-score is `r signif(iris_overlap_multivariate$overlaps_norm_ses$ses[1], 3)`.
+
+## Plots
+
+These are the density plots for each trait separately. It shows that the sepal traits have much higher overlap than the petal traits.
+
+```{r plot individual, echo = FALSE, message = FALSE}
+library(tidyverse)
+
+theme_set(theme_minimal())
+
+iris_long <- iris %>% pivot_longer(-Species)
+
+ggplot(iris_long, aes(x = value, group = Species, fill = Species)) +
+  facet_wrap(~ name) +
+  geom_density(alpha = 0.75) +
+  scale_fill_viridis_d()
+
+```
+
+Using built-in plotting functions from the `hypervolume` package we can at least attempt to visualize the 4-D hypervolumes.
+More or less it shows that the overlap mostly occurs on the sepal dimensions, which I suppose confirms what we see in the univariate plots.
+
+```{r get hypervolumes, echo = FALSE, message = FALSE, warning = FALSE, results = 'hide'}
+library(hypervolume)
+
+iris_hypes <- iris %>%
+  group_by(Species) %>%
+  group_map(~ hypervolume(.[, 1:4], name = .$Species[1]), keep = TRUE)
+```
+
+```{r plot hypervolumes, echo = FALSE, message = FALSE, warning = FALSE}
+iris_hypes_list <- do.call(hypervolume_join, iris_hypes)
+
+plot(iris_hypes_list, colors = viridis::viridis(3))
+
+```
+
+
+
+## To do
+
+The `Ostats_multivariate` function is sufficiently different from the `Ostats` function that it may be OK to keep them as two separate functions. However, they could be merged into one function. If there are multiple traits, the user would have to specify whether they want to calculate multiple univariate overlap statistics, or a single multivariate overlap statistic.
+
+Obviously I haven't done a lot of tests on these functions yet, nor have I written any documentation. That would be something to do as well.

@@ -62,15 +62,23 @@
 #'
 #' @export
 community_overlap_merged <- function(traits, sp, data_type = "linear", normal = TRUE, output = "median", weight_type= "hmean", randomize_weights = FALSE, circular_args = list(), density_args = list()) {
+
+  # Return error if circular is specified with multivariate data.
+  if (data_type %in% c('circular', 'circular_discrete') & 'matrix' %in% class(traits)) {
+    stop("circular data types are not supported with multivariate data.")
+  }
+
+  # Clean input, removing missing values and species with <2 values.
   sp <- as.character(sp)
-  dat <- data.frame(traits=traits, sp=sp, stringsAsFactors = FALSE)
+  dat <- cbind(as.data.frame(traits), sp = sp)
   dat <- dat[complete.cases(dat), ]
   abunds <- table(dat$sp)
   abunds <- abunds[abunds>1]
   dat <- dat[dat$sp %in% names(abunds), ]
-  traitlist <- split(dat$traits, dat$sp)
+  traitlist <- split(dat[, -ncol(dat)], dat$sp)
   nspp <- length(traitlist)
 
+  # Overlap cannot be calculated if there are less than 2 species with at least 2 individuals each.
   if (nspp < 2) return(NA)
 
   overlaps <- NULL

@@ -2,6 +2,7 @@
 
 export(Ostat2longform)
 export(Ostats)
+export(Ostats_multivariate)
 export(Ostats_plot)
 export(Ostats_regional)
 export(circular_overlap)
