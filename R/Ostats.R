@@ -103,7 +103,7 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
   # a vector called sp which is a factor with length equal to nrow(traits),
 
   # warning and error messages to check the inputs
-  if(!is.numeric(traits)) stop("the function only evaluates numerical data.")
+  if(!is.numeric(traits)) stop("traits must be a numeric matrix.")
   if(length(unique(sp)) == 1) stop("only one taxon is present; overlap cannot be calculated.")
 
   # If user did not supply a random seed, generate one and print a warning.

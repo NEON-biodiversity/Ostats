@@ -99,7 +99,7 @@ Running the function may take several minutes, depending on the size of the data
 
 ```{r echo = T, results='hide'}
 # Run O-stats on the small mammal data with all arguments set to default
- Ostats_example <- Ostats(traits = as.matrix(dat[,'log_weight']),
+ Ostats_example <- Ostats(traits = as.matrix(dat[,'log_weight', drop = FALSE]),
                     sp = factor(dat$taxonID),
                     plots = factor(dat$siteID),
                     data_type = "linear")
@@ -109,7 +109,7 @@ The below code chunk shows an example of how the *density_args* inputs could be 
 
 ```{r eval=FALSE}
 # Example of specifying the arguments for making density estimates
-Ostats_example2 <- Ostats(traits = as.matrix(dat[,'log_weight']),
+Ostats_example2 <- Ostats(traits = as.matrix(dat[,'log_weight', drop = FALSE]),
                     sp = factor(dat$taxonID),
                     plots = factor(dat$siteID), 
                     density_args=list(bw = 'nrd0', adjust = 2, n=200))
@@ -160,7 +160,7 @@ The arguments are the same in the *Ostats* function linear data calculation. In 
 
 ```{r echo = T, results='hide'}
 # Calculate overlap statistics for hourly data using the ant_data dataset
-circular_example <- Ostats(traits = as.matrix(ant_data$time),
+circular_example <- Ostats(traits = as.matrix(ant_data[, 'time', drop = FALSE]),
                     sp = factor(ant_data$species),
                     plots = factor(ant_data$chamber),
                     data_type = "circular_discrete")
@@ -209,12 +209,13 @@ regBART <- reg_pool[reg_pool$siteID %in% 'BART', ]
 
 # Overlap statistics against the overall data (HARV and BART, sites from the same domain, across all available years)
 
-reg_pool_traits <- list (as.matrix(regHARV$log_weight), as.matrix(regBART$log_weight))
+reg_pool_traits <- list (as.matrix(regHARV[, 'log_weight', drop = FALSE]), 
+                         as.matrix(regBART[, 'log_weight', drop = FALSE]))
 reg_pool_sp <- list(factor(regHARV$taxonID), factor(regBART$taxonID)) 
 names(reg_pool_traits) <- c("HARV", "BART")
 names(reg_pool_sp) <- c("HARV", "BART")
 
-Ostats_reg_example <- Ostats_regional(traits = as.matrix(HARV2018$log_weight),
+Ostats_reg_example <- Ostats_regional(traits = as.matrix(HARV2018[, 'log_weight', drop = FALSE]),
                                       plots = factor(HARV2018$siteID),
                                       sp = factor(HARV2018$taxonID),
                                       reg_pool_traits = reg_pool_traits,

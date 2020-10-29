@@ -53,7 +53,7 @@ Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_typ
   # a vector called sp which is a factor with length equal to nrow(traits),
 
   # warning and error messages to check the inputs
-  if(is.numeric(traits) == FALSE) stop("the function only evaluates numerical data.")
+  if(is.numeric(traits) == FALSE) stop("traits must be a numeric matrix.")
   if(length(unique(sp)) == 1) warning("only one taxon is present; overlap cannot be calculated.")
 
   # If user did not supply a random seed, generate one and print a warning.
