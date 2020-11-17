@@ -3,9 +3,12 @@ Type: Package
 Title: O-stats, or pairwise community-level niche overlap statistics
 Version: 0.1.0
 Authors@R: c(person(c('Quentin', 'D.'), 'Read', role = c('aut', 'cre'), email = 'qread@sesync.org'),
+             person('Arya', 'Yue', role = 'aut'),
+             person(c('Isadora', 'E.'), 'Fluck', role = 'aut'),
+             person('Benjamin', 'Baiser', role = 'aut'),
              person(c('John', 'M.'), 'Grady', role = 'aut'),
-             person('Sydne', 'Record', role = 'aut'),
-             person(c('Phoebe', 'L.'), 'Zarnetske', role = 'aut')
+             person(c('Phoebe', 'L.'), 'Zarnetske', role = 'aut'),
+             person('Sydne', 'Record', role = 'aut')
              )
 Description: This is a placeholder for later.
     Use four spaces when indenting paragraphs within the Description. Later, we will put some nice content here.

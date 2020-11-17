@@ -5,10 +5,10 @@ The Ostats package calculates overlap statistic to measure the degree of communi
 
 ## Authors
 
-* Quentin D. Read, SESYNC
+* Quentin D. Read
 * Arya Yue
 * Isadora E. Fluck
-* Benjaming Baiser
+* Benjamin Baiser
 * John M. Grady
 * Phoebe L. Zarnetske
 * Sydne Record
