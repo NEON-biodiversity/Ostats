@@ -72,15 +72,12 @@ This function evaluates the overlap statistics against a regional
   In this function, the area under all density functions are normalized to 1.
 }
 \examples{
-library(tidyverse)
-
 # use the 2015 data from the two communities HARV and BART
-sites2015 <- reg_pool \%>\%
-filter(siteID=='HARV'|siteID == 'BART') \%>\%
-filter(substring(as.character(endDate),1,4)=="2015")
+sites2015 <- reg_pool[reg_pool$siteID \%in\% c('HARV', 'BART'), ]
+sites2015 <- sites2015[substr(as.character(sites2015$endDate),1,4)=="2015", ]
 
 # making the overall data (HARV and BART, sites from the same domain)
-the regional pool across space and time
+# the regional pool across space and time
 reg_pool_traits <- list (as.matrix(reg_pool$log_weight), as.matrix(reg_pool$log_weight))
 reg_pool_sp <- list(as.matrix(reg_pool$taxonID), as.matrix(reg_pool$taxonID))
 names(reg_pool_traits) <- c("HARV", "BART")

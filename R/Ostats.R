@@ -73,21 +73,15 @@
 #' #'
 #' @examples
 #' # overlap statistics for body weights of species in NEON sites
-#' library(tidyverse)
 #' library(Ostats)
 #' # Load data from web archive
-#' dat <- read_csv('https://ndownloader.figshare.com/files/9167548')
+#' dat <- read.csv('https://ndownloader.figshare.com/files/9167548')
 #'
 #' # Keep only the relevant part of data
-#' dat <- dat %>%
-#'   filter(siteID %in% c('HARV','JORN')) %>%
-#'   select(siteID, taxonID, weight) %>%
-#'   filter(!is.na(weight)) %>%
-#'   mutate(log_weight = log10(weight))
+#' dat <- dat[dat$siteID %in% c('HARV','JORN'), c('siteID', 'taxonID', 'weight')]
+#' dat <- dat[!is.na(dat$weight), ]
+#' dat$log_weight <- log10(dat$weight)
 #'
-#' dat %>%
-#'   group_by(siteID, taxonID) %>%
-#'   slice(1)
 #'
 #' #Run O-stats on the data with nperm = 2 (do not bother with null models)
 #' Ostats_example <- Ostats(traits = as.matrix(dat[,'log_weight']),
@@ -250,15 +244,12 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
 #'   values.
 #'
 #' @examples
-#' library(tidyverse)
-#'
 #' # use the 2015 data from the two communities HARV and BART
-#' sites2015 <- reg_pool %>%
-#' filter(siteID=='HARV'|siteID == 'BART') %>%
-#' filter(substring(as.character(endDate),1,4)=="2015")
+#' sites2015 <- reg_pool[reg_pool$siteID %in% c('HARV', 'BART'), ]
+#' sites2015 <- sites2015[substr(as.character(sites2015$endDate),1,4)=="2015", ]
 #'
 #' # making the overall data (HARV and BART, sites from the same domain)
-#' the regional pool across space and time
+#' # the regional pool across space and time
 #' reg_pool_traits <- list (as.matrix(reg_pool$log_weight), as.matrix(reg_pool$log_weight))
 #' reg_pool_sp <- list(as.matrix(reg_pool$taxonID), as.matrix(reg_pool$taxonID))
 #' names(reg_pool_traits) <- c("HARV", "BART")

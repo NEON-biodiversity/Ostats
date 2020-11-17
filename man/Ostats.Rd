@@ -95,21 +95,15 @@ This function evaluates the overlap statistics against a local null
 }
 \examples{
 # overlap statistics for body weights of species in NEON sites
-library(tidyverse)
 library(Ostats)
 # Load data from web archive
-dat <- read_csv('https://ndownloader.figshare.com/files/9167548')
+dat <- read.csv('https://ndownloader.figshare.com/files/9167548')
 
 # Keep only the relevant part of data
-dat <- dat \%>\%
-  filter(siteID \%in\% c('HARV','JORN')) \%>\%
-  select(siteID, taxonID, weight) \%>\%
-  filter(!is.na(weight)) \%>\%
-  mutate(log_weight = log10(weight))
+dat <- dat[dat$siteID \%in\% c('HARV','JORN'), c('siteID', 'taxonID', 'weight')]
+dat <- dat[!is.na(dat$weight), ]
+dat$log_weight <- log10(dat$weight)
 
-dat \%>\%
-  group_by(siteID, taxonID) \%>\%
-  slice(1)
 
 #Run O-stats on the data with nperm = 2 (do not bother with null models)
 Ostats_example <- Ostats(traits = as.matrix(dat[,'log_weight']),

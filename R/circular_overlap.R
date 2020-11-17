@@ -125,7 +125,7 @@ circular_overlap <- function(a, b, circular_units = 'radians', normal = TRUE, ci
 #' \item{overlap_a}{the proportion of a that overlaps with b, calculated by the overlap
 #' area divided by area under the function generated from a.}
 #' \item{overlap_b}{the proportion of b that overlaps with a, calculated by the overlap
-#' area diveided by area under the function generated from b.}
+#' area divided by area under the function generated from b.}
 #'
 #' @seealso \code{\link{pairwise_overlap}} to calculate linear overlap between two empirical
 #' density estimates.
@@ -133,9 +133,8 @@ circular_overlap <- function(a, b, circular_units = 'radians', normal = TRUE, ci
 #' two empirical density estimates.
 #'
 #' @examples
-#' library(dplyr)
-#' a <- filter(ant_data, chamber == 1)
-#' b <- filter(ant_data, chamber == 2)
+#' a <- ant_data[ant_data$chamber == 1, ]
+#' b <- ant_data[ant_data$chamber == 2, ]
 #' circular_overlap_24hour(a$time,b$time)
 #'
 #' @export

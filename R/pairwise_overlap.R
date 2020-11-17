@@ -39,12 +39,9 @@
 #'
 #' @examples
 #' #overlap of miles per gallon between 4-cylinder and 6-cylinder cars
-#' library(dplyr)
-#' a <- mtcars %>%
-#'   filter(cyl==6)
+#' a <- mtcars[mtcars$cyl == 6, ]
 #' a <- a[,1]
-#' b <- mtcars %>%
-#'   filter(cyl==4)
+#' b <- mtcars[mtcars$cyl == 4, ]
 #' b <- b[,1]
 #' pairwise_overlap(a,b)
 #'

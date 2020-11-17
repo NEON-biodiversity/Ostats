@@ -26,7 +26,7 @@
 #' @param random_seed User may supply a random seed to enable reproducibility
 #'   of null model output. A warning is issued, and a random seed is generated
 #'   based on the local time, if the user does not supply a seed.
-#' @param density_args additional arguments to pass to \code{\link[hypervolume]{hypervolume}},
+#' @param hypervolume_args additional arguments to pass to \code{\link[hypervolume]{hypervolume}},
 #' such as \code{method} If none are provided, default values
 #' are used.
 #'

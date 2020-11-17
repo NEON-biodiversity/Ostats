@@ -16,9 +16,3 @@ outputs from Ostats function.
 \description{
 This function converts the output of Ostats to long form.
 }
-\examples{
-# taking the output generated in the example of the Ostats funtion
-
-Ostat2longform(Ostats_example)
-
-}

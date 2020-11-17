@@ -26,23 +26,20 @@
 #'  pairwise niche overlap statistics)
 #'
 #'@examples
-#'#load data:
-#'#indiv_dat <- read_csv('https://ndownloader.figshare.com/files/9167548', col_names = T)
+#'# load data:
+#'indiv_dat <- read.csv('https://ndownloader.figshare.com/files/9167548')
 #'
-#'#set the arguments:
-#'#overlap_dat <- Ostats_bysite2015 #your results from the Ostat function - see \code{\link{Ostats}}
-#'#plots <- indiv_dat$siteID
-#'#sp <- indiv_dat$taxonID
-#'#traits <- indiv_dat$logweight
+#'# set the arguments:
+#'overlap_dat <- Ostats_bysite2015 #your results from the Ostat function - see \code{\link{Ostats}}
+#'plots <- indiv_dat$siteID
+#'sp <- indiv_dat$taxonID
+#'traits <- indiv_dat$logweight
 #'
-#'#to plot only selected sites:
-#'#sites2use<- c('BART','KONZ','JORN')
-#'
-#'#to plot all sites:
-#'sites2use<- NULL
+#'# to plot only selected sites:
+#'sites2use<- c('BART','KONZ','JORN')
 #'
 #'
-#'#Ostats_plot(indiv_dat = indiv_dat,
+#'Ostats_plot(indiv_dat = indiv_dat,
 #'            plots = plots, sp = sp, traits = traits,
 #'            overlap_dat = overlap_dat,
 #'            sites2use = sites2use, means=T)
@@ -89,7 +86,7 @@ Ostats_plot<-function(indiv_dat,
   # If the user want to plot the traits means.
   if(means){
     #values per species
-    taxon_mean<-aggregate(table_traits_taxon[,1], list(table_traits_taxon[,2]), mean, na.rm = TRUE)
+    taxon_mean<-stats::aggregate(table_traits_taxon[,1], list(table_traits_taxon[,2]), mean, na.rm = TRUE)
 
     #make a column with repeted means for each specie
     table_all<-cbind(table_traits_taxon, table_traits_taxon[,2])
@@ -110,7 +107,7 @@ Ostats_plot<-function(indiv_dat,
 
   # If a color vector is not provided, create a default palette.
   if (is.null(colorvalues)) {
-    colorvalues <- sample(rainbow(10, s = 1, v = 1, start = 0, end = max(1, 10 - 1)/10,
+    colorvalues <- sample(grDevices::rainbow(10, s = 1, v = 1, start = 0, end = max(1, 10 - 1)/10,
                                   alpha, rev = FALSE), size = length(unique(table_all$sp)), replace = TRUE)
   }
 
@@ -129,10 +126,10 @@ Ostats_plot<-function(indiv_dat,
                                lab = paste('Overlap =', round(ostat_norm[,1], 2)))
 
   ggplot_dist<-ggplot2::ggplot(table_all) +
-    ggplot2::stat_density(adjust = adjust, ggplot2::aes(x = traits, group = sp, fill=sp), alpha = alpha, geom='polygon', position = 'identity') +
+    ggplot2::stat_density(adjust = adjust, ggplot2::aes(x = traits, group = sp, fill = sp), alpha = alpha, geom='polygon', position = 'identity') +
     ggplot2::facet_wrap(~ plots, ncol=n_col, nrow = length(sites2use), scales = scale) +
     ggplot2::scale_fill_manual(values = colorvalues) +
-    ggplot2::geom_text(ggplot2::aes(label = lab), data = overlap_labels, x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1) +
+    ggplot2::geom_text(ggplot2::aes_string(label = 'lab'), data = overlap_labels, x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1) +
     ggplot2::scale_x_continuous(name = name_x, limits = limits_x) +
     ggplot2::scale_y_continuous(name = name_y, expand = c(0,0))
 

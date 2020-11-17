@@ -24,7 +24,7 @@ area *2 divided by the sum of areas under the two functions.}
 \item{overlap_a}{the proportion of a that overlaps with b, calculated by the overlap
 area divided by area under the function generated from a.}
 \item{overlap_b}{the proportion of b that overlaps with a, calculated by the overlap
-area diveided by area under the function generated from b.}
+area divided by area under the function generated from b.}
 }
 \description{
 This function calculates circular overlap based on discrete hourly observations from
@@ -38,9 +38,8 @@ taking the integral of the minimum of the two functions, from which the overlap
 outputs are calculated.
 }
 \examples{
-library(dplyr)
-a <- filter(ant_data, chamber == 1)
-b <- filter(ant_data, chamber == 2)
+a <- ant_data[ant_data$chamber == 1, ]
+b <- ant_data[ant_data$chamber == 2, ]
 circular_overlap_24hour(a$time,b$time)
 
 }

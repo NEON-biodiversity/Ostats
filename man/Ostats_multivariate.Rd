@@ -48,7 +48,7 @@ generating null models.}
 of null model output. A warning is issued, and a random seed is generated
 based on the local time, if the user does not supply a seed.}
 
-\item{density_args}{additional arguments to pass to \code{\link[hypervolume]{hypervolume}},
+\item{hypervolume_args}{additional arguments to pass to \code{\link[hypervolume]{hypervolume}},
 such as \code{method} If none are provided, default values
 are used.}
 }

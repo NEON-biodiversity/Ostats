@@ -9,9 +9,11 @@ Authors@R: c(person(c('Quentin', 'D.'), 'Read', role = c('aut', 'cre'), email = 
              )
 Description: This is a placeholder for later.
     Use four spaces when indenting paragraphs within the Description. Later, we will put some nice content here.
-License: What license is it under?
+License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Depends:
+    R (>= 2.10)
 Imports: 
     sfsmisc,
     matrixStats,

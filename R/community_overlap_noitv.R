@@ -36,18 +36,17 @@
 #' for a community.
 #'
 #' @examples
-#' library(tidyverse)
 #' library(Ostats)
 #'
-#' # Load data from web archive and Keep only the relevant part of data
-#' dat <- read_csv('https://ndownloader.figshare.com/files/9167548') %>%
-#'    filter(siteID %in% 'HARV') %>%
-#'    select(siteID, taxonID, weight) %>%
-#'    filter(!is.na(weight)) %>%
-#'    mutate(log_weight = log10(weight))
+#' # Load data from web archive
+#' dat <- read.csv('https://ndownloader.figshare.com/files/9167548')
+#' # Keep only the relevant part of data
+#' dat <- dat[dat$siteID %in% c('HARV','JORN') & !is.na(dat$weight), c('siteID', 'taxonID', 'weight')]
+#' dat <- dat[!is.na(dat$weight), ]
+#' dat$log_weight <- log10(dat$weight)
 #'
-#' # Calculate median of pairwise distances for the community,weighted by harmonic means
-#' of abundances
+#' # Calculate median of pairwise distances for the community, weighted by harmonic means
+#' # of abundances
 #' community_overlap_noitv(traits = as.matrix(dat$log_weight),
 #'    sp = factor(dat$taxonID))
 #'
