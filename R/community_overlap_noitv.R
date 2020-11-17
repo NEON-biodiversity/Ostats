@@ -37,11 +37,9 @@
 #'
 #' @examples
 #' library(Ostats)
-#'
-#' # Load data from web archive
-#' dat <- read.csv('https://ndownloader.figshare.com/files/9167548')
+
 #' # Keep only the relevant part of data
-#' dat <- dat[dat$siteID %in% c('HARV','JORN') & !is.na(dat$weight), c('siteID', 'taxonID', 'weight')]
+#' dat <- small_mammal_data[small_mammal_data$siteID %in% c('HARV','JORN'), ]
 #' dat <- dat[!is.na(dat$weight), ]
 #' dat$log_weight <- log10(dat$weight)
 #'

@@ -72,22 +72,22 @@
 #' each community.
 #' #'
 #' @examples
-#' # overlap statistics for body weights of species in NEON sites
+#' \dontrun{
+#' # overlap statistics for body weights of small mammals in NEON sites
 #' library(Ostats)
-#' # Load data from web archive
-#' dat <- read.csv('https://ndownloader.figshare.com/files/9167548')
 #'
 #' # Keep only the relevant part of data
-#' dat <- dat[dat$siteID %in% c('HARV','JORN'), c('siteID', 'taxonID', 'weight')]
+#' dat <- small_mammal_data[small_mammal_data$siteID %in% c('HARV','JORN'), ]
 #' dat <- dat[!is.na(dat$weight), ]
 #' dat$log_weight <- log10(dat$weight)
 #'
 #'
-#' #Run O-stats on the data with nperm = 2 (do not bother with null models)
+#' #Run O-stats on the data with only a few null model iterations
 #' Ostats_example <- Ostats(traits = as.matrix(dat[,'log_weight']),
 #'                    sp = factor(dat$taxonID), data_type = "linear",
 #'                    plots = factor(dat$siteID),
-#'                    nperm = 2)
+#'                    nperm = 10)
+#' }
 #' @export
 #'
 #'

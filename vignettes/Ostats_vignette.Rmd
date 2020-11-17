@@ -259,25 +259,21 @@ There are various arguments to fine tune the plot you produce.
 
 * *means* is a logical statement. If set to F or FALSE, which is the default value, then a single column of graphs is generated that illustrates the trait probability density curves for each species. If set to T or TRUE, then graphs of mean trait values are plotted in a second column for comparison of graphs with trait density curves. Note that setting means to TRUE is only recommended when you are plotting a 2-3 illustrative sites. If too many sites are plotted with mean set to TRUE then the graphs become small and difficult to read.
 
+The following example plots the NEON small mammal data.
+
 ```{r out.width="80%", warning=FALSE, error=FALSE, fig.align="center", fig.height=4.5, fig.width=7}
-# Example using the NEON small mammal dataset and Ostats_example
-
-# Load the data:
-indiv_dat <- read.csv('https://ndownloader.figshare.com/files/9167548')
-
 # Set the arguments:
-overlap_dat <- Ostats_example 
-siteID <- indiv_dat$siteID
-taxonID <- indiv_dat$taxonID
-trait <- indiv_dat$logweight
+siteID <- small_mammal_data$siteID
+taxonID <- small_mammal_data$taxonID
+trait <- log10(small_mammal_data$weight)
 
 # To plot only selected sites:
 sites2use<- c('HARV','JORN') 
-Ostats_plot(indiv_dat = indiv_dat, 
-            plots = siteID, 
+
+Ostats_plot(plots = siteID, 
             sp = taxonID, 
             traits = trait, 
-            overlap_dat = overlap_dat, 
+            overlap_dat = small_mammal_Ostats, 
             sites2use = sites2use, 
             name_x = 'log10 Body Weight (g)', 
             means = TRUE)

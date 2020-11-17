@@ -3,64 +3,57 @@
 #'@description This function plots the overlap of traits among
 #'  species for each community.
 #'
-#'@param indiv_dat Individual data: a data frame containing individual measurments for a certain
-#'trait,its species identity, and the community identity it belongs to.
-#'@param plots Site identity: a column in indiv_dat data frame that indicates the names of each community.
-#'@param sp Taxon identity: a column in indiv_dat data frame that indicates species or taxa names.
-#'@param traits you want to overlap among species: a column in indiv_dat data frame containing traits measurements for each individual.
-#'@param overlap_dat an object containing the results from the Ostats function - see \code{\link{Ostats}}
-#'@param sites2use a vector that select the sites you want to plot. If NULL, the function will plot all the sites.
+#'@param plots Site identity: a vector of names of each community.
+#'@param sp Taxon identity: a vector of species or taxa names.
+#'@param traits A vector of trait measurements for each individual.
+#'@param overlap_dat an object containing the output of \code{\link{Ostats}}
+#'@param sites2use a vector of sites to plot. If NULL, the function will plot all the sites.
 #'@param n_col Number of columns for layout of individual panels. Default is 1.
-#'@param colorvalues Vector of color values for the density polygons. Defaults to a viridis palette if none provided.
-#'@param alpha defines the colors trasparency level for the density polygons. Default is 0.5
+#'@param colorvalues Vector of color values for the density polygons. Defaults to a rainbow palette if none provided.
+#'@param alpha defines the transparency level for the density polygons. Default is 0.5
 #'@param adjust multiplicate the bandwidth adjustment of the density polygons. The less, the tiny your density polygons will be. Default is 2.
 #'@param limits_x the limits (min and max values) of the x axis. Default is \code{c(0.5*min(traits,na.rm=TRUE), 1.5*max(traits,na.rm=TRUE))}
-#'@param scale If you want the scale of x, y or both x and y axis to be adjusted according to each site density probability set the argument to "free_x", "free_y" or "free" respectively. Default= "fixed" which uses the same scale across all sites.
-#'@param name_x a character indicating the name of your x axis (i.e. the name of your trait). Default is 'traits value'
-#'@param name_y a character indicating the name of your y axis. Default is 'Probability Density'
-#'@param means if TRUE it plot traits means for each species in an additionlan plot column next to the traits distribution plots for each site. Default is FALSE, which make the function plot only the traits distribution for each site.
+#'@param scale If you want the scale of x, y or both x and y axis to be adjusted according to each site density probability set the argument to "free_x", "free_y" or "free" respectively. Default = "fixed" which uses the same scale across all sites.
+#'@param name_x a character indicating the name of your x axis (i.e. the name of your trait). Default is 'trait value'
+#'@param name_y a character indicating the name of your y axis. Default is 'probability density'
+#'@param means if TRUE it plot traits means for each species in an additional plot column next to the traits distribution plots for each site. Default is FALSE, which make the function plot only the traits distribution for each site.
 #'@return Density plots of species trait distribution plotted on the same graph
-#'  for each community to show how they overlap each other. The overlap value obtained as output from the function \code{\link{Ostats}}, is labelled on each community graph.
+#'  for each community to show how they overlap each other.
+#'  The overlap value obtained as output from \code{\link{Ostats}} is labelled on each community graph.
 #'
 #'@seealso \code{\link{Ostats}} to Calculate O-statistics (community-level
 #'  pairwise niche overlap statistics)
 #'
 #'@examples
-#'# load data:
-#'indiv_dat <- read.csv('https://ndownloader.figshare.com/files/9167548')
-#'
 #'# set the arguments:
-#'overlap_dat <- Ostats_bysite2015 #your results from the Ostat function - see \code{\link{Ostats}}
-#'plots <- indiv_dat$siteID
-#'sp <- indiv_dat$taxonID
-#'traits <- indiv_dat$logweight
+#'plots <- small_mammal_data$siteID
+#'sp <- small_mammal_data$taxonID
+#'traits <- log10(small_mammal_data$weight)
 #'
 #'# to plot only selected sites:
-#'sites2use<- c('BART','KONZ','JORN')
+#'sites2use <- c('BART','KONZ','JORN')
 #'
 #'
-#'Ostats_plot(indiv_dat = indiv_dat,
-#'            plots = plots, sp = sp, traits = traits,
-#'            overlap_dat = overlap_dat,
-#'            sites2use = sites2use, means=T)
+#'Ostats_plot(plots = plots, sp = sp, traits = traits,
+#'            overlap_dat = small_mammal_Ostats,
+#'            sites2use = sites2use, means = TRUE)
 
 
 #'@export
 #'
-Ostats_plot<-function(indiv_dat,
-                      plots,
+Ostats_plot<-function(plots,
                       sp,
                       traits,
                       overlap_dat,
                       sites2use = NULL,
-                      n_col=1,
+                      n_col = 1,
                       scale = "fixed",
                       colorvalues = NULL,
                       alpha = 0.5,
                       adjust = 2,
-                      limits_x =c(0.5*min(traits,na.rm=TRUE), 1.5*max(traits,na.rm=TRUE)),
-                      name_x = 'traits value',
-                      name_y = 'Probability Density',
+                      limits_x = c(0.5*min(traits,na.rm=TRUE), 1.5*max(traits,na.rm=TRUE)),
+                      name_x = 'trait value',
+                      name_y = 'probability density',
                       means=FALSE) {
 
 
@@ -75,7 +68,6 @@ Ostats_plot<-function(indiv_dat,
   ostat_norm <- subset(ostat_norm, rownames(ostat_norm) %in% sites2use)
 
   traits <- subset(traits, plots %in% sites2use)
-  indiv_dat <- subset(indiv_dat, plots %in% sites2use)
   sp<-subset(sp, plots %in% sites2use) #filter the taxons in the sites2use
   plots<-subset(plots, plots %in% sites2use)
 
