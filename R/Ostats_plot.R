@@ -68,42 +68,22 @@ Ostats_plot<-function(plots,
   ostat_norm <- subset(ostat_norm, rownames(ostat_norm) %in% sites2use)
 
   traits <- subset(traits, plots %in% sites2use)
-  sp<-subset(sp, plots %in% sites2use) #filter the taxons in the sites2use
+  sp<-subset(sp, plots %in% sites2use)
   plots<-subset(plots, plots %in% sites2use)
 
-  #organize data in a table
-  table_traits_taxon<-data.frame(traits, sp, plots)
+  plot_dat <- data.frame(traits = traits, sp = sp, plots = plots)
 
-
-  # If the user want to plot the traits means.
-  if(means){
-    #values per species
-    taxon_mean<-stats::aggregate(table_traits_taxon[,1], list(table_traits_taxon[,2]), mean, na.rm = TRUE)
-
-    #make a column with repeted means for each specie
-    table_all<-cbind(table_traits_taxon, table_traits_taxon[,2])
-    table_all<-data.frame(table_all,stringsAsFactors = FALSE)
-
-    n<-length(unique(taxon_mean$Group.1))
-    for(i in 1:n){
-      name<-unique(taxon_mean$Group.1)[i]
-      T_F<-taxon_mean[,1]==name
-      mean_name<-taxon_mean[,2][T_F]
-      table_all <- within(table_all, table_traits_taxon...2.[sp==name] <- mean_name)
-    }
-
-    names(table_all)[names(table_all) == "table_traits_taxon...2."] <- "means"
-
-  }
-
+  # Calculate mean value by taxon.
+  taxon_mean <- stats::aggregate(traits, list(sp, plots), mean, na.rm = TRUE)
+  names(taxon_mean) <- c('sp', 'plots', 'means')
 
   # If a color vector is not provided, create a default palette.
   if (is.null(colorvalues)) {
     colorvalues <- sample(grDevices::rainbow(10, s = 1, v = 1, start = 0, end = max(1, 10 - 1)/10,
-                                  alpha, rev = FALSE), size = length(unique(table_all$sp)), replace = TRUE)
+                                  alpha, rev = FALSE), size = length(unique(sp)), replace = TRUE)
   }
 
-  names(colorvalues) <- unique(taxon_mean$Group.1)
+  names(colorvalues) <- unique(sp)
 
   ggplot2::theme_set(
     ggplot2::theme_bw() + ggplot2::theme(panel.grid = ggplot2::element_blank(),
@@ -117,7 +97,7 @@ Ostats_plot<-function(plots,
   overlap_labels <- data.frame(plots = row.names(ostat_norm),
                                lab = paste('Overlap =', round(ostat_norm[,1], 2)))
 
-  ggplot_dist<-ggplot2::ggplot(table_all) +
+  ggplot_dist<-ggplot2::ggplot(plot_dat) +
     ggplot2::stat_density(adjust = adjust, ggplot2::aes(x = traits, group = sp, fill = sp), alpha = alpha, geom='polygon', position = 'identity') +
     ggplot2::facet_wrap(~ plots, ncol=n_col, nrow = length(sites2use), scales = scale) +
     ggplot2::scale_fill_manual(values = colorvalues) +
@@ -127,24 +107,17 @@ Ostats_plot<-function(plots,
 
 
   if (means) {
-    ggplot_means<-ggplot2::ggplot(table_all)+
-      ggplot2::geom_vline(data=table_all, ggplot2::aes(xintercept=as.numeric(means),  colour=sp,  group=sp, alpha = alpha), size=0.5)+
-      ggplot2::facet_wrap(~ plots, ncol=n_col ,nrow = length(sites2use), scales = scale) +
+    ggplot_means<-ggplot2::ggplot(taxon_mean) +
+      ggplot2::geom_vline(ggplot2::aes(xintercept=means,  colour=sp,  group=sp, alpha = alpha), size=0.5)+
+      ggplot2::facet_wrap(~ plots, ncol = n_col ,nrow = length(sites2use), scales = scale) +
       ggplot2::scale_colour_manual(values = colorvalues) +
       ggplot2::scale_x_continuous(name = name_x, limits = limits_x) +
       ggplot2::scale_y_continuous(expand = c(0,0))
-
-
   }
-
-
 
   if (means){
     gridExtra::grid.arrange(ggplot_dist, ggplot_means, ncol=2)
-
   } else {
-
     ggplot_dist
-
   }
 }
