@@ -36,7 +36,7 @@ Ostats_plot(
 
 \item{scale}{If you want the scale of x, y or both x and y axis to be adjusted according to each site density probability set the argument to "free_x", "free_y" or "free" respectively. Default = "fixed" which uses the same scale across all sites.}
 
-\item{colorvalues}{Vector of color values for the density polygons. Defaults to a rainbow palette if none provided.}
+\item{colorvalues}{Vector of color values for the density polygons. Defaults to a viridis palette if none provided.}
 
 \item{alpha}{defines the transparency level for the density polygons. Default is 0.5}
 

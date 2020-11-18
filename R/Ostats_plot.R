@@ -9,7 +9,7 @@
 #'@param overlap_dat an object containing the output of \code{\link{Ostats}}
 #'@param sites2use a vector of sites to plot. If NULL, the function will plot all the sites.
 #'@param n_col Number of columns for layout of individual panels. Default is 1.
-#'@param colorvalues Vector of color values for the density polygons. Defaults to a rainbow palette if none provided.
+#'@param colorvalues Vector of color values for the density polygons. Defaults to a viridis palette if none provided.
 #'@param alpha defines the transparency level for the density polygons. Default is 0.5
 #'@param adjust multiplicate the bandwidth adjustment of the density polygons. The less, the tiny your density polygons will be. Default is 2.
 #'@param limits_x the limits (min and max values) of the x axis. Default is \code{c(0.5*min(traits,na.rm=TRUE), 1.5*max(traits,na.rm=TRUE))}
@@ -79,8 +79,7 @@ Ostats_plot<-function(plots,
 
   # If a color vector is not provided, create a default palette.
   if (is.null(colorvalues)) {
-    colorvalues <- sample(grDevices::rainbow(10, s = 1, v = 1, start = 0, end = max(1, 10 - 1)/10,
-                                  alpha, rev = FALSE), size = length(unique(sp)), replace = TRUE)
+    colorvalues <- sample(viridis::viridis(10, alpha = alpha), size = length(unique(sp)), replace = TRUE)
   }
 
   names(colorvalues) <- unique(sp)

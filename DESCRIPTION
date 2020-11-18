@@ -23,7 +23,8 @@ Imports:
     circular,
     hypervolume,
     ggplot2,
-    gridExtra
+    gridExtra,
+    viridis
 RoxygenNote: 7.1.0
 Suggests: 
     testthat (>= 2.1.0),
