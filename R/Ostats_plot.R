@@ -5,21 +5,22 @@
 #'
 #'@param plots Site identity: a vector of names of each community.
 #'@param sp Taxon identity: a vector of species or taxa names.
-#'@param traits A vector of trait measurements for each individual.
-#'@param overlap_dat an object containing the output of \code{\link{Ostats}}
-#'@param sites2use a vector of sites to plot. If NULL, the function will plot all the sites.
+#'@param traits A vector of trait measurements for each individual, or a matrix or data frame with rows representing individuals and columns representing traits.
+#'@param overlap_dat Optional: an object containing the output of \code{\link{Ostats}}. If provided, overlap statistics will be displayed in the plot panels.
+#'@param use_plots a vector of sites to plot. If NULL, the function will plot all the sites.
 #'@param n_col Number of columns for layout of individual panels. Default is 1.
 #'@param colorvalues Vector of color values for the density polygons. Defaults to a viridis palette if none provided.
-#'@param alpha defines the transparency level for the density polygons. Default is 0.5
-#'@param adjust multiplicate the bandwidth adjustment of the density polygons. The less, the tiny your density polygons will be. Default is 2.
-#'@param limits_x the limits (min and max values) of the x axis. Default is \code{c(0.5*min(traits,na.rm=TRUE), 1.5*max(traits,na.rm=TRUE))}
-#'@param scale If you want the scale of x, y or both x and y axis to be adjusted according to each site density probability set the argument to "free_x", "free_y" or "free" respectively. Default = "fixed" which uses the same scale across all sites.
+#'@param alpha defines the transparency level for the density polygons. Default is 0.5.
+#'@param adjust the bandwidth adjustment of the density polygons. Default is 2. See \code{\link[stats]{density}}.
+#'@param limits_x Vector of length 2, with multiplicative factor to apply to the minimum and maximum values of each trait to expand the limits of the x axis. Default is 0.5 times the minimum and 1.5 times the maximum value of each trait.
+#'@param scale If you want the scale of x, y or both x and y axis to be adjusted according to each site density probability set the argument to "free_x", "free_y" or "free" respectively. Default = "fixed" which uses the same scale across all sites. See \code{\link[ggplot2]{facet_grid}}.
 #'@param name_x a character indicating the name of your x axis (i.e. the name of your trait). Default is 'trait value'
 #'@param name_y a character indicating the name of your y axis. Default is 'probability density'
-#'@param means if TRUE it plot traits means for each species in an additional plot column next to the traits distribution plots for each site. Default is FALSE, which make the function plot only the traits distribution for each site.
+#'@param means if TRUE, trait means for each species are plotted in an additional plot column next to the traits distribution plots for each site. Default is FALSE.
 #'@return Density plots of species trait distribution plotted on the same graph
 #'  for each community to show how they overlap each other.
 #'  The overlap value obtained as output from \code{\link{Ostats}} is labelled on each community graph.
+#'  If more than one trait is provided, a list of plots will be returned.
 #'
 #'@seealso \code{\link{Ostats}} to Calculate O-statistics (community-level
 #'  pairwise niche overlap statistics)
@@ -31,12 +32,12 @@
 #'traits <- log10(small_mammal_data$weight)
 #'
 #'# to plot only selected sites:
-#'sites2use <- c('BART','KONZ','JORN')
+#'use_plots <- c('BART','KONZ','JORN')
 #'
 #'
 #'Ostats_plot(plots = plots, sp = sp, traits = traits,
 #'            overlap_dat = small_mammal_Ostats,
-#'            sites2use = sites2use, means = TRUE)
+#'            use_plots = use_plots, means = TRUE)
 
 
 #'@export
@@ -44,38 +45,48 @@
 Ostats_plot<-function(plots,
                       sp,
                       traits,
-                      overlap_dat,
-                      sites2use = NULL,
+                      overlap_dat = NULL,
+                      use_plots = NULL,
                       n_col = 1,
                       scale = "fixed",
                       colorvalues = NULL,
                       alpha = 0.5,
                       adjust = 2,
-                      limits_x = c(0.5*min(traits,na.rm=TRUE), 1.5*max(traits,na.rm=TRUE)),
+                      limits_x = c(0.5, 1.5),
                       name_x = 'trait value',
                       name_y = 'probability density',
-                      means=FALSE) {
+                      means = FALSE) {
 
 
 
   # Unless a subset of sites is provided, use all sites in dataset.
-  if (is.null(sites2use)) {
-    sites2use <- unique(plots)
+  if (is.null(use_plots)) {
+    use_plots <- unique(plots)
   }
 
-  #filter only for sites2use
-  ostat_norm<-overlap_dat$overlaps_norm
-  ostat_norm <- subset(ostat_norm, rownames(ostat_norm) %in% sites2use)
+  # Check dimensions of traits. Create one-column matrix if it is a vector.
+  if (is.vector(traits)) {
+    traits <- as.matrix(traits)
+  }
 
-  traits <- subset(traits, plots %in% sites2use)
-  sp<-subset(sp, plots %in% sites2use)
-  plots<-subset(plots, plots %in% sites2use)
+  # Give traits matrix names if it does not have any.
+  if (is.null(dimnames(traits)[[2]])) {
+    dimnames(traits)[[2]] <- paste('trait', 1:ncol(traits), sep = '_')
+  }
 
-  plot_dat <- data.frame(traits = traits, sp = sp, plots = plots)
+  # Filter only for use_plots
+  if (!is.null(overlap_dat)) {
+    ostat_norm <- overlap_dat$overlaps_norm
+    ostat_norm <- ostat_norm[rownames(ostat_norm) %in% use_plots, , drop = FALSE]
+  }
+
+  plot_dat <- cbind(as.data.frame(traits), sp = sp, plots = plots)
+  plot_dat <- plot_dat[plots %in% use_plots, ]
+
 
   # Calculate mean value by taxon.
   taxon_mean <- stats::aggregate(traits, list(sp, plots), mean, na.rm = TRUE)
-  names(taxon_mean) <- c('sp', 'plots', 'means')
+  names(taxon_mean) <- c('sp', 'plots', dimnames(traits)[[2]])
 
   # If a color vector is not provided, create a default palette.
   if (is.null(colorvalues)) {
@@ -83,6 +94,8 @@ Ostats_plot<-function(plots,
   }
 
   names(colorvalues) <- unique(sp)
+
+  plot_list <- list()
 
   ggplot2::theme_set(
     ggplot2::theme_bw() + ggplot2::theme(panel.grid = ggplot2::element_blank(),
@@ -93,30 +106,51 @@ Ostats_plot<-function(plots,
                                          legend.position = 'none',
                                          strip.background = ggplot2::element_blank()))
 
-  overlap_labels <- data.frame(plots = row.names(ostat_norm),
-                               lab = paste('Overlap =', round(ostat_norm[,1], 2)))
+  for (i in 1:ncol(traits)) {
 
-  ggplot_dist<-ggplot2::ggplot(plot_dat) +
-    ggplot2::stat_density(adjust = adjust, ggplot2::aes(x = traits, group = sp, fill = sp), alpha = alpha, geom='polygon', position = 'identity') +
-    ggplot2::facet_wrap(~ plots, ncol=n_col, nrow = length(sites2use), scales = scale) +
-    ggplot2::scale_fill_manual(values = colorvalues) +
-    ggplot2::geom_text(ggplot2::aes_string(label = 'lab'), data = overlap_labels, x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1) +
-    ggplot2::scale_x_continuous(name = name_x, limits = limits_x) +
-    ggplot2::scale_y_continuous(name = name_y, expand = c(0,0))
+    if (!is.null(overlap_dat)) {
+      overlap_labels <- data.frame(plots = row.names(ostat_norm),
+                                   lab = paste('Overlap =', signif(ostat_norm[,i], 2)))
+    }
+
+    x_limits <- limits_x * range(traits[, i], na.rm = TRUE)
+
+    ggplot_dist <- ggplot2::ggplot(plot_dat) +
+      ggplot2::stat_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], group = 'sp', fill = 'sp'), alpha = alpha, geom='polygon', position = 'identity') +
+      ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
+      ggplot2::scale_fill_manual(values = colorvalues) +
+      ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
+      ggplot2::scale_y_continuous(name = name_y, expand = c(0,0))
+
+    if (!is.null(overlap_dat)) {
+      ggplot_dist <- ggplot_dist +
+        ggplot2::geom_text(ggplot2::aes_string(label = 'lab'), data = overlap_labels, x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1)
+    }
 
 
-  if (means) {
-    ggplot_means<-ggplot2::ggplot(taxon_mean) +
-      ggplot2::geom_vline(ggplot2::aes(xintercept=means,  colour=sp,  group=sp, alpha = alpha), size=0.5)+
-      ggplot2::facet_wrap(~ plots, ncol = n_col ,nrow = length(sites2use), scales = scale) +
-      ggplot2::scale_colour_manual(values = colorvalues) +
-      ggplot2::scale_x_continuous(name = name_x, limits = limits_x) +
-      ggplot2::scale_y_continuous(expand = c(0,0))
+    if (means) {
+      ggplot_means <- ggplot2::ggplot(taxon_mean) +
+        ggplot2::geom_vline(ggplot2::aes_string(xintercept = dimnames(traits)[[2]][i], colour = 'sp', group='sp'), alpha = alpha, size=0.5)+
+        ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
+        ggplot2::scale_colour_manual(values = colorvalues) +
+        ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
+        ggplot2::scale_y_continuous(expand = c(0,0))
+    }
+
+    if (means){
+      plot_list[[i]] <- ggpubr::as_ggplot(gridExtra::arrangeGrob(ggplot_dist, ggplot_means, ncol=2))
+    } else {
+      plot_list[[i]] <- ggplot_dist
+    }
+
   }
 
-  if (means){
-    gridExtra::grid.arrange(ggplot_dist, ggplot_means, ncol=2)
+  names(plot_list) <- dimnames(traits)[[2]]
+
+  if (length(plot_list) == 1) {
+    return(plot_list[[1]])
   } else {
-    ggplot_dist
+    return(plot_list)
   }
+
 }

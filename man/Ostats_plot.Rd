@@ -8,14 +8,14 @@ Ostats_plot(
   plots,
   sp,
   traits,
-  overlap_dat,
-  sites2use = NULL,
+  overlap_dat = NULL,
+  use_plots = NULL,
   n_col = 1,
   scale = "fixed",
   colorvalues = NULL,
   alpha = 0.5,
   adjust = 2,
-  limits_x = c(0.5 * min(traits, na.rm = TRUE), 1.5 * max(traits, na.rm = TRUE)),
+  limits_x = c(0.5, 1.5),
   name_x = "trait value",
   name_y = "probability density",
   means = FALSE
@@ -26,34 +26,35 @@ Ostats_plot(
 
 \item{sp}{Taxon identity: a vector of species or taxa names.}
 
-\item{traits}{A vector of trait measurements for each individual.}
+\item{traits}{A vector of trait measurements for each individual, or a matrix or data frame with rows representing individuals and columns representing traits.}
 
-\item{overlap_dat}{an object containing the output of \code{\link{Ostats}}}
+\item{overlap_dat}{Optional: an object containing the output of \code{\link{Ostats}}. If provided, overlap statistics will be displayed in the plot panels.}
 
-\item{sites2use}{a vector of sites to plot. If NULL, the function will plot all the sites.}
+\item{use_plots}{a vector of sites to plot. If NULL, the function will plot all the sites.}
 
 \item{n_col}{Number of columns for layout of individual panels. Default is 1.}
 
-\item{scale}{If you want the scale of x, y or both x and y axis to be adjusted according to each site density probability set the argument to "free_x", "free_y" or "free" respectively. Default = "fixed" which uses the same scale across all sites.}
+\item{scale}{If you want the scale of x, y or both x and y axis to be adjusted according to each site density probability set the argument to "free_x", "free_y" or "free" respectively. Default = "fixed" which uses the same scale across all sites. See \code{\link[ggplot2]{facet_grid}}.}
 
 \item{colorvalues}{Vector of color values for the density polygons. Defaults to a viridis palette if none provided.}
 
-\item{alpha}{defines the transparency level for the density polygons. Default is 0.5}
+\item{alpha}{defines the transparency level for the density polygons. Default is 0.5.}
 
-\item{adjust}{multiplicate the bandwidth adjustment of the density polygons. The less, the tiny your density polygons will be. Default is 2.}
+\item{adjust}{the bandwidth adjustment of the density polygons. Default is 2. See \code{\link[stats]{density}}.}
 
-\item{limits_x}{the limits (min and max values) of the x axis. Default is \code{c(0.5*min(traits,na.rm=TRUE), 1.5*max(traits,na.rm=TRUE))}}
+\item{limits_x}{Vector of length 2, with multiplicative factor to apply to the minimum and maximum values of each trait to expand the limits of the x axis. Default is 0.5 times the minimum and 1.5 times the maximum value of each trait.}
 
 \item{name_x}{a character indicating the name of your x axis (i.e. the name of your trait). Default is 'trait value'}
 
 \item{name_y}{a character indicating the name of your y axis. Default is 'probability density'}
 
-\item{means}{if TRUE it plot traits means for each species in an additional plot column next to the traits distribution plots for each site. Default is FALSE, which make the function plot only the traits distribution for each site.}
+\item{means}{if TRUE, trait means for each species are plotted in an additional plot column next to the traits distribution plots for each site. Default is FALSE.}
 }
 \value{
 Density plots of species trait distribution plotted on the same graph
  for each community to show how they overlap each other.
  The overlap value obtained as output from \code{\link{Ostats}} is labelled on each community graph.
+ If more than one trait is provided, a list of plots will be returned.
 }
 \description{
 This function plots the overlap of traits among
@@ -66,12 +67,12 @@ sp <- small_mammal_data$taxonID
 traits <- log10(small_mammal_data$weight)
 
 # to plot only selected sites:
-sites2use <- c('BART','KONZ','JORN')
+use_plots <- c('BART','KONZ','JORN')
 
 
 Ostats_plot(plots = plots, sp = sp, traits = traits,
            overlap_dat = small_mammal_Ostats,
-           sites2use = sites2use, means = TRUE)
+           use_plots = use_plots, means = TRUE)
 }
 \seealso{
 \code{\link{Ostats}} to Calculate O-statistics (community-level

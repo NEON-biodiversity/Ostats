@@ -274,7 +274,7 @@ Ostats_plot(plots = siteID,
             sp = taxonID, 
             traits = trait, 
             overlap_dat = small_mammal_Ostats, 
-            sites2use = sites2use, 
+            use_plots = sites2use, 
             name_x = 'log10 Body Weight (g)', 
             means = TRUE)
 
