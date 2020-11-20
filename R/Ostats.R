@@ -106,8 +106,10 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
     warning(paste("Argument random_seed was not supplied; setting seed to", random_seed))
   }
 
-  # If the abundances of species are different, print a warning.
-  if (length(unique(table(sp))) > 1) warning("Species abundances differ. Consider sampling equivalent numbers of individuals per species.")
+  # If the abundances of species within sites are different, print a warning.
+  abund_table <- table(plots, sp)
+  unique_abunds <- apply(abund_table, 1, function(x) length(unique(x[x > 0])))
+  if (any(unique_abunds > 1)) warning("Species abundances differ. Consider sampling equivalent numbers of individuals per species.")
 
   # Set random seed.
   set.seed(random_seed)
