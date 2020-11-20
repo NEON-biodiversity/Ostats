@@ -1,6 +1,6 @@
 ---
 title: "Ostats"
-author: 'Arya Yue, Quentin Read, Isadora Essig Fluck, Ben Baiser, Sydne Record'
+author: 'Arya Yue, Quentin D. Read, Isadora Essig Fluck, Benjamin Baiser, John M. Grady, Phoebe L. Zarnetske, Sydne Record'
 date: '`r Sys.Date()`'
 output:
   rmarkdown::html_vignette:
@@ -55,13 +55,12 @@ The input of the function *Ostats* is taken from a dataset with a column for spe
 # Load the Ostats package. 
 library(Ostats)
 
-# Load data from Read et al. (2018) from Figshare web archive
-dat <- read.csv('https://ndownloader.figshare.com/files/9167548')
-
+# Data from Read et al. (2018) included with package
 # Subset data to only two sites (Harvard and Jornada)
 # and keep only the relevant columns.
 # Add a new column named "log_weight" to log-transform the measurements.
-dat <- dat[dat$siteID %in% c('HARV', 'JORN'), c('siteID', 'taxonID', 'weight')]
+dat <- small_mammal_data[small_mammal_data$siteID %in% c('HARV', 'JORN'), 
+                         c('siteID', 'taxonID', 'weight')]
 dat <- dat[!is.na(dat$weight), ]
 dat$log_weight <- log10(dat$weight)
 ```
