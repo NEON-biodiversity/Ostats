@@ -236,23 +236,30 @@ Currently, Ostats_regional only supports linear data calculation.
 
 The graphing function *Ostats_plot* depends on ggplot2 and can be used to graph species trait overlaps of each community for multiple communities. 
 
-The input dataset *indiv_dat* needs to have at least three columns: one for taxon identification, one for trait measurements, and one to indicate which community the individual belongs to. Overlap_dat is the output of Ostats function for the same data. It is used to label the graphs with community overlap values.
+The input dataset needs to have these information: 
+* *plots* community or site identity: a vector of names to indicate which community or site the individual belongs to. 
+* *sp* taxon identification: a vector of species or taxa names.
+* *traits*  trait measurements: a vector of trait measurements for each individual, or a matrix or data frame with rows representing individuals and columns representing traits.
+* *overlap_dat*  This input information is optional. It is an object containing the output of Ostats function \code{\link{Ostats}} for the same data. If provided, it is used to label the plot panels with the community overlap values.
 
-There are various arguments to fine tune the plot you produce.
+There are various arguments to fine tune the plot you produce:
 
 * The argument *n_col* can be used to change number of columns for layout of individual panels. The default is 1.
 
-* If *site2use* = NULL, the function plots all of the communities. Note that if you try to plot too many communities at once, then the contents of the plots become difficult to see. To prevent this from happening, manipulate the number of columns you want to show using the *n_col* argument.
+* *use_plots* is a vector to specify which sites to plot. If NULL, the function will plot all the sites/communities. Note that if you try to plot too many communities at once, then the contents of the plots become difficult to see. To prevent this from happening, manipulate the number of columns you want to show using the *n_col* argument.
 
-* *colorvalues* is a vector of color values for the density curves. This argument defaults to a viridis palette. It is recommended that the number of colors be equal to the number of taxa in the community to ensure that the same color is not repeated for different taxa.
 
-* *alpha_o* defines the transparency level for colors that fill the density curves with the default being 0.5.
+* *colorvalues* is a vector of color values for the density polygons. This argument defaults to a viridis palette if no other is provided. It is recommended that the number of colors be equal to the number of taxa in the community to ensure that the same color is not repeated for different taxa.
 
-* *adjust_o* is a value that is multiplied by the bandwidth adjustment of the density curves. The smaller this value is, the smaller the density curves will be. The default is 2.
+* *alpha* defines the transparency level for colors that fill the density polygons with the default being 0.5.
 
-* *limits_o* This argument sets the limits (min and max values) of the x-axis. The default x-axis limits are: a minimum of 0.5 times the minimum observed trait measurement (with NAs removed) and a maximum of 1.5 times the maximum observed trait measurement. Or in other words: c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE)).
+* *adjust* is a value that is multiplied by the bandwidth adjustment of the density curves. The smaller this value is, the smaller the density polygons will be. The default is 2. See \code{\link[stats]{density}}.
 
-* *name_x* is a character string indicating the name of the x-axis (i.e., the name of the trait) with a default of 'Trait value'.
+* *limits_x* a vector of length 2: it sets the limits (min and max values) of the x-axis. The default x-axis limits are: a minimum of 0.5 times the minimum observed trait measurement (with NAs removed) and a maximum of 1.5 times the maximum observed trait measurement. Or in other words: c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE)).
+
+* *scale* If you want the scale of x, y or both x and y axis to be adjusted according to each site density probability set the argument to "free_x", "free_y" or "free" respectively. Default = "fixed" which uses the same scale across all sites. See \code{\link[ggplot2]{facet_grid}}.
+
+* *name_x* is a character string indicating the name of the x-axis (i.e., the name of the trait) with a default of 'trait value'.
 
 * *name_y* is a character string indicating the name of the y-axis with a default of 'Probability Density'.
 
