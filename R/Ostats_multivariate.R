@@ -56,14 +56,14 @@ Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_typ
   if(is.numeric(traits) == FALSE) stop("traits must be a numeric matrix.")
   if(length(unique(sp)) == 1) warning("only one taxon is present; overlap cannot be calculated.")
 
-  # If user did not supply a random seed, generate one and print a warning.
+  # If user did not supply a random seed, generate one and print a message.
   if (is.null(random_seed)) {
     random_seed <- round(as.numeric(Sys.time()) %% 12345)
-    warning(paste("Argument random_seed was not supplied; setting seed to", random_seed))
+    message(paste("Note: argument random_seed was not supplied; setting seed to", random_seed))
   }
 
-  # If the abundances of species are different, print a warning.
-  if (length(unique(table(sp))) > 1) warning("Species abundances differ. Consider sampling equivalent numbers of individuals per species.")
+  # If the abundances of species are different, print a message.
+  if (length(unique(table(sp))) > 1) message("Note: species abundances differ. Consider sampling equivalent numbers of individuals per species.")
 
   # Set random seed.
   set.seed(random_seed)

@@ -100,16 +100,16 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
   if(!is.numeric(traits)) stop("traits must be a numeric matrix.")
   if(length(unique(sp)) == 1) stop("only one taxon is present; overlap cannot be calculated.")
 
-  # If user did not supply a random seed, generate one and print a warning.
+  # If user did not supply a random seed, generate one and print a message.
   if (is.null(random_seed)) {
     random_seed <- round(as.numeric(Sys.time()) %% 12345)
-    warning(paste("Argument random_seed was not supplied; setting seed to", random_seed))
+    message(paste("Note: argument random_seed was not supplied; setting seed to", random_seed))
   }
 
-  # If the abundances of species within sites are different, print a warning.
+  # If the abundances of species within sites are different, print a message
   abund_table <- table(plots, sp)
   unique_abunds <- apply(abund_table, 1, function(x) length(unique(x[x > 0])))
-  if (any(unique_abunds > 1)) warning("Species abundances differ. Consider sampling equivalent numbers of individuals per species.")
+  if (any(unique_abunds > 1)) message("Note: species abundances differ. Consider sampling equivalent numbers of individuals per species.")
 
   # Set random seed.
   set.seed(random_seed)
@@ -208,6 +208,9 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
 #' @param nperm the number of permutations to generate a null model.
 #' @param nullqs numeric vector of probabilities with values in [0,1] to set
 #'   effect size quantiles.
+#' @param random_seed User may supply a random seed to enable reproducibility
+#'   of null model output. A warning is issued, and a random seed is generated
+#'   based on the local time, if the user does not supply a seed.
 #' @param density_args additional arguments to pass to \code{\link[stats]{density}}, such
 #'   as \code{bw}, \code{n}, or \code{adjust}. If none are provided, default
 #'   values are used.
@@ -264,7 +267,16 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
 #'                                      nperm = 2)
 #'
 #' @export
-Ostats_regional <-function(traits, plots, sp, reg_pool_traits, reg_pool_sp, nperm = 99, nullqs = c(0.025, 0.975), density_args = list()) {
+Ostats_regional <-function(traits, plots, sp, reg_pool_traits, reg_pool_sp, nperm = 99, nullqs = c(0.025, 0.975), random_seed = NULL, density_args = list()) {
+
+  # If user did not supply a random seed, generate one and print a message.
+  if (is.null(random_seed)) {
+    random_seed <- round(as.numeric(Sys.time()) %% 12345)
+    message(paste("Note: argument random_seed was not supplied; setting seed to", random_seed))
+  }
+
+  # Set random seed.
+  set.seed(random_seed)
 
   # Declaration of data structures to hold the results
 
