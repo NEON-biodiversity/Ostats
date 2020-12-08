@@ -26,3 +26,51 @@ Ostats_multivariate_plot <- function() {
 
 
 #### TEST CODE BELOW THIS LINE
+
+# Plot only the points.
+
+sp <- iris$Species
+traits <- iris[, 1:4]
+plots <- factor(rep(1:3, nrow(traits)/3))
+
+trait_combs <- combn(names(traits), 2) # All combinations of traits
+
+# Create triangular layout
+layout_mat <- matrix(as.numeric(NA), ncol(traits) - 1, ncol(traits) - 1)
+layout_mat[lower.tri(layout_mat, diag = TRUE)] <- 1:6
+layout_mat <- layout_mat[nrow(layout_mat):1, ncol(layout_mat):1]
+
+plot_list <- list()
+
+for (p in unique(plots)) {
+
+  sp_plot <- sp[plots == p]
+  traits_plot <- traits[plots == p, ]
+
+  # Find ranges of each trait so that panels will have a common range.
+  traits_range <- apply(traits_plot, 2, range)
+
+  plot_theme <- ggplot2::theme_bw() +
+    ggplot2::theme(legend.position = 'none',
+                   axis.text.x = ggplot2::element_blank(),
+                   axis.text.y = ggplot2::element_blank())
+
+  # Generate plots
+  trait_pairs_plot_list <- apply(trait_combs, 2, function(traits_to_plot) {
+    dat_plot <- data.frame(sp = sp_plot, x = traits_plot[, traits_to_plot[1]], y = traits_plot[, traits_to_plot[2]])
+    x_range <- traits_range[, traits_to_plot[1]]
+    y_range <- traits_range[, traits_to_plot[2]]
+    ggplot2::ggplot(dat_plot, ggplot2::aes(x = x, y = y, group = sp, color = sp)) +
+      ggplot2::geom_point() +
+      plot_theme +
+      ggplot2::labs(x = traits_to_plot[1], y = traits_to_plot[2])
+  })
+
+
+
+  # Arrange plots
+  trait_pairs_plots_arranged <- gridExtra::grid.arrange(grobs = trait_pairs_plot_list, layout_matrix = layout_mat)
+
+  plot_list[[length(plot_list) + 1]] <- trait_pairs_plots_arranged
+
+}
