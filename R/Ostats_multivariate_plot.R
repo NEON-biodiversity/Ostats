@@ -12,6 +12,9 @@
 #' @param panel_height height of the individual plot panels, in units given by \code{units}. Default is 3 cm.
 #' @param panel_width height of the individual plot panels, in units given by \code{units}. Default is 3 cm.
 #' @param units units for panel height and width. Default is centimeters.
+#' @param hypervolume_args additional arguments to pass to \code{\link[hypervolume]{hypervolume}},
+#' such as \code{method} If none are provided, default values
+#' are used.
 #'
 #' MORE DOCUMENTATION GOES HERE
 #'
@@ -29,6 +32,11 @@ Ostats_multivariate_plot <- function() {
 
 
 #### TEST CODE BELOW THIS LINE
+
+
+# V1. Points only, no volumes ---------------------------------------------
+
+
 
 # Panel widths and heights
 units <- 'cm'
@@ -54,13 +62,13 @@ if (is.null(colorvalues)) {
   colorvalues <- sample(viridis::viridis(length(unique(sp)), alpha = 1))
 }
 
-
+sp_names <- rev(sort(unique(sp)))
 color_scale <- ggplot2::scale_color_manual(values = setNames(colorvalues, sp_names))
 
 plot_list <- list()
 
 # Generate common legend for all plots by writing species names in different colors.
-sp_names <- rev(sort(unique(sp)))
+
 legend_panel <- ggplot2::ggplot(data.frame(x = 1, y = seq_along(sp_names), sp = sp_names),
                                 ggplot2::aes(x = x, y = y, label = sp, color = sp)) +
   ggplot2::geom_text(hjust = 0) +
@@ -93,14 +101,11 @@ for (p in unique(plots)) {
   })
 
   # Remove axis text and titles from plots not along the edge.
-  for (i in 1:ncol(trait_combs)) {
-    if (!i %in% diag(layout_mat)) {
-      trait_pairs_plot_list[[i]] <- trait_pairs_plot_list[[i]] + ggplot2::theme(axis.text.x = ggplot2::element_blank(),
-                                                                                axis.text.y = ggplot2::element_blank(),
-                                                                                axis.title.x = ggplot2::element_blank(),
-                                                                                axis.title.y = ggplot2::element_blank())
-
-    }
+  for (i in layout_mat[upper.tri(layout_mat)]) {
+    trait_pairs_plot_list[[i]] <- trait_pairs_plot_list[[i]] + ggplot2::theme(axis.text.x = ggplot2::element_blank(),
+                                                                              axis.text.y = ggplot2::element_blank(),
+                                                                              axis.title.x = ggplot2::element_blank(),
+                                                                              axis.title.y = ggplot2::element_blank())
   }
 
   # Add legend panel to plot list
@@ -116,12 +121,42 @@ for (p in unique(plots)) {
 
 
   for (i in 1:nrow(layout_mat)) {
-    trait_pairs_plots_rows[[i]] <- do.call(cbind, lapply(layout_mat[i, ], function(n) if (is.na(n)) dummy_grob else ggplot2::ggplotGrob(trait_pairs_plot_list[[n]])))
+    trait_pairs_plots_rows[[i]] <- do.call(gridExtra::gtable_cbind, lapply(layout_mat[i, ], function(n) if (is.na(n)) dummy_grob else ggplot2::ggplotGrob(trait_pairs_plot_list[[n]])))
   }
 
-  trait_pairs_plots_arranged <- do.call(rbind, trait_pairs_plots_rows)
+  trait_pairs_plots_arranged <- do.call(gridExtra::gtable_rbind, trait_pairs_plots_rows)
 
   plot_list[[length(plot_list) + 1]] <- trait_pairs_plots_arranged
 
 }
 
+
+# V2. Include volumes -----------------------------------------------------
+
+# Calculate hypervolumes
+library(hypervolume)
+
+# Hypervolume for each species/site combination.
+sp_plot_combs <- expand.grid(sp = unique(sp), plot = unique(plots))
+hv_list <- replicate(nrow(sp_plot_combs), NA, simplify = FALSE)
+
+for (i in 1:nrow(sp_plot_combs)) {
+  sp_plot_dat <- traits[sp == sp_plot_combs$sp[i] & plots == sp_plot_combs$plot[i], ]
+  if (nrow(sp_plot_dat) > 2) {
+    sp_plot_dat <- scale(sp_plot_dat)
+    hv_list[[i]] <- hypervolume::hypervolume(sp_plot_dat, method = 'gaussian')
+  }
+}
+
+# Code to draw contours somewhat modified from hypervolume::plot.HypervolumeList
+contour_points <- function(hv) {
+  hv_density <- nrow(hv@RandomPoints)/hv@Volume
+  hv_dimensionality <- hv@Dimensionality
+  radius_critical <- hv_density^(-1/hv_dimensionality)
+  m_kde = MASS::kde2d(hv@RandomPoints[, 1], hv@RandomPoints[, 2], n = 50, h = radius_critical)
+  contour(m_kde, add = TRUE, levels = contour.kde.level,
+          drawlabels = FALSE, lwd = contour.lwd,
+          col = colors[whichid])
+}
+
+# Will use ggplot2::geom_density_2d_filled() to create a filled density region from the 2-dimensional KDE.
