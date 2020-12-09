@@ -90,7 +90,7 @@ Ostats_plot<-function(plots,
 
   # If a color vector is not provided, create a default palette.
   if (is.null(colorvalues)) {
-    colorvalues <- sample(viridis::viridis(10, alpha = alpha), size = length(unique(sp)), replace = TRUE)
+    colorvalues <- sample(viridis::viridis(length(unique(sp)), alpha = alpha))
   }
 
   names(colorvalues) <- unique(sp)
