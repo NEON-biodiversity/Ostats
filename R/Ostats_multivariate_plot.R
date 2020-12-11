@@ -149,14 +149,108 @@ for (i in 1:nrow(sp_plot_combs)) {
 }
 
 # Code to draw contours somewhat modified from hypervolume::plot.HypervolumeList
-contour_points <- function(hv) {
+get_contours <- function(hv) {
   hv_density <- nrow(hv@RandomPoints)/hv@Volume
   hv_dimensionality <- hv@Dimensionality
   radius_critical <- hv_density^(-1/hv_dimensionality)
-  m_kde = MASS::kde2d(hv@RandomPoints[, 1], hv@RandomPoints[, 2], n = 50, h = radius_critical)
-  contour(m_kde, add = TRUE, levels = contour.kde.level,
-          drawlabels = FALSE, lwd = contour.lwd,
-          col = colors[whichid])
+  # Calculate kernel density estimate for each combinations of two variables.
+  contour_list <- list()
+  for (i in 1:ncol(trait_combs)) {
+    kde <- MASS::kde2d(hv@RandomPoints[, trait_combs[1, i]], hv@RandomPoints[, trait_combs[2, i]], n = 50, h = radius_critical, lims = c(range(hv@RandomPoints[, trait_combs[1, i]]) * c(0.9, 1.1), range(hv@RandomPoints[, trait_combs[2, i]]) * c(0.9, 1.1)))
+    contour_lines <- contourLines(kde, levels = 0.01)
+    contour_line_dfs <- list()
+    for (j in 1:length(contour_lines)) {
+      contour_line_dfs[[j]] <- with(contour_lines[[j]], data.frame(polygon_id = j, x = x, y = y))
+    }
+    contour_list[[i]] <- data.frame(trait_x = trait_combs[1, i], trait_y = trait_combs[2, i], do.call(rbind, contour_line_dfs))
+  }
+  do.call(rbind, contour_list)
 }
 
-# Will use ggplot2::geom_density_2d_filled() to create a filled density region from the 2-dimensional KDE.
+# c_df1 <- get_contours(hv_list[[1]])
+
+# this works:
+# df1<-data.frame(x=c_list[[1]][[1]]$x,y=c_list[[1]][[1]]$y)
+# ggplot(df1,aes(x=x,y=y))+geom_polygon()
+# ggplot(df1,aes(x=x,y=y))+geom_polygon(alpha=0.5)
+
+###################
+
+# New loop to create plot list, now with hypervolumes
+
+plot_list <- list()
+
+for (p in unique(plots)) {
+
+  sp_plot <- sp[plots == p]
+  traits_plot <- traits[plots == p, ]
+
+    plot_theme <- ggplot2::theme_bw() +
+    ggplot2::theme(legend.position = 'none')
+
+  # Generate hypervolumes for each species at this plot.
+  # Hypervolume for each species/site combination.
+  sp_in_plot <- unique(sp_plot)
+  hv_list <- replicate(length(sp_in_plot), NA, simplify = FALSE)
+
+  for (i in 1:length(sp_in_plot)) {
+    sp_plot_dat <- traits_plot[sp_plot == sp_in_plot[i], ]
+    # Only generate hypervolume with at least 3 measurements
+    # Generate UNSCALED hypervolume.
+    if (nrow(sp_plot_dat) > 2) {
+      hv_list[[i]] <- hypervolume::hypervolume(sp_plot_dat, method = 'gaussian')
+    }
+  }
+
+  # Generate contours for all hypervolumes
+  contours_list <- lapply(hv_list, function(hv) if (class(hv) == 'Hypervolume') get_contours(hv) else NA)
+  # Join contours to data frame
+  for (i in 1:length(contours_list)) contours_list[[i]][, 'sp'] = sp_in_plot[i]
+  contours_df <- do.call(rbind, contours_list)
+
+  # Generate plots, with contours
+  trait_pairs_plot_list <- list()
+  for (i in 1:ncol(trait_combs)) {
+
+    dat_points <- data.frame(sp = sp_plot, x = traits_plot[, trait_combs[1, i]], y = traits_plot[, trait_combs[2, i]])
+    dat_polygons <- contours_df[contours_df$trait_x == trait_combs[1, i] & contours_df$trait_y == trait_combs[2, i], ]
+
+    trait_pairs_plot_list[[i]] <- ggplot2::ggplot(dat_points, ggplot2::aes(x = x, y = y, group = sp, color = sp)) +
+      ggplot2::geom_polygon(data = dat_polygons, ggplot2::aes(group = interaction(sp, polygon_id)), fill = 'transparent') +
+      ggplot2::geom_point() +
+      ggplot2::scale_x_continuous(limits = range(contours_df$x[contours_df$trait_x == trait_combs[1, i]])) +
+      ggplot2::scale_y_continuous(limits = range(contours_df$y[contours_df$trait_y == trait_combs[2, i]])) +
+      color_scale +
+      plot_theme +
+      ggplot2::labs(x = trait_combs[1, i], y = trait_combs[2, i])
+  }
+
+  # Remove axis text and titles from plots not along the edge.
+  for (i in layout_mat[upper.tri(layout_mat)]) {
+    trait_pairs_plot_list[[i]] <- trait_pairs_plot_list[[i]] + ggplot2::theme(axis.text.x = ggplot2::element_blank(),
+                                                                              axis.text.y = ggplot2::element_blank(),
+                                                                              axis.title.x = ggplot2::element_blank(),
+                                                                              axis.title.y = ggplot2::element_blank())
+  }
+
+  # Add legend panel to plot list
+  trait_pairs_plot_list <- c(trait_pairs_plot_list, list(legend_panel))
+
+  # Arrange plots
+  # Sequentially bind the rows together, then the columns.
+  trait_pairs_plots_rows <- list()
+
+  # Create dummy grob to fill in the blank spaces, using a zeroGrob
+  dummy_grob <- ggplot2::ggplotGrob(trait_pairs_plot_list[[1]])
+  dummy_grob$grobs <- replicate(length(dummy_grob$grobs), ggplot2::zeroGrob(), simplify = FALSE)
+
+
+  for (i in 1:nrow(layout_mat)) {
+    trait_pairs_plots_rows[[i]] <- do.call(gridExtra::gtable_cbind, lapply(layout_mat[i, ], function(n) if (is.na(n)) dummy_grob else ggplot2::ggplotGrob(trait_pairs_plot_list[[n]])))
+  }
+
+  trait_pairs_plots_arranged <- do.call(gridExtra::gtable_rbind, trait_pairs_plots_rows)
+
+  plot_list[[length(plot_list) + 1]] <- trait_pairs_plots_arranged
+
+}
