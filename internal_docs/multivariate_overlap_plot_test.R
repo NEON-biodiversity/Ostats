@@ -228,3 +228,8 @@ if (length(plot_list) == 1) {
 } else {
   return(plot_list)
 }
+
+
+# Test the actual function. -----------------------------------------------
+
+

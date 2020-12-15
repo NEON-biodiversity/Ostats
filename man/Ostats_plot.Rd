@@ -34,7 +34,7 @@ Ostats_plot(
 
 \item{n_col}{Number of columns for layout of individual panels. Default is 1.}
 
-\item{scale}{If you want the scale of x, y or both x and y axis to be adjusted according to each site density probability set the argument to "free_x", "free_y" or "free" respectively. Default = "fixed" which uses the same scale across all sites. See \code{\link[ggplot2]{facet_grid}}.}
+\item{scale}{If you want the scale of x, y or both x and y axis to be independent, set the argument to "free_x", "free_y" or "free" respectively. Default = "fixed" which uses the same scale across all sites. See \code{\link[ggplot2]{facet_grid}}.}
 
 \item{colorvalues}{Vector of color values for the density polygons. Defaults to a viridis palette if none provided.}
 
@@ -44,9 +44,9 @@ Ostats_plot(
 
 \item{limits_x}{Vector of length 2, with multiplicative factor to apply to the minimum and maximum values of each trait to expand the limits of the x axis. Default is 0.5 times the minimum and 1.5 times the maximum value of each trait.}
 
-\item{name_x}{a character indicating the name of your x axis (i.e. the name of your trait). Default is 'trait value'}
+\item{name_x}{x-axis label. Default is 'trait value'}
 
-\item{name_y}{a character indicating the name of your y axis. Default is 'probability density'}
+\item{name_y}{y-axis label. Default is 'probability density'}
 
 \item{means}{if TRUE, trait means for each species are plotted in an additional plot column next to the traits distribution plots for each site. Default is FALSE.}
 }

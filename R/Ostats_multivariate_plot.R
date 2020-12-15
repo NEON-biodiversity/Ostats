@@ -9,23 +9,45 @@
 #' @param use_plots a vector of sites to plot. If NULL, the function will plot all the sites.
 #' @param colorvalues Vector of color values for the density polygons. Defaults to a viridis palette if none provided.
 #' @param alpha defines the transparency level for the density polygons. Default is 0.5.
+#' @param plot_points whether to plot individual data points in addition to the hypervolume slices. Default is TRUE.
 #' @param panel_height height of the individual plot panels, in units given by \code{units}. Default is 3 cm.
 #' @param panel_width height of the individual plot panels, in units given by \code{units}. Default is 3 cm.
 #' @param units units for panel height and width. Default is centimeters.
 #' @param hypervolume_args additional arguments to pass to \code{\link[hypervolume]{hypervolume}},
-#' such as \code{method} If none are provided, default values
+#' such as \code{method}. If none are provided, default values
 #' are used.
 #'
 #' MORE DOCUMENTATION GOES HERE
 #'
 #' @export
-Ostats_multivariate_plot <- function() {
-  # Plot 2x2 dimensions of the hypervolumes separately, a la hypervolume plot
-  # Species will get colors.
-  # Do this for each community on a separate page.
-  # It will return a list if there are >1 communities.
+Ostats_multivariate_plot <- function(plots,
+                                     sp,
+                                     traits,
+                                     overlap_dat = NULL,
+                                     use_plots = NULL,
+                                     colorvalues = NULL,
+                                     alpha = 0.5,
+                                     plot_points = TRUE,
+                                     panel_height = 3,
+                                     panel_width = 3,
+                                     units = 'cm',
+                                     hypervolume_args = list()) {
 
-  # Do not plot points, only the hypervolumes.
+  # Process input data
+  # Unless a subset of sites is provided, use all sites in dataset.
+  if (is.null(use_plots)) {
+    use_plots <- unique(plots)
+  }
+
+  # Filter only for use_plots
+  if (!is.null(overlap_dat)) {
+    ostat_norm <- overlap_dat$overlaps_norm
+    ostat_norm <- ostat_norm[rownames(ostat_norm) %in% use_plots, , drop = FALSE]
+  }
+
+  plots <- plots[plots %in% use_plots]
+  sp <- sp[plots %in% use_plots]
+  traits <- traits[plots %in% use_plots, ]
 
   # Panel widths and heights
   units <- 'cm'
@@ -57,15 +79,15 @@ Ostats_multivariate_plot <- function() {
     ggplot2::theme_void() +
     ggplot2::theme(legend.position = 'none')
 
+  plot_theme <- ggplot2::theme_bw() +
+    ggplot2::theme(legend.position = 'none')
+
   plot_list <- list()
 
   for (p in unique(plots)) {
 
     sp_plot <- sp[plots == p]
     traits_plot <- traits[plots == p, ]
-
-    plot_theme <- ggplot2::theme_bw() +
-      ggplot2::theme(legend.position = 'none')
 
     # Generate hypervolumes for each species at this plot.
     # Hypervolume for each species/site combination.
@@ -94,14 +116,18 @@ Ostats_multivariate_plot <- function() {
       dat_points <- data.frame(sp = sp_plot, x = traits_plot[, trait_combs[1, i]], y = traits_plot[, trait_combs[2, i]])
       dat_polygons <- contours_df[contours_df$trait_x == trait_combs[1, i] & contours_df$trait_y == trait_combs[2, i], ]
 
-      trait_pairs_plot_list[[i]] <- ggplot2::ggplot(dat_points, ggplot2::aes(x = x, y = y, group = sp, color = sp)) +
-        ggplot2::geom_polygon(data = dat_polygons, ggplot2::aes(group = interaction(sp, polygon_id)), fill = 'transparent') +
-        ggplot2::geom_point() +
+      plot_i <- ggplot2::ggplot() +
+        ggplot2::geom_polygon(data = dat_polygons, ggplot2::aes(x = x, y = y, group = interaction(sp, polygon_id), color = sp), fill = 'transparent') +
         ggplot2::scale_x_continuous(limits = range(contours_df$x[contours_df$trait_x == trait_combs[1, i]])) +
         ggplot2::scale_y_continuous(limits = range(contours_df$y[contours_df$trait_y == trait_combs[2, i]])) +
         color_scale +
         plot_theme +
         ggplot2::labs(x = trait_combs[1, i], y = trait_combs[2, i])
+
+      if (plot_points) plot_i <- plot_i + ggplot2::geom_point(dat_points, ggplot2::aes(x = x, y = y, group = sp, color = sp))
+
+      trait_pairs_plot_list[[i]] <- plot_i
+
     }
 
     # Remove axis text and titles from plots not along the edge.
@@ -142,10 +168,10 @@ Ostats_multivariate_plot <- function() {
     return(plot_list)
   }
 
-
 }
 
 #' Unexported function to draw contours somewhat modified from hypervolume::plot.HypervolumeList
+#' @noRd
 get_contours <- function(hv) {
   hv_density <- nrow(hv@RandomPoints)/hv@Volume
   hv_dimensionality <- hv@Dimensionality

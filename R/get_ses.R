@@ -35,6 +35,7 @@
 #'the quantil of qs[2] (usually 0.975) without subtracting the mean and divided
 #'by standard deviation (see equation for calculating the standardize effect
 #'size on the function code)}
+#'@noRd
 get_ses <- function(o, o_n, qs) {
   ses <- ses_lower <- ses_upper <- raw_lower <- raw_upper <- matrix(NA, nrow=nrow(o), ncol=ncol(o))
 
