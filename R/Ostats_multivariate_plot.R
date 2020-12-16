@@ -8,7 +8,6 @@
 #' @param overlap_dat Optional: an object containing the output of \code{\link{Ostats_multivariate}}. If provided, overlap statistics will be displayed in the plot panels.
 #' @param use_plots a vector of sites to plot. If NULL, the function will plot all the sites.
 #' @param colorvalues Vector of color values for the density polygons. Defaults to a viridis palette if none provided.
-#' @param alpha defines the transparency level for the density polygons. Default is 0.5.
 #' @param plot_points whether to plot individual data points in addition to the hypervolume slices. Default is TRUE.
 #' @param panel_height height of the individual plot panels, in units given by \code{units}. Default is 3 cm.
 #' @param panel_width height of the individual plot panels, in units given by \code{units}. Default is 3 cm.
@@ -26,12 +25,13 @@ Ostats_multivariate_plot <- function(plots,
                                      overlap_dat = NULL,
                                      use_plots = NULL,
                                      colorvalues = NULL,
-                                     alpha = 0.5,
                                      plot_points = TRUE,
                                      panel_height = 3,
                                      panel_width = 3,
                                      units = 'cm',
                                      hypervolume_args = list()) {
+
+  message('Estimating hypervolumes for plots. This may take a few minutes. . .')
 
   # Process input data
   # Unless a subset of sites is provided, use all sites in dataset.
@@ -39,10 +39,19 @@ Ostats_multivariate_plot <- function(plots,
     use_plots <- unique(plots)
   }
 
-  # Filter only for use_plots
+  # Filter overlap statistics only for use_plots
   if (!is.null(overlap_dat)) {
     ostat_norm <- overlap_dat$overlaps_norm
     ostat_norm <- ostat_norm[rownames(ostat_norm) %in% use_plots, , drop = FALSE]
+  }
+
+  # Use default method argument to hypervolume::hypervolume if none are provided
+  if (!'method' %in% names(hypervolume_args)) {
+    hypervolume_args[['method']] <- 'gaussian'
+  }
+  # Also set to verbose = FALSE if that argument is not provided.
+  if (!'verbose' %in% names(hypervolume_args)) {
+    hypervolume_args[['verbose']] <- FALSE
   }
 
   plots <- plots[plots %in% use_plots]
@@ -50,9 +59,8 @@ Ostats_multivariate_plot <- function(plots,
   traits <- traits[plots %in% use_plots, ]
 
   # Panel widths and heights
-  units <- 'cm'
-  panel_height <- grid::unit(3, units = units)
-  panel_width <- grid::unit(3, units = units)
+  panel_height <- grid::unit(panel_height, units = units)
+  panel_width <- grid::unit(panel_width, units = units)
 
   trait_combs <- combn(names(traits), 2) # All combinations of traits
 
@@ -70,21 +78,30 @@ Ostats_multivariate_plot <- function(plots,
   sp_names <- rev(sort(unique(sp)))
   color_scale <- ggplot2::scale_color_manual(values = setNames(colorvalues, sp_names))
 
-  # Generate common legend for all plots by writing species names in different colors.
-  legend_panel <- ggplot2::ggplot(data.frame(x = 1, y = seq_along(sp_names), sp = sp_names),
-                                  ggplot2::aes(x = x, y = y, label = sp, color = sp)) +
-    ggplot2::geom_text(hjust = 0) +
-    color_scale +
-    ggplot2::scale_y_continuous(expand = c(0.5, 0.5)) +
-    ggplot2::theme_void() +
-    ggplot2::theme(legend.position = 'none')
-
   plot_theme <- ggplot2::theme_bw() +
     ggplot2::theme(legend.position = 'none')
 
   plot_list <- list()
 
   for (p in unique(plots)) {
+
+    # Concatenate plot name and overlap statistic for the plot.
+    if (is.null(overlap_dat)) {
+      plot_label <- p
+    } else {
+      plot_label <- paste0(p, ': (overlap = ', round(ostat_norm[which(unique(plots) == p)], 2), ')')
+    }
+
+    # Generate legend for plot by writing species names in different colors.
+    legend_panel <- ggplot2::ggplot(data.frame(x = 0, y = seq_along(sp_names), sp = sp_names),
+                                    ggplot2::aes(x = x, y = y, label = sp)) +
+      ggplot2::geom_text(ggplot2::aes(color = sp), hjust = 0) +
+      ggplot2::geom_text(data = data.frame(x = 0, y = length(sp_names) + 1, label = plot_label), ggplot2::aes(label = label), hjust = 0, fontface = 'bold') +
+      color_scale +
+      ggplot2::scale_y_continuous(expand = c(0.5, 0.5)) +
+      ggplot2::scale_x_continuous(limits = c(0, 1)) +
+      ggplot2::theme_void() +
+      ggplot2::theme(legend.position = 'none')
 
     sp_plot <- sp[plots == p]
     traits_plot <- traits[plots == p, ]
@@ -99,12 +116,15 @@ Ostats_multivariate_plot <- function(plots,
       # Only generate hypervolume with at least 3 measurements
       # Generate UNSCALED hypervolume.
       if (nrow(sp_plot_dat) > 2) {
-        hv_list[[i]] <- hypervolume::hypervolume(sp_plot_dat, method = 'gaussian')
+        # Suppress all progress messages from hypervolume functions, including those from underlying C functions.
+        invisible(utils::capture.output(suppressWarnings(suppressMessages({
+          hv_list[[i]] <- do.call(hypervolume::hypervolume, args = c(list(data = sp_plot_dat), hypervolume_args))
+        }))))
       }
     }
 
     # Generate contours for all hypervolumes
-    contours_list <- lapply(hv_list, function(hv) if (class(hv) == 'Hypervolume') get_contours(hv) else NA)
+    contours_list <- lapply(hv_list, function(hv) if (class(hv) == 'Hypervolume') get_contours(hv, trait_combs) else NA)
     # Join contours to data frame
     for (i in 1:length(contours_list)) contours_list[[i]][, 'sp'] = sp_in_plot[i]
     contours_df <- do.call(rbind, contours_list)
@@ -172,7 +192,7 @@ Ostats_multivariate_plot <- function(plots,
 
 #' Unexported function to draw contours somewhat modified from hypervolume::plot.HypervolumeList
 #' @noRd
-get_contours <- function(hv) {
+get_contours <- function(hv, trait_combs) {
   hv_density <- nrow(hv@RandomPoints)/hv@Volume
   hv_dimensionality <- hv@Dimensionality
   radius_critical <- hv_density^(-1/hv_dimensionality)

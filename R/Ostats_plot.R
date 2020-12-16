@@ -74,7 +74,7 @@ Ostats_plot<-function(plots,
     dimnames(traits)[[2]] <- paste('trait', 1:ncol(traits), sep = '_')
   }
 
-  # Filter only for use_plots
+  # Filter overlap statistics only for use_plots
   if (!is.null(overlap_dat)) {
     ostat_norm <- overlap_dat$overlaps_norm
     ostat_norm <- ostat_norm[rownames(ostat_norm) %in% use_plots, , drop = FALSE]

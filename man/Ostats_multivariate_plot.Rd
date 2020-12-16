@@ -11,7 +11,6 @@ Ostats_multivariate_plot(
   overlap_dat = NULL,
   use_plots = NULL,
   colorvalues = NULL,
-  alpha = 0.5,
   plot_points = TRUE,
   panel_height = 3,
   panel_width = 3,
@@ -31,8 +30,6 @@ Ostats_multivariate_plot(
 \item{use_plots}{a vector of sites to plot. If NULL, the function will plot all the sites.}
 
 \item{colorvalues}{Vector of color values for the density polygons. Defaults to a viridis palette if none provided.}
-
-\item{alpha}{defines the transparency level for the density polygons. Default is 0.5.}
 
 \item{plot_points}{whether to plot individual data points in addition to the hypervolume slices. Default is TRUE.}
 

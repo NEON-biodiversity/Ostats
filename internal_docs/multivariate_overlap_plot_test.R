@@ -232,4 +232,23 @@ if (length(plot_list) == 1) {
 
 # Test the actual function. -----------------------------------------------
 
+library(Ostats)
 
+sp <- iris$Species
+traits <- iris[, 1:4]
+plots <- factor(rep(1:3, nrow(traits)/3))
+
+overlap_iris <- Ostats_multivariate(traits = as.matrix(traits), plots = plots, sp = sp, nperm = 1, random_seed = 1)
+
+p_list <- Ostats_multivariate_plot(plots = plots, sp = sp, traits = traits, overlap_dat = overlap_iris, use_plots = NULL, colorvalues = c('red','blue','green'), plot_points = FALSE)
+
+
+#map(1:3, ~ as.character(glue::glue('~/Documents/temp/plot{.}.png')))
+walk(1:3, ~ ggsave(as.character(glue::glue('~/Documents/temp/plot{.}.png')), p_list[[.]]))
+
+
+# for debugging.
+overlap_dat = overlap_iris; use_plots = NULL; colorvalues = c('red','blue','green'); plot_points = FALSE
+panel_height = 3; panel_width = 3; units = "cm"
+hypervolume_args <- list()
+get_contours = Ostats:::get_contours
