@@ -1,0 +1,35 @@
+---
+title: "Multivariate O-statistics"
+author: "Quentin D. Read, (INSERT OTHER AUTHORS OF THIS PARTICULAR DOCUMENT)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{multivariate-Ostats}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(Ostats)
+```
+
+# Notes
+
+- Remove this section in the final version.
+- Authors of this doc aren't necessarily all package authors, just those who specifically contributed to this vignette.
+- Outline of the vignette:
+  + Explain multivariate O-stats, using hypervolumes
+  + Show a "toy" version of the pitcher plant dataset
+  + Run a few different variants of multivariate O-stats on them
+  + Create some plots
+  
+# Overview
+
+This vignette is intended for users who are already familiar with the single-variable O-statistics we introduce in the first package vignette (LINK TO IT).
+
