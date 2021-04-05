@@ -16,9 +16,12 @@
 #'   of each individual.
 #' @param output specifies whether median or mean is calculated.
 #' @param weight_type specifies weights to be used to calculate the median or mean.
-#' @param nperm the number of permutations to generate a null model.
+#' @param run_null_model whether to run a null model (if \code{TRUE}) and evaluate the
+#'  O-statistics against it, or simply return the raw O-statistics (if \code{FALSE}).
+#'  Defaults to \code{TRUE}.
+#' @param nperm the number of null model permutations to generate. Defaults to 99.
 #' @param nullqs numeric vector of probabilities with values in [0,1] to set
-#'   effect size quantiles.
+#'   effect size quantiles. Defaults to \code{c(0.025, 0.975)}.
 #' @param shuffle_weights If TRUE, shuffle weights given to pairwise overlaps
 #'   within a community when generating null models.
 #' @param swap_means If TRUE, swap means of body sizes within a community when
@@ -57,7 +60,7 @@ Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_typ
   if(length(unique(sp)) == 1) warning("only one taxon is present; overlap cannot be calculated.")
 
   # If user did not supply a random seed, generate one and print a message.
-  if (is.null(random_seed)) {
+  if (run_null_model && missing(random_seed)) {
     random_seed <- round(as.numeric(Sys.time()) %% 12345)
     message(paste("Note: argument random_seed was not supplied; setting seed to", random_seed))
   }
@@ -87,25 +90,27 @@ Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_typ
   pb <- utils::txtProgressBar(min = 0, max = nlevels(plots), style = 3)
 
   for (s in 1:nlevels(plots)) {
-      overlap_norm_s <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sp[plots == levels(plots)[s]], output = output, weight_type = weight_type, normal=TRUE, density_args = hypervolume_args), TRUE)
-      overlaps_norm[s, 1] <- if (inherits(overlap_norm_s, 'try-error')) NA else overlap_norm_s
-      overlap_unnorm_s <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sp[plots == levels(plots)[s]], output = output, weight_type = weight_type, normal = FALSE, density_args = hypervolume_args), TRUE)
-      overlaps_unnorm[s, 1] <- if (inherits(overlap_unnorm_s, 'try-error')) NA else overlap_unnorm_s
+    overlap_norm_s <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sp[plots == levels(plots)[s]], output = output, weight_type = weight_type, normal=TRUE, density_args = hypervolume_args), TRUE)
+    overlaps_norm[s, 1] <- if (inherits(overlap_norm_s, 'try-error')) NA else overlap_norm_s
+    overlap_unnorm_s <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sp[plots == levels(plots)[s]], output = output, weight_type = weight_type, normal = FALSE, density_args = hypervolume_args), TRUE)
+    overlaps_unnorm[s, 1] <- if (inherits(overlap_unnorm_s, 'try-error')) NA else overlap_unnorm_s
 
     utils::setTxtProgressBar(pb, s)
   }
 
   close(pb)
 
-  print('Calculating null distributions of O-stats . . . ')
-  pb <- utils::txtProgressBar(min = 0, max = nperm, style = 3)
+  if (run_null_model) {
 
-  # Null model generation and calculation of null O-Stats
+    print('Calculating null distributions of O-stats . . . ')
+    pb <- utils::txtProgressBar(min = 0, max = nperm, style = 3)
 
-  # Local null model: generation and calculation done in the same loop
-  for (i in 1:nperm) {
-    utils::setTxtProgressBar(pb, i)
-    for (s in 1:nlevels(plots)) {
+    # Null model generation and calculation of null O-Stats
+
+    # Local null model: generation and calculation done in the same loop
+    for (i in 1:nperm) {
+      utils::setTxtProgressBar(pb, i)
+      for (s in 1:nlevels(plots)) {
 
         if (shuffle_weights == FALSE & swap_means == FALSE) overlap_norm_si <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sample(sp[plots == levels(plots)[s]]), output = output, weight_type = weight_type, normal=TRUE, density_args = hypervolume_args), TRUE)
         if (shuffle_weights == TRUE) overlap_norm_si <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sp[plots == levels(plots)[s]], output = output, weight_type = weight_type, normal=TRUE, randomize_weights = TRUE, density_args = hypervolume_args), TRUE)
@@ -127,16 +132,20 @@ Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_typ
         overlap_unnorm_si <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sample(sp[plots == levels(plots)[s]]), output = output, weight_type = weight_type, normal=FALSE, density_args = hypervolume_args), TRUE)
         overlaps_unnorm_null[s, 1, i] <- if (inherits(overlap_unnorm_si, 'try-error')) NA else overlap_unnorm_si
 
+      }
     }
+
+    close(pb)
+    print('Extracting null quantiles to get standardized effect sizes (almost done!) . . .')
+
+    # Extract quantiles to get standardized effect sizes for the overlap stats
+    overlaps_norm_ses <- get_ses(overlaps_norm, overlaps_norm_null, nullqs)
+    overlaps_unnorm_ses <- get_ses(overlaps_unnorm, overlaps_unnorm_null, nullqs)
+    list(overlaps_norm=overlaps_norm, overlaps_unnorm=overlaps_unnorm,
+         overlaps_norm_ses=overlaps_norm_ses, overlaps_unnorm_ses=overlaps_unnorm_ses)
+
+  } else {
+    list(overlaps_norm=overlaps_norm, overlaps_unnorm=overlaps_unnorm)
   }
-
-  close(pb)
-  print('Extracting null quantiles to get standardized effect sizes (almost done!) . . .')
-
-  # Extract quantiles to get standardized effect sizes for the overlap stats
-  overlaps_norm_ses <- get_ses(overlaps_norm, overlaps_norm_null, nullqs)
-  overlaps_unnorm_ses <- get_ses(overlaps_unnorm, overlaps_unnorm_null, nullqs)
-  list(overlaps_norm=overlaps_norm, overlaps_unnorm=overlaps_unnorm,
-       overlaps_norm_ses=overlaps_norm_ses, overlaps_unnorm_ses=overlaps_unnorm_ses)
 
 }

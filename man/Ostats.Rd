@@ -11,6 +11,7 @@ Ostats(
   data_type = "linear",
   output = "median",
   weight_type = "hmean",
+  run_null_model = TRUE,
   nperm = 99,
   nullqs = c(0.025, 0.975),
   shuffle_weights = FALSE,
@@ -38,15 +39,19 @@ Defaults to "linear".}
 
 \item{weight_type}{specifies weights to be used to calculate the median or mean.}
 
-\item{nperm}{the number of permutations to generate a null model.}
+\item{run_null_model}{whether to run a null model (if \code{TRUE}) and evaluate the
+O-statistics against it, or simply return the raw O-statistics (if \code{FALSE}).
+Defaults to \code{TRUE}.}
+
+\item{nperm}{the number of null model permutations to generate. Defaults to 99.}
 
 \item{nullqs}{numeric vector of probabilities with values in [0,1] to set
-effect size quantiles.}
+effect size quantiles. Defaults to \code{c(0.025, 0.975)}.}
 
-\item{shuffle_weights}{If TRUE, shuffle weights given to pairwise overlaps
+\item{shuffle_weights}{If \code{TRUE}, shuffle weights given to pairwise overlaps
 within a community when generating null models.}
 
-\item{swap_means}{If TRUE, swap means of body sizes within a community when
+\item{swap_means}{If \code{TRUE}, swap means of body sizes within a community when
 generating null models.}
 
 \item{random_seed}{User may supply a random seed to enable reproducibility

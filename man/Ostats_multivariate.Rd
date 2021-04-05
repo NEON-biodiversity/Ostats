@@ -33,10 +33,10 @@ of each individual.}
 
 \item{weight_type}{specifies weights to be used to calculate the median or mean.}
 
-\item{nperm}{the number of permutations to generate a null model.}
+\item{nperm}{the number of null model permutations to generate. Defaults to 99.}
 
 \item{nullqs}{numeric vector of probabilities with values in [0,1] to set
-effect size quantiles.}
+effect size quantiles. Defaults to \code{c(0.025, 0.975)}.}
 
 \item{shuffle_weights}{If TRUE, shuffle weights given to pairwise overlaps
 within a community when generating null models.}
@@ -51,6 +51,10 @@ based on the local time, if the user does not supply a seed.}
 \item{hypervolume_args}{additional arguments to pass to \code{\link[hypervolume]{hypervolume}},
 such as \code{method} If none are provided, default values
 are used.}
+
+\item{run_null_model}{whether to run a null model (if \code{TRUE}) and evaluate the
+O-statistics against it, or simply return the raw O-statistics (if \code{FALSE}).
+Defaults to \code{TRUE}.}
 }
 \value{
 The function returns a list containing 4 objects:

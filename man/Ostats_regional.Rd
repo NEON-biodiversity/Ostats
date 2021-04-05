@@ -31,10 +31,10 @@ compare the dataset with.}
 \item{reg_pool_sp}{species identification for each measurement in the
 regional species pool.}
 
-\item{nperm}{the number of permutations to generate a null model.}
+\item{nperm}{the number of null model permutations to generate. Defaults to 99.}
 
 \item{nullqs}{numeric vector of probabilities with values in [0,1] to set
-effect size quantiles.}
+effect size quantiles. Defaults to \code{c(0.025, 0.975)}.}
 
 \item{random_seed}{User may supply a random seed to enable reproducibility
 of null model output. A warning is issued, and a random seed is generated
