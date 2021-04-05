@@ -245,8 +245,6 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
 #' @seealso \code{\link{Ostats}} to evaluate against a local null model.
 #' @seealso \code{\link{pairwise_overlap}} to calculate overlap between two
 #'   empirical density estimates.
-#' @seealso \code{\link{get_ses}} for standardized effect sizes from null model
-#'   values.
 #'
 #' @examples
 #' # use the 2015 data from the two communities HARV and BART

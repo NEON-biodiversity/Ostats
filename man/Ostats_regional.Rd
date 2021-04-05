@@ -100,9 +100,6 @@ Ostats_reg_example <- Ostats_regional(traits = as.matrix(sites2015$log_weight),
 
 \code{\link{pairwise_overlap}} to calculate overlap between two
   empirical density estimates.
-
-\code{\link{get_ses}} for standardized effect sizes from null model
-  values.
 }
 \author{
 Quentin Read, John Grady, Arya Y. Yue, Isadora Fluck E., Ben Baiser,

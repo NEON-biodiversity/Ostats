@@ -1,0 +1,61 @@
+---
+title: "Multivariate O-statistics"
+author: "Quentin D. Read, (INSERT OTHER AUTHORS OF THIS PARTICULAR DOCUMENT)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{multivariate-Ostats}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(Ostats)
+data(pitcher_traits)
+```
+
+# Notes
+
+- Remove this section in the final version.
+- Authors of this doc aren't necessarily all package authors, just those who specifically contributed to this vignette.
+- Outline of the vignette:
+  + Explain multivariate O-stats, using hypervolumes
+  + Show a "toy" version of the pitcher plant dataset
+  + Run a few different variants of multivariate O-stats on them
+  + Create some plots
+  
+# Overview
+
+This vignette is intended for users who are already familiar with the single-variable O-statistics we introduce in the first package vignette (LINK TO IT).
+
+- Hutchinson: niche is n-dimensional hypervolume
+- trait ecologists are interested in tradeoffs among traits or interactions among multiple traits
+- the underlying math and theory here were worked out by Blonder et al.
+- Functions from their hypervolume package are used in Ostats
+
+# Example dataset
+
+- Pitcher plant traits, morphological measurements taken from sites around North America
+- Specific site locations have been removed
+- Univariate plots of pitcher traits (distributions)
+
+# Calculating hypervolume O-statistics
+
+- Calculate ostats multivariate 
+- Do a couple different versions with different arguments passed to hypervolume() to demonstrate the sensitivity of results to those args
+
+# Visualizing hypervolume O-statistics
+
+- Show the ostats multivariate plot function
+- Show a couple different plots to illustrate the effects of different arguments
+
+# Some practical notes
+
+- Warning that it's important to make sure there aren't a lot of correlated traits in your dataset or you will end up with spurious hypervolumes
+- Absolute amount of overlap can't be compared among hypervolumes with different dimensionality, so it's especially important to run null models

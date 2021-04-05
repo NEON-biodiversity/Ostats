@@ -13,9 +13,9 @@
 #'@param alpha defines the transparency level for the density polygons. Default is 0.5.
 #'@param adjust the bandwidth adjustment of the density polygons. Default is 2. See \code{\link[stats]{density}}.
 #'@param limits_x Vector of length 2, with multiplicative factor to apply to the minimum and maximum values of each trait to expand the limits of the x axis. Default is 0.5 times the minimum and 1.5 times the maximum value of each trait.
-#'@param scale If you want the scale of x, y or both x and y axis to be adjusted according to each site density probability set the argument to "free_x", "free_y" or "free" respectively. Default = "fixed" which uses the same scale across all sites. See \code{\link[ggplot2]{facet_grid}}.
-#'@param name_x a character indicating the name of your x axis (i.e. the name of your trait). Default is 'trait value'
-#'@param name_y a character indicating the name of your y axis. Default is 'probability density'
+#'@param scale If you want the scale of x, y or both x and y axis to be independent, set the argument to "free_x", "free_y" or "free" respectively. Default = "fixed" which uses the same scale across all sites. See \code{\link[ggplot2]{facet_grid}}.
+#'@param name_x x-axis label. Default is 'trait value'
+#'@param name_y y-axis label. Default is 'probability density'
 #'@param means if TRUE, trait means for each species are plotted in an additional plot column next to the traits distribution plots for each site. Default is FALSE.
 #'@return Density plots of species trait distribution plotted on the same graph
 #'  for each community to show how they overlap each other.
@@ -74,7 +74,7 @@ Ostats_plot<-function(plots,
     dimnames(traits)[[2]] <- paste('trait', 1:ncol(traits), sep = '_')
   }
 
-  # Filter only for use_plots
+  # Filter overlap statistics only for use_plots
   if (!is.null(overlap_dat)) {
     ostat_norm <- overlap_dat$overlaps_norm
     ostat_norm <- ostat_norm[rownames(ostat_norm) %in% use_plots, , drop = FALSE]
@@ -87,10 +87,11 @@ Ostats_plot<-function(plots,
   # Calculate mean value by taxon.
   taxon_mean <- stats::aggregate(traits, list(sp, plots), mean, na.rm = TRUE)
   names(taxon_mean) <- c('sp', 'plots', dimnames(traits)[[2]])
+  taxon_mean <- taxon_mean[taxon_mean$plots %in% use_plots, ]
 
   # If a color vector is not provided, create a default palette.
   if (is.null(colorvalues)) {
-    colorvalues <- sample(viridis::viridis(10, alpha = alpha), size = length(unique(sp)), replace = TRUE)
+    colorvalues <- sample(viridis::viridis(length(unique(sp)), alpha = alpha))
   }
 
   names(colorvalues) <- unique(sp)
@@ -135,14 +136,14 @@ Ostats_plot<-function(plots,
         ggplot2::scale_colour_manual(values = colorvalues) +
         ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
         ggplot2::scale_y_continuous(expand = c(0,0))
+
+      ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ggplot_means, ncol=2)
     }
 
-    if (means){
-      plot_list[[i]] <- ggpubr::as_ggplot(gridExtra::arrangeGrob(ggplot_dist, ggplot_means, ncol=2))
-    } else {
-      plot_list[[i]] <- ggplot_dist
-    }
+    # Assign class attribute Ostats_plot_object so that the plot has a default print method.
+    attr(ggplot_dist, 'class') <- c('Ostats_plot_object', attr(ggplot_dist, 'class'))
 
+    plot_list[[i]] <- ggplot_dist
   }
 
   names(plot_list) <- dimnames(traits)[[2]]
@@ -153,4 +154,11 @@ Ostats_plot<-function(plots,
     return(plot_list)
   }
 
+}
+
+#' @method print Ostats_plot_object
+#' @export
+print.Ostats_plot_object <- function(obj) {
+  grid::grid.newpage()
+  grid::grid.draw(obj)
 }
