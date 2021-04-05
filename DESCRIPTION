@@ -25,7 +25,6 @@ Imports:
     ggplot2,
     gridExtra,
     viridis,
-    ggpubr,
     grid
 RoxygenNote: 7.1.1
 Suggests: 

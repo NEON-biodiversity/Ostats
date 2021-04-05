@@ -135,14 +135,14 @@ Ostats_plot<-function(plots,
         ggplot2::scale_colour_manual(values = colorvalues) +
         ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
         ggplot2::scale_y_continuous(expand = c(0,0))
+
+      ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ggplot_means, ncol=2)
     }
 
-    if (means){
-      plot_list[[i]] <- ggpubr::as_ggplot(gridExtra::arrangeGrob(ggplot_dist, ggplot_means, ncol=2))
-    } else {
-      plot_list[[i]] <- ggplot_dist
-    }
+    # Assign class attribute Ostats_plot_object so that the plot has a default print method.
+    attr(ggplot_dist, 'class') <- c('Ostats_plot_object', attr(ggplot_dist, 'class'))
 
+    plot_list[[i]] <- ggplot_dist
   }
 
   names(plot_list) <- dimnames(traits)[[2]]
@@ -153,4 +153,11 @@ Ostats_plot<-function(plots,
     return(plot_list)
   }
 
+}
+
+#' @method print Ostats_plot_object
+#' @export
+print.Ostats_plot_object <- function(obj) {
+  grid::grid.newpage()
+  grid::grid.draw(obj)
 }

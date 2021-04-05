@@ -240,11 +240,14 @@ plots <- factor(rep(1:3, nrow(traits)/3))
 
 overlap_iris <- Ostats_multivariate(traits = as.matrix(traits), plots = plots, sp = sp, nperm = 1, random_seed = 1)
 
-p_list <- Ostats_multivariate_plot(plots = plots, sp = sp, traits = traits, overlap_dat = overlap_iris, use_plots = NULL, colorvalues = c('red','blue','green'), plot_points = FALSE)
+p_list <- Ostats_multivariate_plot(plots = plots, sp = sp, traits = traits, overlap_dat = overlap_iris, use_plots = NULL, colorvalues = c('orange','purple','green'), plot_points = FALSE)
 
+# Does the print method work?
+lapply(p_list, class)
+p_list[[1]]
+p_list[[2]]
 
-#map(1:3, ~ as.character(glue::glue('~/Documents/temp/plot{.}.png')))
-walk(1:3, ~ ggsave(as.character(glue::glue('~/Documents/temp/plot{.}.png')), p_list[[.]]))
+purrr::walk(1:3, ~ ggplot2::ggsave(as.character(glue::glue('~/Documents/temp/plot{.}.png')), p_list[[.]], height = 6, width = 7))
 
 
 # for debugging.

@@ -176,7 +176,10 @@ Ostats_multivariate_plot <- function(plots,
 
     trait_pairs_plots_arranged <- do.call(gridExtra::gtable_rbind, trait_pairs_plots_rows)
 
-    plot_list[[length(plot_list) + 1]] <- ggpubr::as_ggplot(trait_pairs_plots_arranged)
+    # Assign class attribute Ostats_plot_object so that the plot has a default print method.
+    attr(trait_pairs_plots_arranged, 'class') <- c('Ostats_plot_object', attr(trait_pairs_plots_arranged, 'class'))
+
+    plot_list[[length(plot_list) + 1]] <- trait_pairs_plots_arranged
 
   }
 
