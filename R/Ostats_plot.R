@@ -87,6 +87,7 @@ Ostats_plot<-function(plots,
   # Calculate mean value by taxon.
   taxon_mean <- stats::aggregate(traits, list(sp, plots), mean, na.rm = TRUE)
   names(taxon_mean) <- c('sp', 'plots', dimnames(traits)[[2]])
+  taxon_mean <- taxon_mean[taxon_mean$plots %in% use_plots, ]
 
   # If a color vector is not provided, create a default palette.
   if (is.null(colorvalues)) {
