@@ -1,6 +1,6 @@
 ---
 title: "Multivariate O-statistics"
-author: "Quentin D. Read, (INSERT OTHER AUTHORS OF THIS PARTICULAR DOCUMENT)"
+author: "Quentin D. Read, (INSERT OTHER AUTHORS)"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{multivariate-Ostats}
@@ -45,17 +45,99 @@ This vignette is intended for users who are already familiar with the single-var
 - Specific site locations have been removed
 - Univariate plots of pitcher traits (distributions)
 
+Here we show a few randomly selected rows from the pitcher traits dataset. Here, all individuals are of the same species. Therefore we will use populations (sites) as the `sp` variable in our analysis, with a single value for `plots`. 
+
+```{r}
+set.seed(1)
+idx <- sort(sample(nrow(pitcher_traits), 10, replace = FALSE))
+
+knitr::kable(pitcher_traits[idx,])
+```
+
 # Calculating hypervolume O-statistics
 
 - Calculate ostats multivariate 
 - Do a couple different versions with different arguments passed to hypervolume() to demonstrate the sensitivity of results to those args
+
+Here we calculate the univariate O-statistics for each of the pitcher traits separately, then a single multivariate O-statistic representing overlap of the trait hypervolumes. 
+
+We will use four morphological ratios as traits to remove size-dependence: the ratios of pitcher length, keel width, mouth diameter, and lip thickness to pitcher width.
+
+First ensure that the data are in the appropriate form for `Ostats()` and `Ostats_multivariate()`. For this example we will remove individuals with incomplete data.
+
+```{r}
+pitcher_traits <- pitcher_traits[complete.cases(pitcher_traits), ]
+
+pitcher_sites <- as.factor(pitcher_traits$site_id)
+
+pitcher_trait_matrix <- as.matrix(pitcher_traits[, c('pitcher_length', 'keel_width', 'mouth_diameter', 'lip_thickness')])
+
+pitcher_trait_matrix <- sweep(pitcher_trait_matrix, 1, pitcher_traits$pitcher_width, `/`)
+
+```
+
+The traits are all on a ratio scale but we should center and scale all the columns to ensure that the hypervolume overlap statistic is not influenced by different magnitudes of each trait.
+
+```{r}
+apply(pitcher_trait_matrix, 2, range)
+
+pitcher_trait_matrix_scaled <- scale(pitcher_trait_matrix, center = TRUE, scale = TRUE)
+
+apply(pitcher_trait_matrix_scaled, 2, range)
+```
+
+
+Next calculate the univariate O-statistics for each of the four traits. **Currently in the example we will not use null model, but eventually it should.**
+
+```{r, message = FALSE}
+pitcher_univariate <- Ostats(traits = pitcher_trait_matrix_scaled,
+                             plots = factor(rep(1, nrow(pitcher_trait_matrix_scaled))),
+                             sp = pitcher_sites,
+                             random_seed = 444,
+                             run_null_model = FALSE
+)
+```
+
+Now calculate the multivariate O-statistic for the traits combined, using all default arguments. The `random_seed` is still used even in the absence of a null model for the hypervolume construction.
+
+```{r, message = FALSE}
+pitcher_multivariate <- Ostats_multivariate(traits = pitcher_trait_matrix_scaled[, 1:3],
+                                            plots = factor(rep(1, nrow(pitcher_trait_matrix_scaled))),
+                                            sp = pitcher_sites,
+                                            random_seed = 333,
+                                            run_null_model = FALSE
+)
+```
+Compare the univariate and multivariate O-statistics.
+
+```{r}
+pitcher_univariate$overlaps_norm
+
+pitcher_multivariate$overlaps_norm
+```
+
+
+**Here run the multivariate O-stats with different args to hypervolume**
 
 # Visualizing hypervolume O-statistics
 
 - Show the ostats multivariate plot function
 - Show a couple different plots to illustrate the effects of different arguments
 
+Here is a plot of the overlap of the hypervolumes in 4-dimensional space formed by the individual traits of the pitcher plants at each site. Notice that we don't use the scaled traits for plotting; instead we use the actual ratios so that the axes are interpretable. 
+
+```{r, message = FALSE}
+Ostats_multivariate_plot(plots = factor(rep(1, nrow(pitcher_trait_matrix))),
+                         sp = pitcher_sites,
+                         traits = pitcher_trait_matrix,
+                         overlap_dat = pitcher_multivariate,
+                         plot_points = TRUE 
+)
+```
+
+
 # Some practical notes
 
 - Warning that it's important to make sure there aren't a lot of correlated traits in your dataset or you will end up with spurious hypervolumes
 - Absolute amount of overlap can't be compared among hypervolumes with different dimensionality, so it's especially important to run null models
+- Biologically, it's been shown that the multi-trait stuff does not contribute that much to what we can infer. This may not be worth discussing in the vignette, but should be discussed in the paper.

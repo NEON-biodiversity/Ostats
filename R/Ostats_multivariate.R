@@ -50,7 +50,7 @@
 #' @seealso \code{\link{Ostats}} for univariate data.
 #'
 #' @export
-Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_type = "hmean", nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE, random_seed = NULL, hypervolume_args = list()) {
+Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_type = "hmean", run_null_model = TRUE, nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE, random_seed = NULL, hypervolume_args = list()) {
   # Required input: a matrix called traits (nrows=n individuals, ncols=n traits),
   # a vector called plots which is a factor with length equal to nrow(traits),
   # a vector called sp which is a factor with length equal to nrow(traits),
