@@ -10,6 +10,7 @@ Ostats_multivariate(
   sp,
   output = "median",
   weight_type = "hmean",
+  run_null_model = TRUE,
   nperm = 99,
   nullqs = c(0.025, 0.975),
   shuffle_weights = FALSE,
@@ -33,6 +34,10 @@ of each individual.}
 
 \item{weight_type}{specifies weights to be used to calculate the median or mean.}
 
+\item{run_null_model}{whether to run a null model (if \code{TRUE}) and evaluate the
+O-statistics against it, or simply return the raw O-statistics (if \code{FALSE}).
+Defaults to \code{TRUE}.}
+
 \item{nperm}{the number of null model permutations to generate. Defaults to 99.}
 
 \item{nullqs}{numeric vector of probabilities with values in [0,1] to set
@@ -51,10 +56,6 @@ based on the local time, if the user does not supply a seed.}
 \item{hypervolume_args}{additional arguments to pass to \code{\link[hypervolume]{hypervolume}},
 such as \code{method} If none are provided, default values
 are used.}
-
-\item{run_null_model}{whether to run a null model (if \code{TRUE}) and evaluate the
-O-statistics against it, or simply return the raw O-statistics (if \code{FALSE}).
-Defaults to \code{TRUE}.}
 }
 \value{
 The function returns a list containing 4 objects:

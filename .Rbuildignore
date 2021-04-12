@@ -1,5 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 R/old_functions.R
+R/ignore/*
 /internal_docs
 ^data-raw$

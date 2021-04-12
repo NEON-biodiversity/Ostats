@@ -59,7 +59,8 @@ of null model output. A warning is issued, and a random seed is generated
 based on the local time, if the user does not supply a seed.}
 
 \item{circular_args}{optional list of additional arguments to pass to
-\code{\link[circular]{circular}}. Only used if the data type is "circular".}
+\code{\link[circular]{circular}}. Only used if the data type is "circular".
+Note that continuous circular data must be provided in radian units.}
 
 \item{density_args}{additional arguments to pass to \code{\link[stats]{density}}, such as
 \code{bw}, \code{n}, or \code{adjust}. If none are provided, default values
@@ -123,9 +124,6 @@ Read, Q. D. et al. Among-species overlap in rodent body size
 }
 \seealso{
 \code{\link{Ostats_multivariate}} for multidimensional overlap.
-
-\code{\link{Ostats_regional}} to evaluate against a regional null
-  model.
 
 \code{\link{Ostats_plot}} for plotting community overlap for
 each community.
