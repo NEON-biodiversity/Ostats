@@ -29,6 +29,11 @@ pairwise_overlap <- function(a, b, density_args = list()) {
 
   } else {
 
+    # Set to verbose = FALSE if that argument is not provided.
+    if (!'verbose' %in% names(density_args)) {
+      density_args[['verbose']] <- FALSE
+    }
+
     # Suppress all progress messages from hypervolume functions, including those from underlying C functions.
     invisible(utils::capture.output(suppressWarnings(suppressMessages({
 

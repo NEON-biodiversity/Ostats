@@ -86,7 +86,7 @@ community_overlap_merged <- function(traits, sp, data_type = "linear", normal = 
   for (sp_a in 1:(nspp-1)) {
     for (sp_b in (sp_a+1):nspp) {
 
-      overlaps <- c(overlaps, pairwise_overlap(density_list[[sp_a]], density_list[[sp_b]]))
+      overlaps <- c(overlaps, pairwise_overlap(density_list[[sp_a]], density_list[[sp_b]], density_args))
       if (weight_type == "hmean")
         abund_pairs <- c(abund_pairs, 2/(1/abunds[sp_a] + 1/abunds[sp_b]))
       if (weight_type == "mean")

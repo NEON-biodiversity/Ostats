@@ -54,6 +54,14 @@ idx <- sort(sample(nrow(pitcher_traits), 10, replace = FALSE))
 knitr::kable(pitcher_traits[idx,])
 ```
 
+For a more manageable example, let's select 6 sites.
+
+```{r}
+sites <- c('COL', 'CRI', 'FLK', 'FRA', 'MYR', 'SAC')
+pitcher_traits <- pitcher_traits[pitcher_traits$site_id %in% sites, ]
+```
+
+
 # Calculating hypervolume O-statistics
 
 - Calculate ostats multivariate 
@@ -89,7 +97,7 @@ apply(pitcher_trait_matrix_scaled, 2, range)
 
 Next calculate the univariate O-statistics for each of the four traits. **Currently in the example we will not use null model, but eventually it should.**
 
-```{r, message = FALSE}
+```{r, message = FALSE, results = 'hide'}
 pitcher_univariate <- Ostats(traits = pitcher_trait_matrix_scaled,
                              plots = factor(rep(1, nrow(pitcher_trait_matrix_scaled))),
                              sp = pitcher_sites,
@@ -100,8 +108,8 @@ pitcher_univariate <- Ostats(traits = pitcher_trait_matrix_scaled,
 
 Now calculate the multivariate O-statistic for the traits combined, using all default arguments. The `random_seed` is still used even in the absence of a null model for the hypervolume construction.
 
-```{r, message = FALSE}
-pitcher_multivariate <- Ostats_multivariate(traits = pitcher_trait_matrix_scaled[, 1:3],
+```{r, message = FALSE, results = 'hide'}
+pitcher_multivariate <- Ostats_multivariate(traits = pitcher_trait_matrix_scaled,
                                             plots = factor(rep(1, nrow(pitcher_trait_matrix_scaled))),
                                             sp = pitcher_sites,
                                             random_seed = 333,
@@ -116,8 +124,9 @@ pitcher_univariate$overlaps_norm
 pitcher_multivariate$overlaps_norm
 ```
 
+The single multivariate O-statistic is not comparable to the univariate statistics because of differing dimensionality. Therefore we need to evaluate them against null models.
 
-**Here run the multivariate O-stats with different args to hypervolume**
+**Here run the multivariate O-stats with different args to hypervolume, and with null models**
 
 # Visualizing hypervolume O-statistics
 
@@ -126,7 +135,7 @@ pitcher_multivariate$overlaps_norm
 
 Here is a plot of the overlap of the hypervolumes in 4-dimensional space formed by the individual traits of the pitcher plants at each site. Notice that we don't use the scaled traits for plotting; instead we use the actual ratios so that the axes are interpretable. 
 
-```{r, message = FALSE}
+```{r, message = FALSE, fig.height = 6, fig.width = 6}
 Ostats_multivariate_plot(plots = factor(rep(1, nrow(pitcher_trait_matrix))),
                          sp = pitcher_sites,
                          traits = pitcher_trait_matrix,
