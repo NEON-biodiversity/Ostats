@@ -156,7 +156,6 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
 
     # Local null model: generation and calculation done in the same loop
     for (i in 1:nperm) {
-      utils::setTxtProgressBar(pb, i)
       for (s in 1:nlevels(plots)) {
         for (t in 1:ncol(traits)) {
           if (shuffle_weights == FALSE & swap_means == FALSE) overlap_norm_sti <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]), data_type=data_type, output = output, weight_type = weight_type, normal=TRUE, circular_args = circular_args, density_args = density_args), TRUE)
@@ -180,10 +179,10 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
           overlaps_unnorm_null[s, t, i] <- if (inherits(overlap_unnorm_sti, 'try-error')) NA else overlap_unnorm_sti
         }
       }
+      utils::setTxtProgressBar(pb, i)
     }
 
     close(pb)
-    print('Extracting null quantiles to get standardized effect sizes (almost done!) . . .')
 
     # Extract quantiles to get standardized effect sizes for the overlap stats
     overlaps_norm_ses <- get_ses(overlaps_norm, overlaps_norm_null, nullqs)
