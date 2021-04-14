@@ -109,7 +109,6 @@ Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_typ
 
     # Local null model: generation and calculation done in the same loop
     for (i in 1:nperm) {
-      utils::setTxtProgressBar(pb, i)
       for (s in 1:nlevels(plots)) {
 
         if (shuffle_weights == FALSE & swap_means == FALSE) overlap_norm_si <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], ], sp = sample(sp[plots == levels(plots)[s]]), output = output, weight_type = weight_type, normal=TRUE, density_args = hypervolume_args), TRUE)
@@ -133,10 +132,10 @@ Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_typ
         overlaps_unnorm_null[s, 1, i] <- if (inherits(overlap_unnorm_si, 'try-error')) NA else overlap_unnorm_si
 
       }
+      utils::setTxtProgressBar(pb, i)
     }
 
     close(pb)
-    print('Extracting null quantiles to get standardized effect sizes (almost done!) . . .')
 
     # Extract quantiles to get standardized effect sizes for the overlap stats
     overlaps_norm_ses <- get_ses(overlaps_norm, overlaps_norm_null, nullqs)

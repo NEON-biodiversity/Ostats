@@ -39,10 +39,6 @@
 #'
 #' @seealso \code{\link{pairwise_overlap}} to calculate overlap between two empirical
 #' density estimates.
-#' @seealso \code{\link{circular_overlap}} to calculate continous circular overlap between
-#' two empirical density estimates.
-#' @seealso \code{\link{circular_overlap_24hour}} to calculate overlap for discrete hourly
-#' data.
 #'
 #' @examples
 #' library(Ostats)
@@ -78,22 +74,23 @@ community_overlap_merged <- function(traits, sp, data_type = "linear", normal = 
   # Overlap cannot be calculated if there are less than 2 species with at least 2 individuals each.
   if (nspp < 2) return(NA)
 
+  # Define common grid limits so that all density functions and hypervolumes are estimated across the same domain.
+  grid_limits <- apply(dat[, -ncol(dat), drop = FALSE], 2, range)
+
+  # Add a multiplicative factor to the upper and lower end of the range so that the tails aren't cut off.
+  extend_grid <- c(-0.5, 0.5) %*% t(apply(grid_limits,2,diff))
+  grid_limits <- grid_limits + extend_grid
+
+  # Create a list of univariate density functions (in univariate case) or hypervolumes (in multivariate case)
+  density_list <- lapply(traitlist, function(x) trait_density(x, grid_limits, normal, data_type, density_args, circular_args))
+
   overlaps <- NULL
   abund_pairs <- NULL
 
-
   for (sp_a in 1:(nspp-1)) {
     for (sp_b in (sp_a+1):nspp) {
-      if (data_type == "linear"){
-        o <- pairwise_overlap(a = traitlist[[sp_a]], b = traitlist[[sp_b]], normal=normal, density_args)
-      }
-      if (data_type == "circular"){
-        o <- circular_overlap(a = traitlist[[sp_a]], b = traitlist[[sp_b]], normal=normal, circular_args, density_args)
-      }
-      if (data_type == "circular_discrete"){
-        o <- circular_overlap_24hour(a = traitlist[[sp_a]], b = traitlist[[sp_b]], normal=normal)
-      }
-      overlaps <- c(overlaps, o[1])
+
+      overlaps <- c(overlaps, pairwise_overlap(density_list[[sp_a]], density_list[[sp_b]], density_args))
       if (weight_type == "hmean")
         abund_pairs <- c(abund_pairs, 2/(1/abunds[sp_a] + 1/abunds[sp_b]))
       if (weight_type == "mean")

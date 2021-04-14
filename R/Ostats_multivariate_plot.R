@@ -62,7 +62,14 @@ Ostats_multivariate_plot <- function(plots,
   panel_height <- grid::unit(panel_height, units = units)
   panel_width <- grid::unit(panel_width, units = units)
 
-  trait_combs <- combn(names(traits), 2) # All combinations of traits
+  # Supply trait names if none exist
+  if (is.null(dimnames(traits)[[2]])) {
+    trait_names <- paste0('trait', 1:ncol(traits))
+  } else {
+    trait_names <- dimnames(traits)[[2]]
+  }
+
+  trait_combs <- combn(trait_names, 2) # All combinations of traits
 
   # Create triangular layout
   layout_mat <- matrix(as.numeric(NA), ncol(traits) - 1, ncol(traits) - 1)
@@ -138,13 +145,15 @@ Ostats_multivariate_plot <- function(plots,
 
       plot_i <- ggplot2::ggplot() +
         ggplot2::geom_polygon(data = dat_polygons, ggplot2::aes(x = x, y = y, group = interaction(sp, polygon_id), color = sp), fill = 'transparent') +
-        ggplot2::scale_x_continuous(limits = range(contours_df$x[contours_df$trait_x == trait_combs[1, i]])) +
-        ggplot2::scale_y_continuous(limits = range(contours_df$y[contours_df$trait_y == trait_combs[2, i]])) +
+        ggplot2::coord_cartesian(xlim = range(contours_df$x[contours_df$trait_x == trait_combs[1, i]]),
+                                 ylim = range(contours_df$y[contours_df$trait_y == trait_combs[2, i]])) +
+        ggplot2::scale_x_continuous(expand = c(0, 0)) +
+        ggplot2::scale_y_continuous(expand = c(0, 0)) +
         color_scale +
         plot_theme +
         ggplot2::labs(x = trait_combs[1, i], y = trait_combs[2, i])
 
-      if (plot_points) plot_i <- plot_i + ggplot2::geom_point(dat_points, ggplot2::aes(x = x, y = y, group = sp, color = sp))
+      if (plot_points) plot_i <- plot_i + ggplot2::geom_point(data = dat_points, ggplot2::aes(x = x, y = y, group = sp, color = sp))
 
       trait_pairs_plot_list[[i]] <- plot_i
 

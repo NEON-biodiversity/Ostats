@@ -83,10 +83,4 @@ Read, Q. D. et al. Among-species overlap in rodent body size
 \seealso{
 \code{\link{pairwise_overlap}} to calculate overlap between two empirical
 density estimates.
-
-\code{\link{circular_overlap}} to calculate continous circular overlap between
-two empirical density estimates.
-
-\code{\link{circular_overlap_24hour}} to calculate overlap for discrete hourly
-data.
 }

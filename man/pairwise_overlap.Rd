@@ -4,32 +4,7 @@
 \alias{pairwise_overlap}
 \title{Overlap between Two Empirical Density Estimates}
 \usage{
-pairwise_overlap(a, b, normal = TRUE, density_args = list())
-}
-\arguments{
-\item{a}{a numeric vector or matrix. Overlap is calculated between a and b.
-  If a and b are vectors, \code{\link[stats]{density}} is used to calculate unidimensional overlap.
-  If a and b are matrices, with each column representing a trait or dimension,
-\code{\link[hypervolume]{hypervolume}} is used to calculate multidimensional overlap.}
-
-\item{b}{a numeric vector or matrix. The number of columns of a and b must be equal.}
-
-\item{normal}{if TRUE, the area under all density functions is normalized to 1,
-if FALSE, the area under all density functions is proportional to the number of
-observations in that group.}
-
-\item{density_args}{list of additional arguments to be passed to
-\code{\link[stats]{density}} in the univariate case, or
-\code{\link[hypervolume]{hypervolume}} in the multivariate case.}
-}
-\value{
-The funtion returns a vector of three values:
-\item{overlap_average}{the average overlap of a and b, calculated by the overlap
-area *2 divided by the sum of areas under the two functions.}
-\item{overlap_a}{the proportion of a that overlaps with b, calculated by the overlap
-area divided by area under the function generated from a.}
-\item{overlap_b}{the proportion of b that overlaps with a, calculated by the overlap
-area divided by area under the function generated from b.}
+pairwise_overlap(a, b, density_args = list())
 }
 \description{
 This function generates kernel density estimates for two datasets on a common
@@ -38,25 +13,5 @@ See \url{http://stats.stackexchange.com/questions/97596/how-to-calculate-overlap
 this function is derived from code posted in the answer by user mmk.
 }
 \details{
-This function generates kernel density estimates using the
-\code{\link[stats]{density}} function for two datasets on a common grid.
-Default values for \code{bw} and \code{n} are used if not provided in \code{density_args}.
-Intersection density function
-is then calculated by taking the integral of the minimum of the two functions,
-from which the overlap outputs are calculated.
-}
-\examples{
-#overlap of miles per gallon between 4-cylinder and 6-cylinder cars
-a <- mtcars[mtcars$cyl == 6, ]
-a <- a[,1]
-b <- mtcars[mtcars$cyl == 4, ]
-b <- b[,1]
-pairwise_overlap(a,b)
-
-}
-\references{
-http://stats.stackexchange.com/questions/97596/how-to-calculate-overlap-between-empirical-probability-densities
-}
-\seealso{
-\code{\link{circular_overlap}} to calculate circular overlap.
+FIXME new documentation could be added here, if we want to still export this function.
 }
