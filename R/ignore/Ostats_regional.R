@@ -145,7 +145,7 @@ Ostats_regional <-function(traits, plots, sp, reg_pool_traits, reg_pool_sp, nper
         allpool_overlap_reg_sti <- try({
           # Trait density at focal plot
           density_focal_plot <- trait_density(x = trnull_sti, grid_limits = grid_limits[, t, drop = FALSE], normal = TRUE, data_type = 'linear', density_args = density_args, circular_args = list())
-          pairwise_overlap(a = density_focal_plot, b = density_reg_pool, density_args = density_args)
+          pairwise_overlap(a = density_focal_plot, b = density_reg_pool[[t]], density_args = density_args)
         }, TRUE)
 
         allpool_overlaps_reg_null[s, t, i] <- if (inherits(allpool_overlap_reg_sti, 'try-error')) NA else allpool_overlap_reg_sti
@@ -170,7 +170,7 @@ Ostats_regional <-function(traits, plots, sp, reg_pool_traits, reg_pool_sp, nper
         bysp_overlap_reg_sti <- try ({
           # Trait density at focal plot
           density_focal_plot <- trait_density(x = trnull_sti, grid_limits = grid_limits[, t, drop = FALSE], normal = TRUE, data_type = 'linear', density_args = density_args, circular_args = list())
-          pairwise_overlap(a = density_focal_plot, b = density_reg_pool, density_args = density_args)
+          pairwise_overlap(a = density_focal_plot, b = density_reg_pool[[t]], density_args = density_args)
         }, TRUE)
 
         bysp_overlaps_reg_null[s, t, i] <- if (inherits(bysp_overlap_reg_sti, 'try-error')) NA else bysp_overlap_reg_sti
