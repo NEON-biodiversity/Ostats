@@ -101,7 +101,8 @@ Running the function may take several minutes, depending on the size of the data
  Ostats_example <- Ostats(traits = as.matrix(dat[,'log_weight', drop = FALSE]),
                     sp = factor(dat$taxonID),
                     plots = factor(dat$siteID),
-                    data_type = "linear")
+                    data_type = "linear",
+                    random_seed = 517)
 ```
 
 The below code chunk shows an example of how the *density_args* inputs could be changed if so desired:
@@ -111,7 +112,8 @@ The below code chunk shows an example of how the *density_args* inputs could be 
 Ostats_example2 <- Ostats(traits = as.matrix(dat[,'log_weight', drop = FALSE]),
                     sp = factor(dat$taxonID),
                     plots = factor(dat$siteID), 
-                    density_args=list(bw = 'nrd0', adjust = 2, n=200))
+                    density_args=list(bw = 'nrd0', adjust = 2, n=200),
+                    random_seed = 518)
 
 ```
 
@@ -162,7 +164,8 @@ The arguments are the same in the *Ostats* function linear data calculation. In 
 circular_example <- Ostats(traits = as.matrix(ant_data[, 'time', drop = FALSE]),
                     sp = factor(ant_data$species),
                     plots = factor(ant_data$chamber),
-                    data_type = "circular_discrete")
+                    data_type = "circular_discrete",
+                    random_seed = 519)
 ```
 
 The output is the same as the *Ostats* function linear data calculation. The code below shows the normalized and non-normalized overlap values for the two chambers, respectively, in the first four lines followed by the standardized effect sizes from the null models. 
@@ -218,7 +221,8 @@ Ostats_reg_example <- Ostats_regional(traits = as.matrix(HARV2018[, 'log_weight'
                                       plots = factor(HARV2018$siteID),
                                       sp = factor(HARV2018$taxonID),
                                       reg_pool_traits = reg_pool_traits,
-                                      reg_pool_sp = reg_pool_sp)
+                                      reg_pool_sp = reg_pool_sp,
+                                      random_seed = 520)
 ```
 
 The function evaluates the overlap statistics against a regional species pool null model. This regional null model tests whether individual species’ body size distributions were more evenly spaced along the body size axis than expected by chance. This approach evaluates the z‐score of each observed community against the distribution of 999 null communities drawn from body size measurements from the regional species pool in which species body size means were shuffled randomly. This process retains the shape and width of the distribution around the mean for each species. 
@@ -295,8 +299,6 @@ If the graphs do not look like a normal curve, check whether the trait measureme
 *Ostat2longform* can convert the output of *Ostats* from a list to a long-form table for further analysis. For an example of when this is useful see the supplemental materials for Read et al. (2018) where this function was used to prepare the Ostats output for a structural equation modeling analysis.
 
 ```{r eval=FALSE}
-#To preserve column names, when using *Ostats*, the input argument *traits* should be dat[,'log_weight'] instead of dat$log_weight for *Ostat2longform* to work.
-
 Ostat2longform(Ostats_example)
 ```
 
