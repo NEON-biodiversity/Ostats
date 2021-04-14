@@ -1,4 +1,4 @@
-#' Calculate O-statistics evaluated against regional null model
+#' Calculate O-statistics evaluated against regional species pool
 #'
 #' This function evaluates the O-statistics (community-level pairwise niche
 #' overlap statistics)against a regional null model. In contrast to
@@ -14,6 +14,9 @@
 #'   compare the dataset with.
 #' @param reg_pool_sp species identification for each measurement in the
 #'   regional species pool.
+#' @param run_null_model whether to run a null model (if \code{TRUE}) and evaluate the
+#'  O-statistics against it, or simply return the raw O-statistics (if \code{FALSE}).
+#'  Defaults to \code{TRUE}.
 #' @param nperm the number of null model permutations to generate. Defaults to 99.
 #' @param nullqs numeric vector of probabilities with values in [0,1] to set
 #'   effect size quantiles. Defaults to \code{c(0.025, 0.975)}.
@@ -25,7 +28,7 @@
 #'   values are used.
 #'
 #' @details This function evaluates the overlap statistics against a regional
-#'   null model. It takes all individual trait measurements in the community to
+#'   species pool. It takes all individual trait measurements in the community to
 #'   compare with the regional pool (ignoring species identity) to calculate
 #'   pairwise overlap for each community, which indicates the regional pool
 #'   space a community takes up.
@@ -77,10 +80,10 @@
 #'                                      nperm = 2)
 #'
 #' @export
-Ostats_regional <-function(traits, plots, sp, reg_pool_traits, reg_pool_sp, nperm = 99, nullqs = c(0.025, 0.975), random_seed = NULL, density_args = list()) {
+Ostats_regional <-function(traits, plots, sp, reg_pool_traits, reg_pool_sp, run_null_model = TRUE, nperm = 99, nullqs = c(0.025, 0.975), random_seed = NULL, density_args = list()) {
 
   # If user did not supply a random seed, generate one and print a message.
-  if (missing(random_seed)) {
+  if (run_null_model && missing(random_seed)) {
     random_seed <- round(as.numeric(Sys.time()) %% 12345)
     message(paste("Note: argument random_seed was not supplied; setting seed to", random_seed))
   }
@@ -131,63 +134,67 @@ Ostats_regional <-function(traits, plots, sp, reg_pool_traits, reg_pool_sp, nper
 
   close(pb)
 
-  print('Calculating total-pool and species-pool null distributions of regional O-stats . . . ')
-  pb <- utils::txtProgressBar(min = 0, max = nperm, style = 3)
+  if (run_null_model) {
 
-  # Null model generation and calculation of null O-Stats
+    print('Calculating total-pool and species-pool null distributions of regional O-stats . . . ')
+    pb <- utils::txtProgressBar(min = 0, max = nperm, style = 3)
 
-  # Total-pool null model: generation and calculation done in the same loop
-  for (i in 1:nperm) {
-    for (s in 1:nlevels(plots)) {
-      for (t in 1:ncol(traits)) {
-        trnull_sti <- sample(x=`[[`(reg_pool_traits, levels(plots)[s])[, t], size=sum(plots == levels(plots)[s]), replace=FALSE)
+    # Null model generation and calculation of null O-Stats
 
-        allpool_overlap_reg_sti <- try({
-          # Trait density at focal plot
-          density_focal_plot <- trait_density(x = trnull_sti, grid_limits = grid_limits[, t, drop = FALSE], normal = TRUE, data_type = 'linear', density_args = density_args, circular_args = list())
-          pairwise_overlap(a = density_focal_plot, b = density_reg_pool[[t]], density_args = density_args)
-        }, TRUE)
+    # Total-pool null model: generation and calculation done in the same loop
+    for (i in 1:nperm) {
+      for (s in 1:nlevels(plots)) {
+        for (t in 1:ncol(traits)) {
+          trnull_sti <- sample(x=`[[`(reg_pool_traits, levels(plots)[s])[, t], size=sum(plots == levels(plots)[s]), replace=FALSE)
 
-        allpool_overlaps_reg_null[s, t, i] <- if (inherits(allpool_overlap_reg_sti, 'try-error')) NA else allpool_overlap_reg_sti
-      }
-    }
+          allpool_overlap_reg_sti <- try({
+            # Trait density at focal plot
+            density_focal_plot <- trait_density(x = trnull_sti, grid_limits = grid_limits[, t, drop = FALSE], normal = TRUE, data_type = 'linear', density_args = density_args, circular_args = list())
+            pairwise_overlap(a = density_focal_plot, b = density_reg_pool[[t]], density_args = density_args)
+          }, TRUE)
 
-    # By-species null model: generation of null communities and calculation of O-stats (in same loop)
-
-
-    for (s in 1:nlevels(plots)) {
-      for (t in 1:ncol(traits)) {
-        sp_sti <- sp[plots == levels(plots)[s]]
-        trnull_sti <- c()
-        spnames_sti <- unique(sp_sti)
-        sptable_sti <- table(sp_sti)
-
-        for (j in 1:length(spnames_sti)) {
-          z <- `[[`(reg_pool_traits, levels(plots)[s])[`[[`(reg_pool_sp, levels(plots)[s]) == as.character(spnames_sti[j]), t]
-          if (any(!is.na(z))) trnull_sti <- c(trnull_sti, sample(x=z, size=sum(sp_sti == spnames_sti[j]), replace=FALSE))
+          allpool_overlaps_reg_null[s, t, i] <- if (inherits(allpool_overlap_reg_sti, 'try-error')) NA else allpool_overlap_reg_sti
         }
-
-        bysp_overlap_reg_sti <- try ({
-          # Trait density at focal plot
-          density_focal_plot <- trait_density(x = trnull_sti, grid_limits = grid_limits[, t, drop = FALSE], normal = TRUE, data_type = 'linear', density_args = density_args, circular_args = list())
-          pairwise_overlap(a = density_focal_plot, b = density_reg_pool[[t]], density_args = density_args)
-        }, TRUE)
-
-        bysp_overlaps_reg_null[s, t, i] <- if (inherits(bysp_overlap_reg_sti, 'try-error')) NA else bysp_overlap_reg_sti
-
       }
+
+      # By-species null model: generation of null communities and calculation of O-stats (in same loop)
+
+
+      for (s in 1:nlevels(plots)) {
+        for (t in 1:ncol(traits)) {
+          sp_sti <- sp[plots == levels(plots)[s]]
+          trnull_sti <- c()
+          spnames_sti <- unique(sp_sti)
+          sptable_sti <- table(sp_sti)
+
+          for (j in 1:length(spnames_sti)) {
+            z <- `[[`(reg_pool_traits, levels(plots)[s])[`[[`(reg_pool_sp, levels(plots)[s]) == as.character(spnames_sti[j]), t]
+            if (any(!is.na(z))) trnull_sti <- c(trnull_sti, sample(x=z, size=sum(sp_sti == spnames_sti[j]), replace=FALSE))
+          }
+
+          bysp_overlap_reg_sti <- try ({
+            # Trait density at focal plot
+            density_focal_plot <- trait_density(x = trnull_sti, grid_limits = grid_limits[, t, drop = FALSE], normal = TRUE, data_type = 'linear', density_args = density_args, circular_args = list())
+            pairwise_overlap(a = density_focal_plot, b = density_reg_pool[[t]], density_args = density_args)
+          }, TRUE)
+
+          bysp_overlaps_reg_null[s, t, i] <- if (inherits(bysp_overlap_reg_sti, 'try-error')) NA else bysp_overlap_reg_sti
+
+        }
+      }
+      utils::setTxtProgressBar(pb, i)
     }
-    utils::setTxtProgressBar(pb, i)
+
+    close(pb)
+    print('Extracting null quantiles to get standardized effect sizes (almost done!) . . .')
+
+    overlaps_reg_allpool_ses <- get_ses(overlaps_reg, allpool_overlaps_reg_null, nullqs)
+    overlaps_reg_bysp_ses <- get_ses(overlaps_reg, bysp_overlaps_reg_null, nullqs)
+
+    list(overlaps_reg=overlaps_reg, overlaps_reg_allpool_ses=overlaps_reg_allpool_ses, overlaps_reg_bysp_ses=overlaps_reg_bysp_ses)
+  } else {
+    list(overlaps_reg=overlaps_reg)
   }
-
-  close(pb)
-  print('Extracting null quantiles to get standardized effect sizes (almost done!) . . .')
-
-  overlaps_reg_allpool_ses <- get_ses(overlaps_reg, allpool_overlaps_reg_null, nullqs)
-  overlaps_reg_bysp_ses <- get_ses(overlaps_reg, bysp_overlaps_reg_null, nullqs)
-
-  list(overlaps_reg=overlaps_reg, overlaps_reg_allpool_ses=overlaps_reg_allpool_ses, overlaps_reg_bysp_ses=overlaps_reg_bysp_ses)
-
 
 }
 

@@ -105,8 +105,7 @@ result6 <- Ostats_regional(traits = as.matrix(HARV2018[, 'log_weight', drop = FA
                            sp = factor(HARV2018$taxonID),
                            reg_pool_traits = reg_pool_traits,
                            reg_pool_sp = reg_pool_sp,
-                           nperm = 1,
-                           random_seed = 919)$overlaps_reg
+                           run_null_model = FALSE)$overlaps_reg
 
 expected6 <- 0.914
 
