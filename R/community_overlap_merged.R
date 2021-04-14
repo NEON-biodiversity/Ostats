@@ -74,8 +74,12 @@ community_overlap_merged <- function(traits, sp, data_type = "linear", normal = 
   # Overlap cannot be calculated if there are less than 2 species with at least 2 individuals each.
   if (nspp < 2) return(NA)
 
-  # Define common grid limits so that all density functions and hypervolumes are estimated across the same domain
+  # Define common grid limits so that all density functions and hypervolumes are estimated across the same domain.
   grid_limits <- apply(dat[, -ncol(dat), drop = FALSE], 2, range)
+
+  # Add a multiplicative factor to the upper and lower end of the range so that the tails aren't cut off.
+  extend_grid <- c(-0.5, 0.5) %*% t(apply(grid_limits,2,diff))
+  grid_limits <- grid_limits + extend_grid
 
   # Create a list of univariate density functions (in univariate case) or hypervolumes (in multivariate case)
   density_list <- lapply(traitlist, function(x) trait_density(x, grid_limits, normal, data_type, density_args, circular_args))

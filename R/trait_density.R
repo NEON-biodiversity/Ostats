@@ -67,7 +67,7 @@ trait_density <- function(x, grid_limits, normal, data_type, density_args, circu
     }
 
     if (data_type %in% 'circular_discrete') {
-      x_weights <- calc_weight(x)
+      x_weights <- calc_weight(x, normal)
 
       d <- data.frame(x = x_weights[,'points'], y = x_weights[,'weights'])
 
@@ -104,7 +104,7 @@ trait_density <- function(x, grid_limits, normal, data_type, density_args, circu
 
 #' Function to calculate hourly weights
 #' @noRd
-calc_weight <- function(x) {
+calc_weight <- function(x, normal) {
   tab <- table(factor(x,  levels=as.character(0:23)),
                useNA="ifany")
 
