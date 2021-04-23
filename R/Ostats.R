@@ -35,8 +35,7 @@
 #' are used.
 #'
 #' @details This function evaluates the overlap statistics against a local null
-#'   model.The function community_overlap_merged calculates the community overlap
-#'   statistics in each community. At default, it calculates the median of pairwise
+#'   model. By default, it calculates the median of pairwise
 #'   overlaps, weighted by harmonic mean of species abundaces of the species
 #'   pairs in each community. Two results are produced, one normalizing the area
 #'   under all density functions to 1, the other making the area under all density
@@ -136,9 +135,9 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
 
   for (s in 1:nlevels(plots)) {
     for (t in 1:ncol(traits)) {
-      overlap_norm_st <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type = data_type, output = output, weight_type = weight_type, normal=TRUE, circular_args = circular_args, density_args = density_args), TRUE)
+      overlap_norm_st <- try(community_overlap(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type = data_type, output = output, weight_type = weight_type, normal=TRUE, circular_args = circular_args, density_args = density_args), TRUE)
       overlaps_norm[s, t] <- if (inherits(overlap_norm_st, 'try-error')) NA else overlap_norm_st
-      overlap_unnorm_st <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type = data_type, output = output, weight_type = weight_type, normal=FALSE, circular_args = circular_args, density_args = density_args), TRUE)
+      overlap_unnorm_st <- try(community_overlap(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type = data_type, output = output, weight_type = weight_type, normal=FALSE, circular_args = circular_args, density_args = density_args), TRUE)
       overlaps_unnorm[s, t] <- if (inherits(overlap_unnorm_st, 'try-error')) NA else overlap_unnorm_st
     }
     utils::setTxtProgressBar(pb, s)
@@ -158,8 +157,8 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
     for (i in 1:nperm) {
       for (s in 1:nlevels(plots)) {
         for (t in 1:ncol(traits)) {
-          if (shuffle_weights == FALSE & swap_means == FALSE) overlap_norm_sti <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]), data_type=data_type, output = output, weight_type = weight_type, normal=TRUE, circular_args = circular_args, density_args = density_args), TRUE)
-          if (shuffle_weights == TRUE) overlap_norm_sti <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type=data_type, output = output, weight_type = weight_type, normal=TRUE, randomize_weights = TRUE, circular_args = circular_args, density_args = density_args), TRUE)
+          if (shuffle_weights == FALSE & swap_means == FALSE) overlap_norm_sti <- try(community_overlap(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]), data_type=data_type, output = output, weight_type = weight_type, normal=TRUE, circular_args = circular_args, density_args = density_args), TRUE)
+          if (shuffle_weights == TRUE) overlap_norm_sti <- try(community_overlap(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type=data_type, output = output, weight_type = weight_type, normal=TRUE, randomize_weights = TRUE, circular_args = circular_args, density_args = density_args), TRUE)
           if (swap_means == TRUE) {
             traits_st <- traits[plots==levels(plots)[s], t]
             sp_st <- sp[plots==levels(plots)[s]]
@@ -171,11 +170,11 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
             traitmeans_null <- sample(traitmeans)
             sp_null <- rep(names(traitmeans_null), table(sp_st))
             traits_null <- traitdeviations + traitmeans_null[sp_null]
-            overlap_norm_sti <- try(community_overlap_merged(traits = traits_null, sp = sp_null, data_type=data_type, output = output, weight_type = weight_type,normal=TRUE, randomize_weights = FALSE, circular_args = circular_args, density_args = density_args), TRUE)
+            overlap_norm_sti <- try(community_overlap(traits = traits_null, sp = sp_null, data_type=data_type, output = output, weight_type = weight_type,normal=TRUE, randomize_weights = FALSE, circular_args = circular_args, density_args = density_args), TRUE)
           }
 
           overlaps_norm_null[s, t, i] <- if (inherits(overlap_norm_sti, 'try-error')) NA else overlap_norm_sti
-          overlap_unnorm_sti <- try(community_overlap_merged(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]),data_type=data_type, output = output, weight_type = weight_type, normal=FALSE, circular_args = circular_args, density_args = density_args), TRUE)
+          overlap_unnorm_sti <- try(community_overlap(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]),data_type=data_type, output = output, weight_type = weight_type, normal=FALSE, circular_args = circular_args, density_args = density_args), TRUE)
           overlaps_unnorm_null[s, t, i] <- if (inherits(overlap_unnorm_sti, 'try-error')) NA else overlap_unnorm_sti
         }
       }

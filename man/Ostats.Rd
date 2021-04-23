@@ -85,8 +85,7 @@ O-statistics against a local null model.
 }
 \details{
 This function evaluates the overlap statistics against a local null
-  model.The function community_overlap_merged calculates the community overlap
-  statistics in each community. At default, it calculates the median of pairwise
+  model. By default, it calculates the median of pairwise
   overlaps, weighted by harmonic mean of species abundaces of the species
   pairs in each community. Two results are produced, one normalizing the area
   under all density functions to 1, the other making the area under all density

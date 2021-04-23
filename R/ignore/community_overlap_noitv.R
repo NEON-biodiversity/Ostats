@@ -31,7 +31,7 @@
 #'
 #' @note This function so far only works for linear datasets.
 #'
-#' @seealso \code{\link{community_overlap_merged}} to see a function that takes
+#' @seealso \code{\link{community_overlap}} to see a function that takes
 #' intraspecific trait variation (ITV) into account to calculate overlap statistics
 #' for a community.
 #'

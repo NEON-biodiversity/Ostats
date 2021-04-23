@@ -50,11 +50,11 @@
 #'
 #' # Calculate median of pairwise overlaps for the community,weighted by harmonic means
 #' # of abundances
-#' community_overlap_merged(traits = as.matrix(dat$log_weight),
+#' community_overlap(traits = as.matrix(dat$log_weight),
 #'    sp = factor(dat$taxonID))
 #'
 #' @export
-community_overlap_merged <- function(traits, sp, data_type = "linear", normal = TRUE, output = "median", weight_type= "hmean", randomize_weights = FALSE, circular_args = list(), density_args = list()) {
+community_overlap <- function(traits, sp, data_type = "linear", normal = TRUE, output = "median", weight_type= "hmean", randomize_weights = FALSE, circular_args = list(), density_args = list()) {
 
   # Return error if circular is specified with multivariate data.
   if (data_type %in% c('circular', 'circular_discrete') & 'matrix' %in% class(traits)) {
