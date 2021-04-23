@@ -10,8 +10,8 @@
 #' @param use_plots a vector of sites to plot. If NULL, the function will plot all the sites.
 #' @param colorvalues Vector of color values for the density polygons. Defaults to a viridis palette if none provided.
 #' @param plot_points whether to plot individual data points in addition to the hypervolume slices. Default is TRUE.
-#' @param axis_buffer_factor multiplicative expansion factor by which to expand the x and y axes in all directions
-#'   before calculating the hypervolume contours for plotting.
+#' @param axis_buffer_factor multiplicative expansion factor by which to expand the x and y axes in all directions,
+#'   relative to the range of the axis, before calculating the hypervolume contours for plotting.
 #'   If this is not set to a sufficiently large value, the contour lines of the hypervolumes will be cut off.
 #'   Default value is 0.25 (25% expansion of the axis limits in all directions).
 #' @param panel_height height of the individual plot panels, in units given by \code{units}. Default is 3 cm.
@@ -217,7 +217,11 @@ get_contours <- function(hv, trait_combs, axis_buffer_factor) {
   # Calculate kernel density estimate for each combinations of two variables.
   contour_list <- list()
   for (i in 1:ncol(trait_combs)) {
-    kde <- MASS::kde2d(hv@RandomPoints[, trait_combs[1, i]], hv@RandomPoints[, trait_combs[2, i]], n = 50, h = radius_critical, lims = c(range(hv@RandomPoints[, trait_combs[1, i]]) * c(1 - axis_buffer_factor, 1 + axis_buffer_factor), range(hv@RandomPoints[, trait_combs[2, i]]) * c(1 - axis_buffer_factor, 1 + axis_buffer_factor)))
+    range_x <- range(hv@RandomPoints[, trait_combs[1, i]])
+    range_x_buffered <- range_x + c(-1, 1) * axis_buffer_factor * diff(range_x)
+    range_y <- range(hv@RandomPoints[, trait_combs[2, i]])
+    range_y_buffered <- range_y + c(-1, 1) * axis_buffer_factor * diff(range_y)
+    kde <- MASS::kde2d(hv@RandomPoints[, trait_combs[1, i]], hv@RandomPoints[, trait_combs[2, i]], n = 50, h = radius_critical, lims = c(range_x_buffered, range_y_buffered))
     contour_lines <- contourLines(kde, levels = 0.01)
     contour_line_dfs <- list()
     for (j in 1:length(contour_lines)) {

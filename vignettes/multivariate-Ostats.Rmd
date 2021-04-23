@@ -135,15 +135,12 @@ The single multivariate O-statistic is not comparable to the univariate statisti
 
 Here is a plot of the overlap of the hypervolumes in 4-dimensional space formed by the individual traits of the pitcher plants at each site. Notice that we don't use the scaled traits for plotting; instead we use the actual ratios so that the axes are interpretable. 
 
-The argument `axis_buffer_factor` is set to expand the axes widely around the data points so that the estimated hypervolume contours do not get truncated.
-
 ```{r, message = FALSE, fig.height = 6, fig.width = 6}
 Ostats_multivariate_plot(plots = factor(rep(1, nrow(pitcher_trait_matrix))),
                          sp = pitcher_sites,
                          traits = pitcher_trait_matrix,
                          overlap_dat = pitcher_multivariate,
-                         plot_points = TRUE,
-                         axis_buffer_factor = 0.5
+                         plot_points = TRUE
 )
 ```
 
