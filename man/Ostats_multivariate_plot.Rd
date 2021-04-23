@@ -12,6 +12,7 @@ Ostats_multivariate_plot(
   use_plots = NULL,
   colorvalues = NULL,
   plot_points = TRUE,
+  axis_buffer_factor = 0.25,
   panel_height = 3,
   panel_width = 3,
   units = "cm",
@@ -25,13 +26,19 @@ Ostats_multivariate_plot(
 
 \item{traits}{A matrix or data frame with rows representing individuals and columns representing traits.}
 
-\item{overlap_dat}{Optional: an object containing the output of \code{\link{Ostats_multivariate}}. If provided, overlap statistics will be displayed in the plot panels.}
+\item{overlap_dat}{Optional: an object containing the output of \code{\link{Ostats_multivariate}}.
+If provided, overlap statistics will be displayed in the plot panels.}
 
 \item{use_plots}{a vector of sites to plot. If NULL, the function will plot all the sites.}
 
 \item{colorvalues}{Vector of color values for the density polygons. Defaults to a viridis palette if none provided.}
 
 \item{plot_points}{whether to plot individual data points in addition to the hypervolume slices. Default is TRUE.}
+
+\item{axis_buffer_factor}{multiplicative expansion factor by which to expand the x and y axes in all directions
+before calculating the hypervolume contours for plotting.
+If this is not set to a sufficiently large value, the contour lines of the hypervolumes will be cut off.
+Default value is 0.25 (25% expansion of the axis limits in all directions).}
 
 \item{panel_height}{height of the individual plot panels, in units given by \code{units}. Default is 3 cm.}
 

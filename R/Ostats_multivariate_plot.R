@@ -5,10 +5,15 @@
 #' @param plots Site identity: a vector of names of each community.
 #' @param sp Taxon identity: a vector of species or taxa names.
 #' @param traits A matrix or data frame with rows representing individuals and columns representing traits.
-#' @param overlap_dat Optional: an object containing the output of \code{\link{Ostats_multivariate}}. If provided, overlap statistics will be displayed in the plot panels.
+#' @param overlap_dat Optional: an object containing the output of \code{\link{Ostats_multivariate}}.
+#'   If provided, overlap statistics will be displayed in the plot panels.
 #' @param use_plots a vector of sites to plot. If NULL, the function will plot all the sites.
 #' @param colorvalues Vector of color values for the density polygons. Defaults to a viridis palette if none provided.
 #' @param plot_points whether to plot individual data points in addition to the hypervolume slices. Default is TRUE.
+#' @param axis_buffer_factor multiplicative expansion factor by which to expand the x and y axes in all directions
+#'   before calculating the hypervolume contours for plotting.
+#'   If this is not set to a sufficiently large value, the contour lines of the hypervolumes will be cut off.
+#'   Default value is 0.25 (25% expansion of the axis limits in all directions).
 #' @param panel_height height of the individual plot panels, in units given by \code{units}. Default is 3 cm.
 #' @param panel_width height of the individual plot panels, in units given by \code{units}. Default is 3 cm.
 #' @param units units for panel height and width. Default is centimeters.
@@ -26,6 +31,7 @@ Ostats_multivariate_plot <- function(plots,
                                      use_plots = NULL,
                                      colorvalues = NULL,
                                      plot_points = TRUE,
+                                     axis_buffer_factor = 0.25,
                                      panel_height = 3,
                                      panel_width = 3,
                                      units = 'cm',
@@ -131,7 +137,7 @@ Ostats_multivariate_plot <- function(plots,
     }
 
     # Generate contours for all hypervolumes
-    contours_list <- lapply(hv_list, function(hv) if (class(hv) == 'Hypervolume') get_contours(hv, trait_combs) else NA)
+    contours_list <- lapply(hv_list, function(hv) if (class(hv) == 'Hypervolume') get_contours(hv, trait_combs, axis_buffer_factor) else NA)
     # Join contours to data frame
     for (i in 1:length(contours_list)) contours_list[[i]][, 'sp'] = sp_in_plot[i]
     contours_df <- do.call(rbind, contours_list)
@@ -204,14 +210,14 @@ Ostats_multivariate_plot <- function(plots,
 
 #' Unexported function to draw contours somewhat modified from hypervolume::plot.HypervolumeList
 #' @noRd
-get_contours <- function(hv, trait_combs) {
+get_contours <- function(hv, trait_combs, axis_buffer_factor) {
   hv_density <- nrow(hv@RandomPoints)/hv@Volume
   hv_dimensionality <- hv@Dimensionality
   radius_critical <- hv_density^(-1/hv_dimensionality)
   # Calculate kernel density estimate for each combinations of two variables.
   contour_list <- list()
   for (i in 1:ncol(trait_combs)) {
-    kde <- MASS::kde2d(hv@RandomPoints[, trait_combs[1, i]], hv@RandomPoints[, trait_combs[2, i]], n = 50, h = radius_critical, lims = c(range(hv@RandomPoints[, trait_combs[1, i]]) * c(0.9, 1.1), range(hv@RandomPoints[, trait_combs[2, i]]) * c(0.9, 1.1)))
+    kde <- MASS::kde2d(hv@RandomPoints[, trait_combs[1, i]], hv@RandomPoints[, trait_combs[2, i]], n = 50, h = radius_critical, lims = c(range(hv@RandomPoints[, trait_combs[1, i]]) * c(1 - axis_buffer_factor, 1 + axis_buffer_factor), range(hv@RandomPoints[, trait_combs[2, i]]) * c(1 - axis_buffer_factor, 1 + axis_buffer_factor)))
     contour_lines <- contourLines(kde, levels = 0.01)
     contour_line_dfs <- list()
     for (j in 1:length(contour_lines)) {

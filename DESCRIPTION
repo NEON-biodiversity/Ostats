@@ -25,7 +25,8 @@ Imports:
     ggplot2,
     gridExtra,
     viridis,
-    grid
+    grid,
+    MASS
 RoxygenNote: 7.1.1
 Suggests: 
     testthat (>= 2.1.0),
