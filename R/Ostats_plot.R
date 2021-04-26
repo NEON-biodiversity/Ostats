@@ -158,7 +158,7 @@ Ostats_plot<-function(plots,
 
 #' @method print Ostats_plot_object
 #' @export
-print.Ostats_plot_object <- function(obj, ...) {
+print.Ostats_plot_object <- function(x, ...) {
   grid::grid.newpage()
-  grid::grid.draw(obj, ...)
+  grid::grid.draw(x, ...)
 }

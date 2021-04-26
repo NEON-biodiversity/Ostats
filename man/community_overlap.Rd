@@ -90,7 +90,3 @@ Read, Q. D. et al. Among-species overlap in rodent body size
   distributions predicts species richness along a temperature gradient.
   Ecography 41, 1718-1727 (2018).
 }
-\seealso{
-\code{\link{pairwise_overlap}} to calculate overlap between two empirical
-density estimates.
-}
