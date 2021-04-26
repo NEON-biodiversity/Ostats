@@ -1,27 +1,30 @@
 #' Plot multivariate community overlap
 #'
-#' @description Placeholder.
+#' Placeholder. MORE DESCRIPTION GOES HERE.
 #'
 #' @param plots Site identity: a vector of names of each community.
 #' @param sp Taxon identity: a vector of species or taxa names.
-#' @param traits A matrix or data frame with rows representing individuals and columns representing traits.
-#' @param overlap_dat Optional: an object containing the output of \code{\link{Ostats_multivariate}}.
+#' @param traits A matrix or data frame with rows representing individuals
+#'   and columns representing traits.
+#' @param overlap_dat Optional: an object containing the output of
+#'   \code{\link{Ostats_multivariate}}.
 #'   If provided, overlap statistics will be displayed in the plot panels.
 #' @param use_plots a vector of sites to plot. If NULL, the function will plot all the sites.
-#' @param colorvalues Vector of color values for the density polygons. Defaults to a viridis palette if none provided.
-#' @param plot_points whether to plot individual data points in addition to the hypervolume slices. Default is TRUE.
+#' @param colorvalues Vector of color values for the density polygons.
+#'   Defaults to a viridis palette if none provided.
+#' @param plot_points whether to plot individual data points in addition to
+#'   the hypervolume slices. Default is TRUE.
 #' @param axis_buffer_factor multiplicative expansion factor by which to expand the x and y axes in all directions,
 #'   relative to the range of the axis, before calculating the hypervolume contours for plotting.
 #'   If this is not set to a sufficiently large value, the contour lines of the hypervolumes will be cut off.
-#'   Default value is 0.25 (25% expansion of the axis limits in all directions).
+#'   Default value is 0.25 (25\% expansion of the axis limits in all directions).
 #' @param panel_height height of the individual plot panels, in units given by \code{units}. Default is 3 cm.
 #' @param panel_width height of the individual plot panels, in units given by \code{units}. Default is 3 cm.
 #' @param units units for panel height and width. Default is centimeters.
 #' @param hypervolume_args additional arguments to pass to \code{\link[hypervolume]{hypervolume}},
-#' such as \code{method}. If none are provided, default values
-#' are used.
+#'   such as \code{method}. If none are provided, default values are used.
 #'
-#' MORE DOCUMENTATION GOES HERE
+#' @details MORE DOCUMENTATION GOES HERE
 #'
 #' @export
 Ostats_multivariate_plot <- function(plots,

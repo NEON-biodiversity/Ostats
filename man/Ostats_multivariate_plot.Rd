@@ -24,21 +24,25 @@ Ostats_multivariate_plot(
 
 \item{sp}{Taxon identity: a vector of species or taxa names.}
 
-\item{traits}{A matrix or data frame with rows representing individuals and columns representing traits.}
+\item{traits}{A matrix or data frame with rows representing individuals
+and columns representing traits.}
 
-\item{overlap_dat}{Optional: an object containing the output of \code{\link{Ostats_multivariate}}.
+\item{overlap_dat}{Optional: an object containing the output of
+\code{\link{Ostats_multivariate}}.
 If provided, overlap statistics will be displayed in the plot panels.}
 
 \item{use_plots}{a vector of sites to plot. If NULL, the function will plot all the sites.}
 
-\item{colorvalues}{Vector of color values for the density polygons. Defaults to a viridis palette if none provided.}
+\item{colorvalues}{Vector of color values for the density polygons.
+Defaults to a viridis palette if none provided.}
 
-\item{plot_points}{whether to plot individual data points in addition to the hypervolume slices. Default is TRUE.}
+\item{plot_points}{whether to plot individual data points in addition to
+the hypervolume slices. Default is TRUE.}
 
-\item{axis_buffer_factor}{multiplicative expansion factor by which to expand the x and y axes in all directions
-before calculating the hypervolume contours for plotting.
+\item{axis_buffer_factor}{multiplicative expansion factor by which to expand the x and y axes in all directions,
+relative to the range of the axis, before calculating the hypervolume contours for plotting.
 If this is not set to a sufficiently large value, the contour lines of the hypervolumes will be cut off.
-Default value is 0.25 (25% expansion of the axis limits in all directions).}
+Default value is 0.25 (25\% expansion of the axis limits in all directions).}
 
 \item{panel_height}{height of the individual plot panels, in units given by \code{units}. Default is 3 cm.}
 
@@ -47,11 +51,11 @@ Default value is 0.25 (25% expansion of the axis limits in all directions).}
 \item{units}{units for panel height and width. Default is centimeters.}
 
 \item{hypervolume_args}{additional arguments to pass to \code{\link[hypervolume]{hypervolume}},
-such as \code{method}. If none are provided, default values
-are used.
-
-MORE DOCUMENTATION GOES HERE}
+such as \code{method}. If none are provided, default values are used.}
 }
 \description{
-Placeholder.
+Placeholder. MORE DESCRIPTION GOES HERE.
+}
+\details{
+MORE DOCUMENTATION GOES HERE
 }

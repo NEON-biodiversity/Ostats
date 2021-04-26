@@ -17,6 +17,7 @@ Ostats(
   shuffle_weights = FALSE,
   swap_means = FALSE,
   random_seed = NULL,
+  unique_values = NULL,
   circular_args = list(),
   density_args = list()
 )

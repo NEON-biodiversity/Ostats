@@ -12,17 +12,19 @@ community_overlap(
   output = "median",
   weight_type = "hmean",
   randomize_weights = FALSE,
+  unique_values = NULL,
   circular_args = list(),
   density_args = list()
 )
 }
 \arguments{
-\item{traits}{a vector of trait measurement.}
+\item{traits}{a vector of trait measurements in the univariate case, or a
+matrix in the multivariate case where each column is a trait.}
 
 \item{sp}{a vector with length equal to length(traits) that indicates the
 taxon of each individual.}
 
-\item{data_type}{data type can be "linear", "circular",or "circular_discrete".
+\item{data_type}{data type can be "linear", "circular", or "circular_discrete".
 Default to "linear".}
 
 \item{normal}{if TRUE, the area under all density functions is normalized to 1,
@@ -35,6 +37,9 @@ observations in that group.}
 
 \item{randomize_weights}{If TRUE, randomize weights given to pairwise overlaps
 within a community. This can be used to generate null models.}
+
+\item{unique_values}{Vector of all possible discrete values that \code{traits}
+can take. Only used if \code{data_type} is "circular_discrete".}
 
 \item{circular_args}{list of additional arguments to be passed to
 \code{\link[circular]{circular}}. Only used if \code{data_type} is "circular".}

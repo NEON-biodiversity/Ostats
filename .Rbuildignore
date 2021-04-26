@@ -4,3 +4,6 @@ R/old_functions.R
 R/ignore/*
 /internal_docs
 ^data-raw$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
