@@ -82,37 +82,3 @@ test_that (
   }
 )
 
-# Test 6: regional pool example from vignette line 217
-# Create year column for subsetting
-reg_pool$year <- format(as.Date(reg_pool$endDate), '%Y')
-
-# Subset 2018 NEON small mammal data for 'HARV' and 'BART'
-HARV2018 <- reg_pool[reg_pool$siteID %in% c('HARV') & reg_pool$year %in% 2018, ]
-
-# Subset 2013-2018 NEON small mammal data for 'HARV' and 'BART' sites, which will serve as the regional pool data in space and time for comparison with 'HARV' and 'BART' 2018 data.
-regHARV <- reg_pool[reg_pool$siteID %in% 'HARV', ]
-regBART <- reg_pool[reg_pool$siteID %in% 'BART', ]
-
-# Overlap statistics against the overall data (HARV and BART, sites from the same domain, across all available years)
-
-reg_pool_traits <- list (as.matrix(regHARV[, 'log_weight', drop = FALSE]),
-                         as.matrix(regBART[, 'log_weight', drop = FALSE]))
-reg_pool_sp <- list(factor(regHARV$taxonID), factor(regBART$taxonID))
-names(reg_pool_traits) <- c("HARV", "BART")
-names(reg_pool_sp) <- c("HARV", "BART")
-
-result6 <- Ostats_regional(traits = as.matrix(HARV2018[, 'log_weight', drop = FALSE]),
-                           plots = factor(HARV2018$siteID),
-                           sp = factor(HARV2018$taxonID),
-                           reg_pool_traits = reg_pool_traits,
-                           reg_pool_sp = reg_pool_sp,
-                           run_null_model = FALSE)$overlaps_reg
-
-expected6 <- 0.914
-
-test_that (
-  "Ostats_regional example in vignette works correctly",
-  {
-    expect_equivalent(result6, expected6, tolerance = 0.001)
-  }
-)
