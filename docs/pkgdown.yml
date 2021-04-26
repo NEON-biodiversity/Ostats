@@ -1,0 +1,8 @@
+pandoc: 2.7.2
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  01-Ostats-introduction: 01-Ostats-introduction.html
+  02-Ostats-multivariate: 02-Ostats-multivariate.html
+last_built: 2021-04-26T14:14Z
+
