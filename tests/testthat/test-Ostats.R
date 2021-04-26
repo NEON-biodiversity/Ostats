@@ -70,6 +70,7 @@ result5 <- Ostats(traits = as.matrix(ant_data[, 'time', drop = FALSE]),
                   sp = factor(ant_data$species),
                   plots = factor(ant_data$chamber),
                   data_type = "circular_discrete",
+                  unique_values = 0:23,
                   run_null_model = FALSE)$overlaps_norm
 
 expected5 <- matrix(c(0.6834, 0.6364), nrow = 2)

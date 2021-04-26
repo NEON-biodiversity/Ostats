@@ -4,10 +4,11 @@
 #' estimates of trait distributions of all species within a community, which can
 #' be weighted by species abundances.
 #'
-#' @param traits a vector of trait measurement.
+#' @param traits a vector of trait measurements in the univariate case, or a
+#'   matrix in the multivariate case where each column is a trait.
 #' @param sp a vector with length equal to length(traits) that indicates the
 #' taxon of each individual.
-#' @param data_type data type can be "linear", "circular",or "circular_discrete".
+#' @param data_type data type can be "linear", "circular", or "circular_discrete".
 #' Default to "linear".
 #' @param normal if TRUE, the area under all density functions is normalized to 1,
 #' if FALSE, the area under all density functions is proportional to the number of
@@ -16,6 +17,8 @@
 #' @param weight_type specifies weights to be used to calculate the median or mean.
 #' @param randomize_weights If TRUE, randomize weights given to pairwise overlaps
 #'   within a community. This can be used to generate null models.
+#' @param unique_values Vector of all possible discrete values that \code{traits}
+#'   can take. Only used if \code{data_type} is "circular_discrete".
 #' @param circular_args list of additional arguments to be passed to
 #'   \code{\link[circular]{circular}}. Only used if \code{data_type} is "circular".
 #' @param density_args list of additional arguments to be passed to
@@ -54,7 +57,7 @@
 #'    sp = factor(dat$taxonID))
 #'
 #' @export
-community_overlap <- function(traits, sp, data_type = "linear", normal = TRUE, output = "median", weight_type= "hmean", randomize_weights = FALSE, circular_args = list(), density_args = list()) {
+community_overlap <- function(traits, sp, data_type = "linear", normal = TRUE, output = "median", weight_type= "hmean", randomize_weights = FALSE, unique_values = NULL, circular_args = list(), density_args = list()) {
 
   # Return error if circular is specified with multivariate data.
   if (data_type %in% c('circular', 'circular_discrete') & 'matrix' %in% class(traits)) {
@@ -82,7 +85,7 @@ community_overlap <- function(traits, sp, data_type = "linear", normal = TRUE, o
   grid_limits <- grid_limits + extend_grid
 
   # Create a list of univariate density functions (in univariate case) or hypervolumes (in multivariate case)
-  density_list <- lapply(traitlist, function(x) trait_density(x, grid_limits, normal, data_type, density_args, circular_args))
+  density_list <- lapply(traitlist, function(x) trait_density(x, grid_limits, normal, data_type, unique_values, density_args, circular_args))
 
   overlaps <- NULL
   abund_pairs <- NULL

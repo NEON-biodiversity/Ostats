@@ -150,7 +150,7 @@ To illustrate the calculation of overlap statistics applied to discrete, circula
 head(ant_data)
 ```
 
-The arguments are the same as in the linear data calculation. In the example below with `ant_data`, the input data are a record of ants in two chambers and their hourof occurrence. For ant_data that contains circular discrete time, we specify `“circular_discrete”` for the `data_type` argument. However, for continuous circular data, `data_type = "circular"` is used. Finally, `circular_args` can be used to pass additional arguments to the underlying function `circular::circular`.
+The arguments are the same as in the linear data calculation. In the example below with `ant_data`, the input data are a record of ants in two chambers and their hourof occurrence. For ant_data that contains circular discrete time, we specify `“circular_discrete”` for the `data_type` argument. However, for continuous circular data, `data_type = "circular"` is used. We specify the argument `unique_values` to tabulate the density at all possible discrete values that the time of occurrence can take. In this case there are 24 possible values, `0:23`. Finally, `circular_args` can be used to pass additional arguments to the underlying function `circular::circular`.
 
 ```{r echo = T, results='hide'}
 # Calculate overlap statistics for hourly data using the ant_data dataset
@@ -158,6 +158,7 @@ circular_example <- Ostats(traits = as.matrix(ant_data[, 'time', drop = FALSE]),
                     sp = factor(ant_data$species),
                     plots = factor(ant_data$chamber),
                     data_type = "circular_discrete",
+                    unique_values = 0:23,
                     random_seed = 519)
 ```
 

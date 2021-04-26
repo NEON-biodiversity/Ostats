@@ -1,6 +1,6 @@
 #' Univariate density functions (linear and circular) or multivariate hypervolumes
 #' @noRd
-trait_density <- function(x, grid_limits, normal, data_type, density_args, circular_args) {
+trait_density <- function(x, grid_limits, normal, data_type, unique_values, density_args, circular_args) {
   if (is.vector(x)) {
     # Univariate case
     if (data_type %in% 'linear') {
@@ -67,7 +67,7 @@ trait_density <- function(x, grid_limits, normal, data_type, density_args, circu
     }
 
     if (data_type %in% 'circular_discrete') {
-      x_weights <- calc_weight(x, normal)
+      x_weights <- calc_weight(x, normal, unique_values)
 
       d <- data.frame(x = x_weights[,'points'], y = x_weights[,'weights'])
 
@@ -104,8 +104,8 @@ trait_density <- function(x, grid_limits, normal, data_type, density_args, circu
 
 #' Function to calculate hourly weights
 #' @noRd
-calc_weight <- function(x, normal) {
-  tab <- table(factor(x,  levels=as.character(0:23)),
+calc_weight <- function(x, normal, x_values) {
+  tab <- table(factor(x,  levels=as.character(x_values)),
                useNA="ifany")
 
   dimnames(tab) <- NULL
@@ -114,6 +114,6 @@ calc_weight <- function(x, normal) {
   } else {
     weights <- tab
   }
-  mat <- cbind( weights=weights, points=0:23 )
-  mat
+  mat <- cbind(weights = weights, points = x_values)
+  return(mat)
 }
