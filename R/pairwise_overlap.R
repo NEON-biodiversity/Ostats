@@ -8,39 +8,54 @@
 #' FIXME new documentation could be added here, if we want to still export this function.
 #'
 #' @export
-pairwise_overlap <- function(a, b, density_args = list()) {
+pairwise_overlap <- function(a, b, density_args = list(), hypervolume_set_args = list()) {
 
   # Check structure of inputs a and b.
   # If they are unidimensional use density(), if >1 dimension use hypervolume()
   # If the dimensions don't match (number of columns in a != number of columns in b), return error.
   if (!inherits(a, "Hypervolume")) {
     # Univariate case
-    # calculate intersection densities
+    # calculate intersection density
     w <- pmin(a$y, b$y)
 
     # integrate areas under curves
     total <- sfsmisc::integrate.xy(a$x, a$y) + sfsmisc::integrate.xy(b$x, b$y)
     intersection <- sfsmisc::integrate.xy(a$x, w)
 
-    # compute overlap coefficient
+    # compute overlap coefficient (Sorensen)
     overlap_average <- 2 * intersection / total
 
     return(overlap_average)
 
   } else {
+    # Multivariate case
 
     # Set to verbose = FALSE if that argument is not provided.
     if (!'verbose' %in% names(density_args)) {
       density_args[['verbose']] <- FALSE
     }
 
+    # If num.points.max and distance.factor are not provided to pass to hypervolume_set, use default.
+    if (!'num.points.max' %in% names(hypervolume_set_args)) {
+      hypervolume_set_args[['num.points.max']] <- NULL
+    }
+
+    if (!'distance.factor' %in% names(hypervolume_set_args)) {
+      hypervolume_set_args[['distance.factor']] <- 1
+    }
+
     # Suppress all progress messages from hypervolume functions, including those from underlying C functions.
     invisible(utils::capture.output(suppressWarnings(suppressMessages({
 
       # Calculate hypervolume set operations
-      # This uses default arguments except for verbose.
-      # Later we may implement the ability to modify these arguments.
-      hv_set_ab <- hypervolume::hypervolume_set(a, b, num.points.max = NULL, verbose = density_args[['verbose']], check.memory = FALSE, distance.factor = 1)
+      hv_set_ab <- do.call(hypervolume::hypervolume_set,
+                           c(list(hv1 = a,
+                                  hv2 = b,
+                                  verbose = density_args[['verbose']],
+                                  check.memory = FALSE
+                           ),
+                           hypervolume_set_args)
+      )
 
       # Calculate hypervolume overlap statistic
       hv_overlap_ab <- hypervolume::hypervolume_overlap_statistics(hv_set_ab)

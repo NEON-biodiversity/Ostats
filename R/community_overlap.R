@@ -22,7 +22,10 @@
 #' @param circular_args list of additional arguments to be passed to
 #'   \code{\link[circular]{circular}}. Only used if \code{data_type} is "circular".
 #' @param density_args list of additional arguments to be passed to
-#'   \code{\link[stats]{density}}.
+#'   \code{\link[stats]{density}} if univariate, or
+#'   \code{\link[hypervolume]{hypervolume}} if multivariate.
+#' @param hypervolume_set_args list of additional arguments to be passed to
+#'   \code{\link[hypervolume]{hypervolume_set}}. Used only in multivariate case.
 #'
 #' @details The function evaluates weighted mean or median of overlaps of density
 #' estimates of all species in a community taking complete cases with species abundances
@@ -57,7 +60,7 @@
 #'    sp = factor(dat$taxonID))
 #'
 #' @export
-community_overlap <- function(traits, sp, data_type = "linear", normal = TRUE, output = "median", weight_type= "hmean", randomize_weights = FALSE, unique_values = NULL, circular_args = list(), density_args = list()) {
+community_overlap <- function(traits, sp, data_type = "linear", normal = TRUE, output = "median", weight_type= "hmean", randomize_weights = FALSE, unique_values = NULL, circular_args = list(), density_args = list(), hypervolume_set_args = list()) {
 
   # Return error if circular is specified with multivariate data.
   if (data_type %in% c('circular', 'circular_discrete') & 'matrix' %in% class(traits)) {
@@ -93,7 +96,7 @@ community_overlap <- function(traits, sp, data_type = "linear", normal = TRUE, o
   for (sp_a in 1:(nspp-1)) {
     for (sp_b in (sp_a+1):nspp) {
 
-      overlaps <- c(overlaps, pairwise_overlap(density_list[[sp_a]], density_list[[sp_b]], density_args))
+      overlaps <- c(overlaps, pairwise_overlap(density_list[[sp_a]], density_list[[sp_b]], density_args, hypervolume_set_args))
       if (weight_type == "hmean")
         abund_pairs <- c(abund_pairs, 2/(1/abunds[sp_a] + 1/abunds[sp_b]))
       if (weight_type == "mean")
