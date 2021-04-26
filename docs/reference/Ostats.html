@@ -86,22 +86,10 @@ O-statistics against a local null model." />
   </a>
 </li>
 <li>
-  <a href="../articles/Ostats.html">Get started</a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/multivariate-Ostats.html">Multivariate O-statistics</a>
-    </li>
-  </ul>
+<li>
+  <a href="../articles/index.html">Articles</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -209,6 +197,11 @@ generating null models.</p></td>
       <td><p>User may supply a random seed to enable reproducibility
 of null model output. A warning is issued, and a random seed is generated
 based on the local time, if the user does not supply a seed.</p></td>
+    </tr>
+    <tr>
+      <th>unique_values</th>
+      <td><p>Vector of all possible discrete values that <code>traits</code>
+can take. Only used if <code>data_type</code> is "circular_discrete".</p></td>
     </tr>
     <tr>
       <th>circular_args</th>

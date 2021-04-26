@@ -14,7 +14,8 @@ community_overlap(
   randomize_weights = FALSE,
   unique_values = NULL,
   circular_args = list(),
-  density_args = list()
+  density_args = list(),
+  hypervolume_set_args = list()
 )
 }
 \arguments{
@@ -45,7 +46,11 @@ can take. Only used if \code{data_type} is "circular_discrete".}
 \code{\link[circular]{circular}}. Only used if \code{data_type} is "circular".}
 
 \item{density_args}{list of additional arguments to be passed to
-\code{\link[stats]{density}}.}
+\code{\link[stats]{density}} if univariate, or
+\code{\link[hypervolume]{hypervolume}} if multivariate.}
+
+\item{hypervolume_set_args}{list of additional arguments to be passed to
+\code{\link[hypervolume]{hypervolume_set}}. Used only in multivariate case.}
 }
 \value{
 The function returns overall species overlap for a community. At default, it returns the

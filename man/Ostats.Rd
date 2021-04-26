@@ -59,6 +59,9 @@ generating null models.}
 of null model output. A warning is issued, and a random seed is generated
 based on the local time, if the user does not supply a seed.}
 
+\item{unique_values}{Vector of all possible discrete values that \code{traits}
+can take. Only used if \code{data_type} is "circular_discrete".}
+
 \item{circular_args}{optional list of additional arguments to pass to
 \code{\link[circular]{circular}}. Only used if the data type is "circular".
 Note that continuous circular data must be provided in radian units.}

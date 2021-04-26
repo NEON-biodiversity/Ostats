@@ -7,7 +7,7 @@
 #'
 #' FIXME new documentation could be added here, if we want to still export this function.
 #'
-#' @export
+#' @noRd
 pairwise_overlap <- function(a, b, density_args = list(), hypervolume_set_args = list()) {
 
   # Check structure of inputs a and b.

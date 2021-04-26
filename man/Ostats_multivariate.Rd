@@ -16,7 +16,8 @@ Ostats_multivariate(
   shuffle_weights = FALSE,
   swap_means = FALSE,
   random_seed = NULL,
-  hypervolume_args = list()
+  hypervolume_args = list(),
+  hypervolume_set_args = list()
 )
 }
 \arguments{
@@ -54,8 +55,10 @@ of null model output. A warning is issued, and a random seed is generated
 based on the local time, if the user does not supply a seed.}
 
 \item{hypervolume_args}{additional arguments to pass to \code{\link[hypervolume]{hypervolume}},
-such as \code{method} If none are provided, default values
-are used.}
+such as \code{method}. If none are provided, default values are used.}
+
+\item{hypervolume_set_args}{additional arguments to pass to \code{\link[hypervolume]{hypervolume_set}},
+such as \code{num.points.max}. If none are provided, default values are used.}
 }
 \value{
 The function returns a list containing 4 objects:

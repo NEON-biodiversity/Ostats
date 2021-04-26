@@ -78,7 +78,7 @@ Ostats_multivariate_plot <- function(plots,
     trait_names <- dimnames(traits)[[2]]
   }
 
-  trait_combs <- combn(trait_names, 2) # All combinations of traits
+  trait_combs <- utils::combn(trait_names, 2) # All combinations of traits
 
   # Create triangular layout
   layout_mat <- matrix(as.numeric(NA), ncol(traits) - 1, ncol(traits) - 1)
@@ -92,7 +92,7 @@ Ostats_multivariate_plot <- function(plots,
   }
 
   sp_names <- rev(sort(unique(sp)))
-  color_scale <- ggplot2::scale_color_manual(values = setNames(colorvalues, sp_names))
+  color_scale <- ggplot2::scale_color_manual(values = stats::setNames(colorvalues, sp_names))
 
   plot_theme <- ggplot2::theme_bw() +
     ggplot2::theme(legend.position = 'none')
@@ -225,7 +225,7 @@ get_contours <- function(hv, trait_combs, axis_buffer_factor) {
     range_y <- range(hv@RandomPoints[, trait_combs[2, i]])
     range_y_buffered <- range_y + c(-1, 1) * axis_buffer_factor * diff(range_y)
     kde <- MASS::kde2d(hv@RandomPoints[, trait_combs[1, i]], hv@RandomPoints[, trait_combs[2, i]], n = 50, h = radius_critical, lims = c(range_x_buffered, range_y_buffered))
-    contour_lines <- contourLines(kde, levels = 0.01)
+    contour_lines <- grDevices::contourLines(kde, levels = 0.01)
     contour_line_dfs <- list()
     for (j in 1:length(contour_lines)) {
       contour_line_dfs[[j]] <- with(contour_lines[[j]], data.frame(polygon_id = j, x = x, y = y))
