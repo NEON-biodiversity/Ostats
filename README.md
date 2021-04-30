@@ -18,7 +18,7 @@ The Ostats package calculates overlap statistic to measure the degree of communi
 Type the following into your R prompt.
 
 ```
-devtools::install_github('NEON-biodiversity/Ostats')
+remotes::install_github('NEON-biodiversity/Ostats')
 ```
 
 ## References
