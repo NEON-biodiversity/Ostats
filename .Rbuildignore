@@ -2,7 +2,7 @@
 ^\.Rproj\.user$
 R/old_functions.R
 R/ignore/*
-/internal_docs
+^internal_docs$
 ^data-raw$
 ^_pkgdown\.yml$
 ^docs$
