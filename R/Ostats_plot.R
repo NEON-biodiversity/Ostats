@@ -145,12 +145,11 @@ Ostats_plot<-function(plots,
 
     if (means) {
       ggplot_means <- ggplot2::ggplot(taxon_mean) +
-        ggplot2::geom_vline(ggplot2::aes_string(xintercept = dimnames(traits)[[2]][i], colour = 'sp', group='sp'), alpha = alpha, size=0.5, key_glyph = 'point') +
+        ggplot2::geom_vline(ggplot2::aes_string(xintercept = dimnames(traits)[[2]][i], colour = 'sp', group='sp'), alpha = alpha, size=0.5, key_glyph = 'rect') +
         ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
         ggplot2::scale_colour_manual(values = colorvalues) +
         ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
         ggplot2::scale_y_continuous(expand = c(0,0)) +
-        ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(shape = 15, size = 6))) +
         ggplot2::theme(legend.position = if (!legend) 'none' else 'right')
 
       ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ggplot_means, ncol = 2, widths = if (!legend) c(1, 1) else c(1, 1.3))
