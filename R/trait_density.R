@@ -1,4 +1,29 @@
 #' Univariate density functions (linear and circular) or multivariate hypervolumes
+#'
+#' This function accepts a numeric vector in the univariate case or a numeric
+#' matrix in the multivariate case and calculates the kernel density function
+#' or the hypervolume, respectively. It can also accept circular data in the
+#' univariate case, whether continuous or discrete.
+#'
+#' @param x Numeric vector or matrix.
+#' @param grid_limits 2 x n numeric matrix. Each column contains the minimum and
+#'   maximum value over which each trait's density function will be estimated.
+#' @param normal Passed from \code{\link{Ostats}}.
+#' @param data_type Passed from \code{\link{Ostats}}.
+#' @param unique_values Vector of unique possible values for \code{x}.
+#'   Only used for discrete data types.
+#' @param density_args Passed from \code{\link{Ostats}}.
+#' @param circular_args Passed from \code{\link{Ostats}}.
+#'
+#' @details This is an internal function not intended to be called directly.
+#'
+#' @return In the univariate case, returns a data frame with columns \code{x}
+#' and \code{y}, where \code{x} is an evenly spaced sequence of values between
+#' the minimum and maximum limit, and \code{y} is the kernel density function
+#' evaluated at \code{x}.
+#'
+#' In the multivariate case, returns an object of class \code{"hypervolume"}.
+#'
 #' @noRd
 trait_density <- function(x, grid_limits, normal, data_type, unique_values, density_args, circular_args) {
   if (is.vector(x)) {

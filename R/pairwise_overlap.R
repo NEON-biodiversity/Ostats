@@ -2,10 +2,26 @@
 #'
 #' This function generates kernel density estimates for two datasets on a common
 #' grid to calculate the area of overlap between the two estimates.
+#' For the univariate case,
 #' See \url{http://stats.stackexchange.com/questions/97596/how-to-calculate-overlap-between-empirical-probability-densities},
 #' this function is derived from code posted in the answer by user mmk.
 #'
-#' FIXME new documentation could be added here, if we want to still export this function.
+#' @param a a numeric vector or matrix. Overlap is calculated between a and b.
+#'   If a and b are vectors, \code{\link[stats]{density}} is used to calculate unidimensional overlap.
+#'   If a and b are matrices, with each column representing a trait or dimension,
+#'   \code{\link[hypervolume]{hypervolume}} is used to calculate multidimensional overlap.
+#' @param b a numeric vector or matrix. The number of columns of a and b must be equal.
+#' @param density_args Additional arguments to pass to \code{\link[stats]{density}}
+#'   in the univariate case, or \code{\link[hypervolume]{hypervolume}} in
+#'   the multivariate case.
+#'   See \code{\link{Ostats}} and \code{\link{Ostats_multivariate}}.
+#' @param hypervolume_set_args Additional arguments to pass to
+#'   \code{\link[hypervolume]{hypervolume_set}}. See
+#'   \code{\link{Ostats_multivariate}}.
+#'
+#' @details This is an internal function not intended to be called directly.
+#'
+#' @return A single numeric value that may range between 0 and 1.
 #'
 #' @noRd
 pairwise_overlap <- function(a, b, density_args = list(), hypervolume_set_args = list()) {
