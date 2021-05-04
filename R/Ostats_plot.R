@@ -5,21 +5,34 @@
 #'
 #'@param plots Site identity: a vector of names of each community.
 #'@param sp Taxon identity: a vector of species or taxa names.
-#'@param traits A vector of trait measurements for each individual, or a matrix or data frame with rows representing individuals and columns representing traits.
-#'@param overlap_dat Optional: an object containing the output of \code{\link{Ostats}}. If provided, overlap statistics will be displayed in the plot panels.
+#'@param traits A vector of trait measurements for each individual, or a matrix
+#' or data frame with rows representing individuals and columns representing traits.
+#'@param overlap_dat Optional: an object containing the output of \code{\link{Ostats}}.
+#' If provided, overlap statistics will be displayed in the plot panels.
 #'@param use_plots a vector of sites to plot. If NULL, the function will plot all the sites.
 #'@param n_col Number of columns for layout of individual panels. Default is 1.
-#'@param colorvalues Vector of color values for the density polygons. Defaults to a viridis palette if none provided.
+#'@param colorvalues Vector of color values for the density polygons.
+#' Defaults to a viridis palette if none provided.
 #'@param alpha defines the transparency level for the density polygons. Default is 0.5.
-#'@param adjust the bandwidth adjustment of the density polygons. Default is 2. See \code{\link[stats]{density}}.
-#'@param limits_x Vector of length 2, with multiplicative factor to apply to the minimum and maximum values of each trait to expand the limits of the x axis. Default is 0.5 times the minimum and 1.5 times the maximum value of each trait.
-#'@param scale If you want the scale of x, y or both x and y axis to be independent, set the argument to "free_x", "free_y" or "free" respectively. Default = "fixed" which uses the same scale across all sites. See \code{\link[ggplot2]{facet_grid}}.
+#'@param adjust the bandwidth adjustment of the density polygons. Default is 2.
+#' See \code{\link[stats]{density}}.
+#'@param limits_x Vector of length 2, with multiplicative factor to apply to the minimum
+#' and maximum values of each trait to expand the limits of the x axis.
+#' Default is 0.5 times the minimum and 1.5 times the maximum value of each trait.
+#'@param legend Whether to include a legend. Defaults to \code{FALSE}.
+#'@param scale If you want the scale of x, y or both x and y axis to be independent,
+#' set the argument to "free_x", "free_y" or "free" respectively.
+#' Default = "fixed" which uses the same scale across all sites.
+#' See \code{\link[ggplot2]{facet_grid}}.
 #'@param name_x x-axis label. Default is 'trait value'
 #'@param name_y y-axis label. Default is 'probability density'
-#'@param means if TRUE, trait means for each species are plotted in an additional plot column next to the traits distribution plots for each site. Default is FALSE.
+#'@param means if TRUE, trait means for each species are plotted in an additional plot
+#' column next to the traits distribution plots for each site. Default is
+#'
 #'@return Density plots of species trait distribution plotted on the same graph
 #'  for each community to show how they overlap each other.
-#'  The overlap value obtained as output from \code{\link{Ostats}} is labelled on each community graph.
+#'  The overlap value obtained as output from \code{\link{Ostats}}
+#'  is labelled on each community graph.
 #'  If more than one trait is provided, a list of plots will be returned.
 #'
 #'@seealso \code{\link{Ostats}} to Calculate O-statistics (community-level
@@ -53,6 +66,7 @@ Ostats_plot<-function(plots,
                       alpha = 0.5,
                       adjust = 2,
                       limits_x = c(0.5, 1.5),
+                      legend = FALSE,
                       name_x = 'trait value',
                       name_y = 'probability density',
                       means = FALSE) {
@@ -104,7 +118,6 @@ Ostats_plot<-function(plots,
                                          axis.title = ggplot2::element_text(size = 12),
                                          axis.text.y = ggplot2::element_blank(),
                                          axis.ticks.y = ggplot2::element_blank(),
-                                         legend.position = 'none',
                                          strip.background = ggplot2::element_blank()))
 
   for (i in 1:ncol(traits)) {
@@ -121,7 +134,8 @@ Ostats_plot<-function(plots,
       ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
       ggplot2::scale_fill_manual(values = colorvalues) +
       ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
-      ggplot2::scale_y_continuous(name = name_y, expand = c(0,0))
+      ggplot2::scale_y_continuous(name = name_y, expand = c(0,0)) +
+      ggplot2::theme(legend.position = if (!legend | means) 'none' else 'right')
 
     if (!is.null(overlap_dat)) {
       ggplot_dist <- ggplot_dist +
@@ -131,13 +145,17 @@ Ostats_plot<-function(plots,
 
     if (means) {
       ggplot_means <- ggplot2::ggplot(taxon_mean) +
-        ggplot2::geom_vline(ggplot2::aes_string(xintercept = dimnames(traits)[[2]][i], colour = 'sp', group='sp'), alpha = alpha, size=0.5)+
+        ggplot2::geom_vline(ggplot2::aes_string(xintercept = dimnames(traits)[[2]][i], colour = 'sp', group='sp'), alpha = alpha, size=0.5, key_glyph = 'point') +
         ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
         ggplot2::scale_colour_manual(values = colorvalues) +
         ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
-        ggplot2::scale_y_continuous(expand = c(0,0))
+        ggplot2::scale_y_continuous(expand = c(0,0)) +
+        ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(shape = 15, size = 6))) +
+        ggplot2::theme(legend.position = if (!legend) 'none' else 'right')
 
-      ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ggplot_means, ncol=2)
+      ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ggplot_means, ncol = 2, widths = if (!legend) c(1, 1) else c(1, 1.3))
+    } else {
+      ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ncol = 1)
     }
 
     # Assign class attribute Ostats_plot_object so that the plot has a default print method.

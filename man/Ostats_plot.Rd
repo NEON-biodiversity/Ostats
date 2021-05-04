@@ -16,6 +16,7 @@ Ostats_plot(
   alpha = 0.5,
   adjust = 2,
   limits_x = c(0.5, 1.5),
+  legend = FALSE,
   name_x = "trait value",
   name_y = "probability density",
   means = FALSE
@@ -26,34 +27,47 @@ Ostats_plot(
 
 \item{sp}{Taxon identity: a vector of species or taxa names.}
 
-\item{traits}{A vector of trait measurements for each individual, or a matrix or data frame with rows representing individuals and columns representing traits.}
+\item{traits}{A vector of trait measurements for each individual, or a matrix
+or data frame with rows representing individuals and columns representing traits.}
 
-\item{overlap_dat}{Optional: an object containing the output of \code{\link{Ostats}}. If provided, overlap statistics will be displayed in the plot panels.}
+\item{overlap_dat}{Optional: an object containing the output of \code{\link{Ostats}}.
+If provided, overlap statistics will be displayed in the plot panels.}
 
 \item{use_plots}{a vector of sites to plot. If NULL, the function will plot all the sites.}
 
 \item{n_col}{Number of columns for layout of individual panels. Default is 1.}
 
-\item{scale}{If you want the scale of x, y or both x and y axis to be independent, set the argument to "free_x", "free_y" or "free" respectively. Default = "fixed" which uses the same scale across all sites. See \code{\link[ggplot2]{facet_grid}}.}
+\item{scale}{If you want the scale of x, y or both x and y axis to be independent,
+set the argument to "free_x", "free_y" or "free" respectively.
+Default = "fixed" which uses the same scale across all sites.
+See \code{\link[ggplot2]{facet_grid}}.}
 
-\item{colorvalues}{Vector of color values for the density polygons. Defaults to a viridis palette if none provided.}
+\item{colorvalues}{Vector of color values for the density polygons.
+Defaults to a viridis palette if none provided.}
 
 \item{alpha}{defines the transparency level for the density polygons. Default is 0.5.}
 
-\item{adjust}{the bandwidth adjustment of the density polygons. Default is 2. See \code{\link[stats]{density}}.}
+\item{adjust}{the bandwidth adjustment of the density polygons. Default is 2.
+See \code{\link[stats]{density}}.}
 
-\item{limits_x}{Vector of length 2, with multiplicative factor to apply to the minimum and maximum values of each trait to expand the limits of the x axis. Default is 0.5 times the minimum and 1.5 times the maximum value of each trait.}
+\item{limits_x}{Vector of length 2, with multiplicative factor to apply to the minimum
+and maximum values of each trait to expand the limits of the x axis.
+Default is 0.5 times the minimum and 1.5 times the maximum value of each trait.}
+
+\item{legend}{Whether to include a legend. Defaults to \code{FALSE}.}
 
 \item{name_x}{x-axis label. Default is 'trait value'}
 
 \item{name_y}{y-axis label. Default is 'probability density'}
 
-\item{means}{if TRUE, trait means for each species are plotted in an additional plot column next to the traits distribution plots for each site. Default is FALSE.}
+\item{means}{if TRUE, trait means for each species are plotted in an additional plot
+column next to the traits distribution plots for each site. Default is}
 }
 \value{
 Density plots of species trait distribution plotted on the same graph
  for each community to show how they overlap each other.
- The overlap value obtained as output from \code{\link{Ostats}} is labelled on each community graph.
+ The overlap value obtained as output from \code{\link{Ostats}}
+ is labelled on each community graph.
  If more than one trait is provided, a list of plots will be returned.
 }
 \description{
