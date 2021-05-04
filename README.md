@@ -1,6 +1,6 @@
 # Ostats: O-statistics, or pairwise community-level niche overlap statistics
 
-The Ostats package calculates overlap statistic to measure the degree of community-level trait overlap by fitting nonparametric kernel density functions to each species' trait distribution and calculating their areas of overlap (Mouillot et al. 2005, Geange et al. 2011, Read et al. 2018). For instance, the median pairwise overlap for a community is calculated by first determining the overlap of each species pair in trait space, and then taking the median overlap of each species pair in a community. The `Ostats()` function calculates separate univariate overlap statistics for each trait, while the `Ostats_multivariate()` function calculates a single multivariate overlap statistic for all traits. Grady et al. (2018) provide a teaching module that goes into detail about how to interpret the O-stats results presented in Read et al. (2018).
+The Ostats package calculates overlap statistic to measure the degree of community-level trait overlap by fitting nonparametric kernel density functions to each species' trait distribution and calculating their areas of overlap (Mouillot et al. 2005, Geange et al. 2011, Read et al. 2018). For instance, the median pairwise overlap for a community is calculated by first determining the overlap of each species pair in trait space, and then taking the median overlap of each species pair in a community. The `Ostats()` function calculates separate univariate overlap statistics for each trait, while the `Ostats_multivariate()` function calculates a single multivariate overlap statistic for all traits. O-statistics can be evaluated against null models to obtain standardized effect sizes. Grady et al. (2018) provide a teaching module that goes into detail about how to interpret the O-stats results presented in Read et al. (2018).
 
 
 ## Authors
@@ -20,6 +20,10 @@ Type the following into your R prompt.
 ```
 remotes::install_github('NEON-biodiversity/Ostats')
 ```
+
+## Getting started
+
+See [the Ostats introduction vignette](http:/neon-biodiversity.github.io/Ostats/articles/Ostats-introduction.html) for more information.  
 
 ## References
 
