@@ -90,7 +90,7 @@ The function returns a list containing four objects:
 This is the primary function in the Ostats package. It calculates O-statistics
 by finding the trait density overlap among all pairs of species in each
 community and taking the mean or median. Next it optionally evaluates the
-O-statistics against a local null model.
+O-statistics against a local null model. This is done separately for each trait.
 }
 \details{
 This function calculates overlap statistics and optionally evaluates them
@@ -117,7 +117,8 @@ This function calculates overlap statistics and optionally evaluates them
   null community. If \code{swap_means} is \code{TRUE}, instead of sampling individuals
   randomly, species means are sampled randomly among species, keeping the deviation
   of each individual from its species mean the same. After the null communities
-  are generated, O-stats are then calculated to be compared against.
+  are generated, O-stats are calculated for each null community to compare with
+  the observed O-stat.
 
   Effect size statistics are calculated by z-transforming the O-statistics
   using the mean and standard deviation of the null distribution.
@@ -150,7 +151,6 @@ Read, Q. D. et al. Among-species overlap in rodent body size
 
 \code{\link{Ostats_plot}} for plotting community overlap for
 each community.
-#'
 }
 \author{
 Quentin D. Read, John M. Grady, Arya Y. Yue, Isadora Fluck E., Ben Baiser,

@@ -1,9 +1,9 @@
-#' Calculate O-statistics (community-level pairwise niche overlap statistics)
+#' @title Calculate O-statistics (community-level pairwise niche overlap statistics)
 #'
-#' This is the primary function in the Ostats package. It calculates O-statistics
+#' @description This is the primary function in the Ostats package. It calculates O-statistics
 #' by finding the trait density overlap among all pairs of species in each
 #' community and taking the mean or median. Next it optionally evaluates the
-#' O-statistics against a local null model.
+#' O-statistics against a local null model. This is done separately for each trait.
 #'
 #' @param traits a numeric vector or matrix of trait measurements. The number of elements
 #'   in the vector or number of rows in the matrix is the number of individuals,
@@ -62,7 +62,8 @@
 #'   null community. If \code{swap_means} is \code{TRUE}, instead of sampling individuals
 #'   randomly, species means are sampled randomly among species, keeping the deviation
 #'   of each individual from its species mean the same. After the null communities
-#'   are generated, O-stats are then calculated to be compared against.
+#'   are generated, O-stats are calculated for each null community to compare with
+#'   the observed O-stat.
 #'
 #'   Effect size statistics are calculated by z-transforming the O-statistics
 #'   using the mean and standard deviation of the null distribution.
@@ -92,7 +93,7 @@
 #' @seealso \code{\link{Ostats_multivariate}} for multidimensional overlap.
 #' @seealso \code{\link{Ostats_plot}} for plotting community overlap for
 #' each community.
-#' #'
+#'
 #' @examples
 #' \dontrun{
 #' # overlap statistics for body weights of small mammals in NEON sites

@@ -1,7 +1,8 @@
-#'@title  Plotting Community Overlap
+#'@title  Plot community trait overlap
 #'
 #'@description This function plots the overlap of traits among
-#'  species for each community.
+#'  species for each community. If there are multiple traits,
+#'  each trait is plotted separately in one-dimensional space.
 #'
 #'@param plots Site identity: a vector of names of each community.
 #'@param sp Taxon identity: a vector of species or taxa names.
@@ -29,11 +30,17 @@
 #'@param means if TRUE, trait means for each species are plotted in an additional plot
 #' column next to the traits distribution plots for each site. Default is
 #'
-#'@return Density plots of species trait distribution plotted on the same graph
+#'@return Density plots of species trait distributions plotted together
 #'  for each community to show how they overlap each other.
 #'  The overlap value obtained as output from \code{\link{Ostats}}
-#'  is labelled on each community graph.
-#'  If more than one trait is provided, a list of plots will be returned.
+#'  is labelled on each community graph, if provided by the user.
+#'
+#'  The class of the returned object is \code{Ostats_plot_object}. Calling
+#'  \code{print} on this object will invoke a method to draw the plot using
+#'  \code{\link[grid]{grid.draw}}.
+#'
+#'  If more than one trait is provided, a list of objects of class
+#'  \code{Ostats_plot_object} will be returned.
 #'
 #'@seealso \code{\link{Ostats}} to Calculate O-statistics (community-level
 #'  pairwise niche overlap statistics)

@@ -53,9 +53,29 @@ Default value is 0.25 (25\% expansion of the axis limits in all directions).}
 \item{hypervolume_args}{additional arguments to pass to \code{\link[hypervolume]{hypervolume}},
 such as \code{method}. If none are provided, default values are used.}
 }
+\value{
+Two-dimensional projections of species trait hypervolumes for each pair of traits,
+ plotted together for each community to show how they overlap each other.
+ The overlap value obtained as output from \code{\link{Ostats_multivariate}}
+ is labelled on each community graph, if provided by the user.
+
+ The class of the returned object is \code{Ostats_plot_object}. Calling
+ \code{print} on this object will invoke a method to draw the plot using
+ \code{\link[grid]{grid.draw}}.
+
+ If more than one community is provided, a list of objects of class
+ \code{Ostats_plot_object} will be returned.
+}
 \description{
-Placeholder. MORE DESCRIPTION GOES HERE.
+This function plots the overlap of traits among
+ species for each community in multivariate space, showing
+ projections of trait hypervolumes into two-dimensional space for
+ all pairs of traits.
 }
 \details{
-MORE DOCUMENTATION GOES HERE
+Some of the code for generating contour lines is modified from
+  \code{\link{[hypervolume]{plot.HypervolumeList}}}.
+}
+\seealso{
+\code{\link{Ostats_multivariate}} for generating multivariate O-statistics
 }

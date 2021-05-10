@@ -2,7 +2,7 @@
 % Please edit documentation in R/Ostats_plot.R
 \name{Ostats_plot}
 \alias{Ostats_plot}
-\title{Plotting Community Overlap}
+\title{Plot community trait overlap}
 \usage{
 Ostats_plot(
   plots,
@@ -64,15 +64,22 @@ Default is 0.5 times the minimum and 1.5 times the maximum value of each trait.}
 column next to the traits distribution plots for each site. Default is}
 }
 \value{
-Density plots of species trait distribution plotted on the same graph
+Density plots of species trait distributions plotted together
  for each community to show how they overlap each other.
  The overlap value obtained as output from \code{\link{Ostats}}
- is labelled on each community graph.
- If more than one trait is provided, a list of plots will be returned.
+ is labelled on each community graph, if provided by the user.
+
+ The class of the returned object is \code{Ostats_plot_object}. Calling
+ \code{print} on this object will invoke a method to draw the plot using
+ \code{\link[grid]{grid.draw}}.
+
+ If more than one trait is provided, a list of objects of class
+ \code{Ostats_plot_object} will be returned.
 }
 \description{
 This function plots the overlap of traits among
- species for each community.
+ species for each community. If there are multiple traits,
+ each trait is plotted separately in one-dimensional space.
 }
 \examples{
 # set the arguments:
