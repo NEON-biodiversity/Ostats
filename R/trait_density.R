@@ -9,7 +9,8 @@
 #' @param grid_limits 2 x n numeric matrix. Each column contains the minimum and
 #'   maximum value over which each trait's density function will be estimated.
 #' @param normal Passed from \code{\link{Ostats}}.
-#' @param data_type Passed from \code{\link{Ostats}}.
+#' @param discrete Passed from \code{\link{Ostats}}.
+#' @param circular Passed from \code{\link{Ostats}}.
 #' @param unique_values Vector of unique possible values for \code{x}.
 #'   Only used for discrete data types.
 #' @param density_args Passed from \code{\link{Ostats}}.
@@ -25,10 +26,10 @@
 #' In the multivariate case, returns an object of class \code{"hypervolume"}.
 #'
 #' @noRd
-trait_density <- function(x, grid_limits, normal, data_type, unique_values, density_args, circular_args) {
+trait_density <- function(x, grid_limits, normal, discrete, circular, unique_values, density_args, circular_args) {
   if (is.vector(x)) {
     # Univariate case
-    if (data_type %in% 'linear') {
+    if (!circular & !discrete) {
       # clean input
       x <- as.numeric(stats::na.omit(x))
 
@@ -58,7 +59,7 @@ trait_density <- function(x, grid_limits, normal, data_type, unique_values, dens
 
     }
 
-    if (data_type %in% 'circular') {
+    if (circular & !discrete) {
       # clean input
       x <- as.numeric(stats::na.omit(x))
 
@@ -91,7 +92,7 @@ trait_density <- function(x, grid_limits, normal, data_type, unique_values, dens
 
     }
 
-    if (data_type %in% 'circular_discrete') {
+    if (discrete) {
       x_weights <- calc_weight(x, normal, unique_values)
 
       d <- data.frame(x = x_weights[,'points'], y = x_weights[,'weights'])
@@ -127,10 +128,10 @@ trait_density <- function(x, grid_limits, normal, data_type, unique_values, dens
   }
 }
 
-#' Function to calculate hourly weights
+#' Function to calculate weights for discrete data.
 #' @noRd
 calc_weight <- function(x, normal, x_values) {
-  tab <- table(factor(x,  levels=as.character(x_values)),
+  tab <- table(factor(x, levels=as.character(x_values)),
                useNA="ifany")
 
   dimnames(tab) <- NULL

@@ -85,7 +85,9 @@ In the below example, all arguments are set to their default values.
 
 To explore the drivers of variation in body size overlap, `Ostats()` can implement a null model to test whether individual species’ body size distributions are more evenly spaced along the trait axis than expected by chance. This approach evaluates the z‐score of each observed community against the distribution of a user defined number of null communities. 
 
-* The argument `data_type` has a default value of `"linear"`, as the data processed are on a linear scale (i.e., body masses of individual small mammals). The alternative input for this argument is `"circular"` for data that are periodic (e.g., measured in radians or degrees). 
+* The argument `discrete` has a default value of `FALSE` for continuous variables. If `TRUE`, the data are treated as discrete.
+
+* The argument `circular` defaults to `TRUE`, meaning the data are on a linear scale (i.e., body masses of individual small mammals). The alternative  is `TRUE` for data that are periodic (e.g., measured in radians or degrees). 
 
 * The argument `output` specifies whether the median or mean of all pairwise overlap values between distributions of species will be returned. The default value for output is `"median"`. The choice between median and mean for the output is up to the investigator's discretion, and it is a good idea to see how much this choice influences the results of the analysis. For examples of analyses using the median and mean, respectively, see Read et al. 2018 and Mouillot et al. 2015.  
 
@@ -105,7 +107,6 @@ Running the function may take several minutes, depending on the size of the data
  Ostats_example <- Ostats(traits = as.matrix(dat[,'log_weight', drop = FALSE]),
                     sp = factor(dat$taxonID),
                     plots = factor(dat$siteID),
-                    data_type = "linear",
                     random_seed = 517)
 ```
 
@@ -146,7 +147,7 @@ These effect size values are used to compare the observed overlap statistics wit
 ## Overlap statistics for circular data against a local null model
 
 `Ostats()` can also be used to calculate overlap statistics of circular data, such as angular data (e.g., direction and orientation) or time. Two different kinds of circular calculations are available: continuous and discrete.
-To specify a circular analysis, set the argument `data_type = "circular"` if the data are circular and continuous, or set `data_type = "circular_discrete"` if the data are circular and discrete (i.e., collected every hour).
+To specify circular trait data, set the argument `discrete = FALSE` and `circular = TRUE` if the data are circular and continuous, or set `discrete = TRUE` and `circular = TRUE` if the data are circular and discrete (i.e., collected every hour).
 
 ### EXAMPLE: How to find the degree of overlap in time occurences for ant species present in a chamber, and compare across chambers of different conditions?
 
@@ -156,14 +157,15 @@ To illustrate the calculation of overlap statistics applied to discrete, circula
 head(ant_data)
 ```
 
-The arguments are similar to the linear data calculation. In the example below with `ant_data`, the input data are a record of ants in two chambers and their hour of occurrence. Because the time variable is discrete, we specify `"circular_discrete"` for the `data_type` argument. However, for continuous circular data, `data_type = "circular"` is used. We specify the argument `unique_values` to tabulate the density at all possible discrete values that the time of occurrence can take. In this case there are 24 possible values, `0:23`. Finally, `circular_args` can be used to pass additional arguments to the underlying function `circular::circular()` used to convert `traits` to objects of class `circular`.
+The arguments are similar to the linear data calculation. In the example below with `ant_data`, the input data are a record of ants in two chambers and their hour of occurrence. Because the time variable is discrete, we specify `discrete = TRUE` and `circular = TRUE`. We specify the argument `unique_values` to tabulate the density at all possible discrete values that the time of occurrence can take. In this case there are 24 possible values, `0:23`. Finally, for continuous circular data (not shown here), `circular_args` can be used to pass additional arguments to the underlying function `circular::circular()` used to convert `traits` to objects of class `circular`.
 
 ```{r echo = T, results='hide'}
 # Calculate overlap statistics for hourly data using the ant_data dataset
 circular_example <- Ostats(traits = as.matrix(ant_data[, 'time', drop = FALSE]),
                     sp = factor(ant_data$species),
                     plots = factor(ant_data$chamber),
-                    data_type = "circular_discrete",
+                    discrete = TRUE,
+                    circular = TRUE,
                     unique_values = 0:23,
                     random_seed = 519)
 ```
