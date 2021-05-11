@@ -8,8 +8,12 @@
 #'   matrix in the multivariate case where each column is a trait.
 #' @param sp a vector with length equal to length(traits) that indicates the
 #' taxon of each individual.
-#' @param data_type data type can be "linear", "circular", or "circular_discrete".
-#' Default to "linear".
+#' @param discrete whether trait data may take continuous or discrete values. Defaults to
+#'   \code{FALSE} (all traits continuous). A single logical value or a logical
+#'   vector with length equal to the number of columns in traits.
+#' @param circular whether trait data are circular (e.g., hours or angles). Defaults to
+#'   \code{FALSE} (all traits non-circular). A single logical value or a logical
+#'   vector with length equal to the number of columns in traits.
 #' @param normal if TRUE, the area under all density functions is normalized to 1,
 #' if FALSE, the area under all density functions is proportional to the number of
 #' observations in that group.
@@ -18,9 +22,10 @@
 #' @param randomize_weights If TRUE, randomize weights given to pairwise overlaps
 #'   within a community. This can be used to generate null models.
 #' @param unique_values Vector of all possible discrete values that \code{traits}
-#'   can take. Only used if \code{data_type} is "circular_discrete".
-#' @param circular_args list of additional arguments to be passed to
-#'   \code{\link[circular]{circular}}. Only used if \code{data_type} is "circular".
+#'   can take. Only used if \code{discrete = TRUE} and \code{circular = TRUE}.
+#' @param circular_args optional list of additional arguments to pass to
+#'  \code{\link[circular]{circular}}. Only used if \code{circular = TRUE} and
+#'  \code{discrete = FALSE}.
 #' @param density_args list of additional arguments to be passed to
 #'   \code{\link[stats]{density}} if univariate, or
 #'   \code{\link[hypervolume]{hypervolume}} if multivariate.
@@ -57,11 +62,14 @@
 #'    sp = factor(dat$taxonID))
 #'
 #' @export
-community_overlap <- function(traits, sp, data_type = "linear", normal = TRUE, output = "median", weight_type= "hmean", randomize_weights = FALSE, unique_values = NULL, circular_args = list(), density_args = list(), hypervolume_set_args = list()) {
+community_overlap <- function(traits, sp, discrete = FALSE, circular = FALSE, normal = TRUE, output = "median", weight_type= "hmean", randomize_weights = FALSE, unique_values = NULL, circular_args = list(), density_args = list(), hypervolume_set_args = list()) {
 
-  # Return error if circular is specified with multivariate data.
-  if (data_type %in% c('circular', 'circular_discrete') & 'matrix' %in% class(traits)) {
+  # Return error if circular or discrete are specified with multivariate data.
+  if (circular & 'matrix' %in% class(traits)) {
     stop("circular data types are not supported with multivariate data.")
+  }
+  if (discrete & 'matrix' %in% class(traits)) {
+    stop("discrete data types are not supported with multivariate data.")
   }
 
   # Clean input, removing missing values and species with <2 values.
@@ -84,8 +92,13 @@ community_overlap <- function(traits, sp, data_type = "linear", normal = TRUE, o
   extend_grid <- c(-0.5, 0.5) %*% t(apply(grid_limits,2,diff))
   grid_limits <- grid_limits + extend_grid
 
+  # In the discrete case for non-circular data, find the common unique values across which to build the histogram.
+  if (discrete & !circular) {
+    unique_values <- sort(unique(unlist(dat[, -ncol(dat)])))
+  }
+
   # Create a list of univariate density functions (in univariate case) or hypervolumes (in multivariate case)
-  density_list <- lapply(traitlist, function(x) trait_density(x, grid_limits, normal, data_type, unique_values, density_args, circular_args))
+  density_list <- lapply(traitlist, function(x) trait_density(x, grid_limits, normal, discrete, circular, unique_values, density_args, circular_args))
 
   overlaps <- NULL
   abund_pairs <- NULL
@@ -93,7 +106,7 @@ community_overlap <- function(traits, sp, data_type = "linear", normal = TRUE, o
   for (sp_a in 1:(nspp-1)) {
     for (sp_b in (sp_a+1):nspp) {
 
-      overlaps <- c(overlaps, pairwise_overlap(density_list[[sp_a]], density_list[[sp_b]], density_args, hypervolume_set_args))
+      overlaps <- c(overlaps, pairwise_overlap(density_list[[sp_a]], density_list[[sp_b]], discrete, density_args, hypervolume_set_args))
       if (weight_type == "hmean")
         abund_pairs <- c(abund_pairs, 2/(1/abunds[sp_a] + 1/abunds[sp_b]))
       if (weight_type == "mean")

@@ -8,7 +8,8 @@ Ostats(
   traits,
   plots,
   sp,
-  data_type = "linear",
+  discrete = FALSE,
+  circular = FALSE,
   output = "median",
   weight_type = "hmean",
   run_null_model = TRUE,
@@ -33,12 +34,19 @@ community each individual belongs to.}
 \item{sp}{a factor with length equal to \code{nrow(traits)} that indicates the taxon
 of each individual.}
 
-\item{data_type}{data type can be "linear", "circular", or "circular_discrete".
-Defaults to "linear". See details below.}
+\item{discrete}{whether trait data may take continuous or discrete values. Defaults to
+\code{FALSE} (all traits continuous). A single logical value or a logical
+vector with length equal to the number of columns in traits. See details below.}
 
-\item{output}{specifies whether median or mean is calculated.}
+\item{circular}{whether trait data are circular (e.g., hours or angles). Defaults to
+\code{FALSE} (all traits non-circular). A single logical value or a logical
+vector with length equal to the number of columns in traits. See details below.}
 
-\item{weight_type}{specifies weights to be used to calculate the median or mean.}
+\item{output}{specifies whether median or mean is calculated. Default \code{"median"}.}
+
+\item{weight_type}{specifies weights to be used to calculate the median or mean.
+Default \code{"hmean"} (harmonic mean), meaning each pair of species is weighted
+by the harmonic mean of abundances.}
 
 \item{run_null_model}{whether to run a null model (if \code{TRUE}) and evaluate the
 O-statistics against it, or simply return the raw O-statistics (if \code{FALSE}).
@@ -60,10 +68,11 @@ of null model output. A warning is issued, and a random seed is generated
 based on the local time, if the user does not supply a seed.}
 
 \item{unique_values}{Vector of all possible discrete values that \code{traits}
-can take. Only used if \code{data_type} is "circular_discrete".}
+can take. Only used if \code{discrete = TRUE} and \code{circular = TRUE}.}
 
 \item{circular_args}{optional list of additional arguments to pass to
-\code{\link[circular]{circular}}. Only used if the data type is "circular".
+\code{\link[circular]{circular}}. Only used if \code{circular = TRUE} and
+\code{discrete = FALSE}.
 Note that continuous circular data must be provided in radian units.}
 
 \item{density_args}{additional arguments to pass to \code{\link[stats]{density}}, such as
@@ -100,12 +109,16 @@ This function calculates overlap statistics and optionally evaluates them
   under all density functions to 1, the other making the area under all density
   functions proportional to the number of observations in that group.
 
-  If \code{data_type} is \code{"circular"}, the function \code{\link[circular]{circular}}
+  If \code{discrete = FALSE}, continuous kernel density functions are estimated for
+  each species at each community, if \code{TRUE}, discrete functions (histograms) are
+  estimated.
+
+  If \code{circular = TRUE} and \code{discrete = FALSE}, the function \code{\link[circular]{circular}}
   is used to convert each column of \code{traits} to an object of class circular.
   Unless additional arguments about input data type are specified, it is
   assumed that the circular input data are in radian units (0 to 2*pi).
 
-  If \code{data_type} is \code{"circular_discrete"} data will be interpreted as
+  If \code{circular = TRUE} and \code{discrete = TRUE}, data will be interpreted as
   discrete values on a circular scale. For example, data might be integer values
   representing hours and ranging from 0 to 23.
 

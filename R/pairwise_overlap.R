@@ -24,7 +24,7 @@
 #' @return A single numeric value that may range between 0 and 1.
 #'
 #' @noRd
-pairwise_overlap <- function(a, b, density_args = list(), hypervolume_set_args = list()) {
+pairwise_overlap <- function(a, b, discrete, density_args = list(), hypervolume_set_args = list()) {
 
   # Check structure of inputs a and b.
   # If they are unidimensional use density(), if >1 dimension use hypervolume()
@@ -34,14 +34,20 @@ pairwise_overlap <- function(a, b, density_args = list(), hypervolume_set_args =
     # calculate intersection density
     w <- pmin(a$y, b$y)
 
-    # integrate areas under curves
-    total <- sfsmisc::integrate.xy(a$x, a$y) + sfsmisc::integrate.xy(b$x, b$y)
-    intersection <- sfsmisc::integrate.xy(a$x, w)
+    if (!discrete) {
+      # If continuous, integrate the areas under curves
+      total <- sfsmisc::integrate.xy(a$x, a$y) + sfsmisc::integrate.xy(b$x, b$y)
+      intersection <- sfsmisc::integrate.xy(a$x, w)
+    } else {
+      # If discrete, take the overlaps at each discrete point
+      total <- sum(a$y + b$y)
+      intersection <- sum(w)
+    }
 
-    # compute overlap coefficient (Sorensen)
-    overlap_average <- 2 * intersection / total
+      # compute overlap coefficient (Sorensen)
+      overlap_average <- 2 * intersection / total
 
-    return(overlap_average)
+      return(overlap_average)
 
   } else {
     # Multivariate case

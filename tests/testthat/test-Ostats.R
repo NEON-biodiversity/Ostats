@@ -69,16 +69,33 @@ test_that (
 result5 <- Ostats(traits = as.matrix(ant_data[, 'time', drop = FALSE]),
                   sp = factor(ant_data$species),
                   plots = factor(ant_data$chamber),
-                  data_type = "circular_discrete",
+                  discrete = TRUE,
+                  circular = TRUE,
                   unique_values = 0:23,
                   run_null_model = FALSE)$overlaps_norm
 
-expected5 <- matrix(c(0.6834, 0.6364), nrow = 2)
+expected5 <- matrix(c(0.6803, 0.6348), nrow = 2)
 
 test_that (
-  "the hourly circular data is handled correctly",
+  "discrete circular data is handled correctly",
   {
     expect_equivalent(result5, expected5, tolerance = 0.001)
   }
 )
 
+# Test 6: Non-circular discrete example. Use fake data with 0.75 overlap.
+result6 <- Ostats(traits = matrix(c(1,1,2,2,3,3,4,4,1,1,2,2,3,3,5,5), ncol = 1),
+                  sp = factor(rep(c('a','b'), c(8, 8))),
+                  plots = factor(rep('a', 16)),
+                  discrete = TRUE,
+                  circular = FALSE,
+                  run_null_model = FALSE)$overlaps_norm
+
+expected6 <- 0.75
+
+test_that (
+  "discrete non-circular data is handled correctly",
+  {
+    expect_equivalent(result6, expected6, tolerance = 0.001)
+  }
+)

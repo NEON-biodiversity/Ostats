@@ -28,7 +28,7 @@
 #'   such as \code{method}. If none are provided, default values are used.
 #'
 #' @details Some of the code for generating contour lines is modified from
-#'   \code{\link{[hypervolume]{plot.HypervolumeList}}}.
+#'   \code{\link[hypervolume]{plot.HypervolumeList}}.
 #'
 #' @return Two-dimensional projections of species trait hypervolumes for each pair of traits,
 #'  plotted together for each community to show how they overlap each other.

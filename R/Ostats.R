@@ -12,10 +12,16 @@
 #'   community each individual belongs to.
 #' @param sp a factor with length equal to \code{nrow(traits)} that indicates the taxon
 #'   of each individual.
-#' @param data_type data type can be "linear", "circular", or "circular_discrete".
-#'  Defaults to "linear". See details below.
-#' @param output specifies whether median or mean is calculated.
+#' @param discrete whether trait data may take continuous or discrete values. Defaults to
+#'   \code{FALSE} (all traits continuous). A single logical value or a logical
+#'   vector with length equal to the number of columns in traits. See details below.
+#' @param circular whether trait data are circular (e.g., hours or angles). Defaults to
+#'   \code{FALSE} (all traits non-circular). A single logical value or a logical
+#'   vector with length equal to the number of columns in traits. See details below.
+#' @param output specifies whether median or mean is calculated. Default \code{"median"}.
 #' @param weight_type specifies weights to be used to calculate the median or mean.
+#'   Default \code{"hmean"} (harmonic mean), meaning each pair of species is weighted
+#'   by the harmonic mean of abundances.
 #' @param run_null_model whether to run a null model (if \code{TRUE}) and evaluate the
 #'  O-statistics against it, or simply return the raw O-statistics (if \code{FALSE}).
 #'  Defaults to \code{TRUE}.
@@ -30,9 +36,10 @@
 #'   of null model output. A warning is issued, and a random seed is generated
 #'   based on the local time, if the user does not supply a seed.
 #' @param unique_values Vector of all possible discrete values that \code{traits}
-#'   can take. Only used if \code{data_type} is "circular_discrete".
+#'   can take. Only used if \code{discrete = TRUE} and \code{circular = TRUE}.
 #' @param circular_args optional list of additional arguments to pass to
-#'  \code{\link[circular]{circular}}. Only used if the data type is "circular".
+#'  \code{\link[circular]{circular}}. Only used if \code{circular = TRUE} and
+#'  \code{discrete = FALSE}.
 #'  Note that continuous circular data must be provided in radian units.
 #' @param density_args additional arguments to pass to \code{\link[stats]{density}}, such as
 #' \code{bw}, \code{n}, or \code{adjust}. If none are provided, default values
@@ -45,12 +52,16 @@
 #'   under all density functions to 1, the other making the area under all density
 #'   functions proportional to the number of observations in that group.
 #'
-#'   If \code{data_type} is \code{"circular"}, the function \code{\link[circular]{circular}}
+#'   If \code{discrete = FALSE}, continuous kernel density functions are estimated for
+#'   each species at each community, if \code{TRUE}, discrete functions (histograms) are
+#'   estimated.
+#'
+#'   If \code{circular = TRUE} and \code{discrete = FALSE}, the function \code{\link[circular]{circular}}
 #'   is used to convert each column of \code{traits} to an object of class circular.
 #'   Unless additional arguments about input data type are specified, it is
 #'   assumed that the circular input data are in radian units (0 to 2*pi).
 #'
-#'   If \code{data_type} is \code{"circular_discrete"} data will be interpreted as
+#'   If \code{circular = TRUE} and \code{discrete = TRUE}, data will be interpreted as
 #'   discrete values on a circular scale. For example, data might be integer values
 #'   representing hours and ranging from 0 to 23.
 #'
@@ -114,7 +125,7 @@
 #' @export
 #'
 #'
-Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", weight_type= "hmean", run_null_model = TRUE, nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE, random_seed = NULL, unique_values = NULL, circular_args = list(), density_args = list()) {
+Ostats <- function(traits, plots, sp, discrete = FALSE, circular = FALSE, output = "median", weight_type= "hmean", run_null_model = TRUE, nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE, random_seed = NULL, unique_values = NULL, circular_args = list(), density_args = list()) {
   # Required input: a matrix called traits (nrows=n individuals, ncols=n traits),
   # a vector called plots which is a factor with length equal to nrow(traits),
   # a vector called sp which is a factor with length equal to nrow(traits),
@@ -133,6 +144,14 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
   abund_table <- table(plots, sp)
   unique_abunds <- apply(abund_table, 1, function(x) length(unique(x[x > 0])))
   if (any(unique_abunds > 1)) message("Note: species abundances differ. Consider sampling equivalent numbers of individuals per species.")
+
+  # If discrete or circular are not logical vectors of length either 1 or length of number of columns in traits, stop.
+  # Recycle the value if there is only one in each case.
+  if (!length(discrete) %in% c(1, ncol(traits))) stop("discrete must be length=1 or length=ncol(traits)")
+  if (!length(circular) %in% c(1, ncol(traits))) stop("circular must be length=1 or length=ncol(traits)")
+
+  if (length(discrete) == 1) discrete <- rep(discrete, ncol(traits))
+  if (length(circular) == 1) circular <- rep(circular, ncol(traits))
 
   # Set random seed.
   set.seed(random_seed)
@@ -157,9 +176,9 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
 
   for (s in 1:nlevels(plots)) {
     for (t in 1:ncol(traits)) {
-      overlap_norm_st <- try(community_overlap(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type = data_type, output = output, weight_type = weight_type, normal = TRUE, unique_values = unique_values, circular_args = circular_args, density_args = density_args), TRUE)
+      overlap_norm_st <- try(community_overlap(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], discrete = discrete[t], circular = circular[t], output = output, weight_type = weight_type, normal = TRUE, unique_values = unique_values, circular_args = circular_args, density_args = density_args), TRUE)
       overlaps_norm[s, t] <- if (inherits(overlap_norm_st, 'try-error')) NA else overlap_norm_st
-      overlap_unnorm_st <- try(community_overlap(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type = data_type, output = output, weight_type = weight_type, normal = FALSE, unique_values = unique_values, circular_args = circular_args, density_args = density_args), TRUE)
+      overlap_unnorm_st <- try(community_overlap(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], discrete = discrete[t], circular = circular[t], output = output, weight_type = weight_type, normal = FALSE, unique_values = unique_values, circular_args = circular_args, density_args = density_args), TRUE)
       overlaps_unnorm[s, t] <- if (inherits(overlap_unnorm_st, 'try-error')) NA else overlap_unnorm_st
     }
     utils::setTxtProgressBar(pb, s)
@@ -180,8 +199,8 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
       for (s in 1:nlevels(plots)) {
         for (t in 1:ncol(traits)) {
           if (!swap_means) {
-            overlap_norm_sti <- try(community_overlap(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], data_type=data_type, output = output, weight_type = weight_type, normal = TRUE, unique_values = unique_values, randomize_weights = shuffle_weights, circular_args = circular_args, density_args = density_args), TRUE)
-            overlap_unnorm_sti <- try(community_overlap(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]),data_type=data_type, output = output, weight_type = weight_type, normal = FALSE, randomize_weights = shuffle_weights, unique_values = unique_values, circular_args = circular_args, density_args = density_args), TRUE)
+            overlap_norm_sti <- try(community_overlap(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], discrete = discrete[t], circular = circular[t], output = output, weight_type = weight_type, normal = TRUE, unique_values = unique_values, randomize_weights = shuffle_weights, circular_args = circular_args, density_args = density_args), TRUE)
+            overlap_unnorm_sti <- try(community_overlap(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]), discrete = discrete[t], circular = circular[t],output = output, weight_type = weight_type, normal = FALSE, randomize_weights = shuffle_weights, unique_values = unique_values, circular_args = circular_args, density_args = density_args), TRUE)
           } else {
             traits_st <- traits[plots==levels(plots)[s], t]
             sp_st <- sp[plots==levels(plots)[s]]
@@ -193,8 +212,8 @@ Ostats <- function(traits, plots, sp, data_type = "linear", output = "median", w
             traitmeans_null <- sample(traitmeans)
             sp_null <- rep(names(traitmeans_null), table(sp_st))
             traits_null <- traitdeviations + traitmeans_null[sp_null]
-            overlap_norm_sti <- try(community_overlap(traits = traits_null, sp = sp_null, data_type=data_type, output = output, weight_type = weight_type, normal = TRUE, randomize_weights = shuffle_weights, unique_values = unique_values, circular_args = circular_args, density_args = density_args), TRUE)
-            overlap_unnorm_sti <- try(community_overlap(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]),data_type=data_type, output = output, weight_type = weight_type, normal = FALSE, randomize_weights = shuffle_weights, unique_values = unique_values, circular_args = circular_args, density_args = density_args), TRUE)
+            overlap_norm_sti <- try(community_overlap(traits = traits_null, sp = sp_null, discrete = discrete[t], circular = circular[t], output = output, weight_type = weight_type, normal = TRUE, randomize_weights = shuffle_weights, unique_values = unique_values, circular_args = circular_args, density_args = density_args), TRUE)
+            overlap_unnorm_sti <- try(community_overlap(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]), discrete = discrete[t], circular = circular[t], output = output, weight_type = weight_type, normal = FALSE, randomize_weights = shuffle_weights, unique_values = unique_values, circular_args = circular_args, density_args = density_args), TRUE)
           }
 
           overlaps_norm_null[s, t, i] <- if (inherits(overlap_norm_sti, 'try-error')) NA else overlap_norm_sti
