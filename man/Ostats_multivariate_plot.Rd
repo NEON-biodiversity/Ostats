@@ -12,6 +12,8 @@ Ostats_multivariate_plot(
   use_plots = NULL,
   colorvalues = NULL,
   plot_points = TRUE,
+  contour_level,
+  axis_expansion = 0.01,
   axis_buffer_factor = 0.25,
   panel_height = 3,
   panel_width = 3,
@@ -39,10 +41,11 @@ Defaults to a viridis palette if none provided.}
 \item{plot_points}{whether to plot individual data points in addition to
 the hypervolume slices. Default is TRUE.}
 
-\item{axis_buffer_factor}{multiplicative expansion factor by which to expand the x and y axes in all directions,
-relative to the range of the axis, before calculating the hypervolume contours for plotting.
-If this is not set to a sufficiently large value, the contour lines of the hypervolumes will be cut off.
-Default value is 0.25 (25\% expansion of the axis limits in all directions).}
+\item{contour_level}{level at which to plot contour lines. If not provided
+by the user, a message is issued stating the default plotting level is 0.01.}
+
+\item{axis_expansion}{multiplicative expansion factor by which to expand the x and y axes around
+the hypervolume contours before plotting. Default is 0.01.}
 
 \item{panel_height}{height of the individual plot panels, in units given by \code{units}. Default is 3 cm.}
 
@@ -52,6 +55,11 @@ Default value is 0.25 (25\% expansion of the axis limits in all directions).}
 
 \item{hypervolume_args}{additional arguments to pass to \code{\link[hypervolume]{hypervolume}},
 such as \code{method}. If none are provided, default values are used.}
+
+\item{contour_buffer_factor}{multiplicative expansion factor by which to expand the x and y axes in all directions,
+relative to the range of the axis, before calculating the hypervolume contours for plotting.
+If this is not set to a sufficiently large value, the contour lines of the hypervolumes will be cut off.
+Default value is 0.25 (25\% expansion of the axis limits in all directions).}
 }
 \value{
 Two-dimensional projections of species trait hypervolumes for each pair of traits,

@@ -141,6 +141,8 @@
   use_plots <span class='op'>=</span> <span class='cn'>NULL</span>,
   colorvalues <span class='op'>=</span> <span class='cn'>NULL</span>,
   plot_points <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>contour_level</span>,
+  axis_expansion <span class='op'>=</span> <span class='fl'>0.01</span>,
   axis_buffer_factor <span class='op'>=</span> <span class='fl'>0.25</span>,
   panel_height <span class='op'>=</span> <span class='fl'>3</span>,
   panel_width <span class='op'>=</span> <span class='fl'>3</span>,
@@ -185,11 +187,14 @@ Defaults to a viridis palette if none provided.</p></td>
 the hypervolume slices. Default is TRUE.</p></td>
     </tr>
     <tr>
-      <th>axis_buffer_factor</th>
-      <td><p>multiplicative expansion factor by which to expand the x and y axes in all directions,
-relative to the range of the axis, before calculating the hypervolume contours for plotting.
-If this is not set to a sufficiently large value, the contour lines of the hypervolumes will be cut off.
-Default value is 0.25 (25% expansion of the axis limits in all directions).</p></td>
+      <th>contour_level</th>
+      <td><p>level at which to plot contour lines. If not provided
+by the user, a message is issued stating the default plotting level is 0.01.</p></td>
+    </tr>
+    <tr>
+      <th>axis_expansion</th>
+      <td><p>multiplicative expansion factor by which to expand the x and y axes around
+the hypervolume contours before plotting. Default is 0.01.</p></td>
     </tr>
     <tr>
       <th>panel_height</th>
@@ -207,6 +212,13 @@ Default value is 0.25 (25% expansion of the axis limits in all directions).</p><
       <th>hypervolume_args</th>
       <td><p>additional arguments to pass to <code><a href='https://rdrr.io/pkg/hypervolume/man/hypervolume.html'>hypervolume</a></code>,
 such as <code>method</code>. If none are provided, default values are used.</p></td>
+    </tr>
+    <tr>
+      <th>contour_buffer_factor</th>
+      <td><p>multiplicative expansion factor by which to expand the x and y axes in all directions,
+relative to the range of the axis, before calculating the hypervolume contours for plotting.
+If this is not set to a sufficiently large value, the contour lines of the hypervolumes will be cut off.
+Default value is 0.25 (25% expansion of the axis limits in all directions).</p></td>
     </tr>
     </table>
 

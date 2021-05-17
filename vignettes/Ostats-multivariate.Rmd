@@ -56,10 +56,10 @@ idx <- sort(sample(nrow(pitcher_traits), 10, replace = FALSE))
 knitr::kable(pitcher_traits[idx,])
 ```
 
-For a more manageable example, let's select 6 sites.
+For a more manageable example, let's select five sites.
 
 ```{r}
-sites <- c('COL', 'CRI', 'FLK', 'FRA', 'MYR', 'SAC')
+sites <- c('COL', 'CRI', 'FLK', 'MYR', 'SAC')
 pitcher_traits <- pitcher_traits[pitcher_traits$site_id %in% sites, ]
 ```
 
@@ -145,18 +145,18 @@ The single multivariate O-statistic is not comparable to the univariate statisti
 
 We can visualize the overlap of the different hypervolumes using the function `Ostats_multivariate_plot()`. This function returns a list of plot objects, one for each community. Each plot displays an upper triangular matrix of panels, one for each pair of traits, with the cross-sections of the hypervolumes in those two dimensions, as well as the raw data points.
 
-For example, we can plot the overlap of the hypervolumes in 4-dimensional space formed by the individual traits of the pitcher plants at each site. ~~Notice that we don't use the scaled traits for plotting; instead we use the raw trait values so that the axes are interpretable.~~ 
+For example, we can plot the overlap of the hypervolumes in 4-dimensional space formed by the individual traits of the pitcher plants at each site. Note that although we calculated the hypervolume overlaps on the scaled traits, we are plotting the hypervolumes using the unscaled trait axes. However, this requires us to set the argument `contour_level = 0.0001` because the unscaled hypervolumes have too low densities to plot using the default `contour_level = 0.01`.
 
 ```{r default plot, message = FALSE, fig.height = 9, fig.width = 9}
 Ostats_multivariate_plot(plots = factor(rep(1, nrow(pitcher_trait_matrix))),
                          sp = pitcher_sites,
-                         traits = pitcher_trait_matrix_scaled,
+                         traits = pitcher_trait_matrix,
+                         contour_level = 0.0001,
                          overlap_dat = pitcher_multivariate,
-                         plot_points = TRUE
 )
 ```
 
-We can customize the plot by supplying a color palette to the `colorvalues` argument (the default is a colorblind-friendly palette imported from [viridis](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html)), and add additional spacing around the hypervolume contours using the `axis_buffer_factor` argument. The default value of this argument is `0.25`, or 25% of the range of the data in all directions. In some cases adding additional spacing may be necessary because the contours may extend farther than that. Finally, we can suppress plotting the raw data and only plot the contours using `plot_points = FALSE`.
+We can customize the plot by supplying a color palette to the `colorvalues` argument (the default is a colorblind-friendly palette imported from [viridis](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html)), and add additional spacing around the hypervolume contours using the `axis_expansion` argument. The default value of this argument is `0.01`, or 1% in all directions. Finally, we can suppress plotting the raw data and only plot the contours using `plot_points = FALSE`.
 
 FIXME: in the actual function we should include argument to buffer the plot itself, not just the contour estimation.
 
@@ -164,9 +164,10 @@ FIXME: in the actual function we should include argument to buffer the plot itse
 Ostats_multivariate_plot(plots = factor(rep(1, nrow(pitcher_trait_matrix))),
                          sp = pitcher_sites,
                          traits = pitcher_trait_matrix,
+                         contour_level = 0.0001,
                          overlap_dat = pitcher_multivariate,
                          colorvalues = rainbow(length(sites)),
-                         axis_buffer_factor = 0.5,
+                         axis_expansion = 0.05,
                          plot_points = FALSE
 )
 ```

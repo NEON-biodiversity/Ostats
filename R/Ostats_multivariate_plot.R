@@ -17,7 +17,11 @@
 #'   Defaults to a viridis palette if none provided.
 #' @param plot_points whether to plot individual data points in addition to
 #'   the hypervolume slices. Default is TRUE.
-#' @param axis_buffer_factor multiplicative expansion factor by which to expand the x and y axes in all directions,
+#' @param contour_level level at which to plot contour lines. If not provided
+#'  by the user, a message is issued stating the default plotting level is 0.01.
+#' @param axis_expansion multiplicative expansion factor by which to expand the x and y axes around
+#'  the hypervolume contours before plotting. Default is 0.01.
+#' @param contour_buffer_factor multiplicative expansion factor by which to expand the x and y axes in all directions,
 #'   relative to the range of the axis, before calculating the hypervolume contours for plotting.
 #'   If this is not set to a sufficiently large value, the contour lines of the hypervolumes will be cut off.
 #'   Default value is 0.25 (25\% expansion of the axis limits in all directions).
@@ -52,11 +56,18 @@ Ostats_multivariate_plot <- function(plots,
                                      use_plots = NULL,
                                      colorvalues = NULL,
                                      plot_points = TRUE,
+                                     contour_level,
+                                     axis_expansion = 0.01,
                                      axis_buffer_factor = 0.25,
                                      panel_height = 3,
                                      panel_width = 3,
                                      units = 'cm',
                                      hypervolume_args = list()) {
+
+  if (missing(contour_level)) {
+    contour_level <- 0.01
+    message(paste('User did not specify density function value at which to plot contours. Using contour_level =', contour_level))
+  }
 
   message('Estimating hypervolumes for plots. This may take a few minutes. . .')
 
@@ -134,7 +145,7 @@ Ostats_multivariate_plot <- function(plots,
       ggplot2::geom_point(x = 0, mapping = ggplot2::aes(color = sp), size = 3) +
       color_scale +
       ggplot2::scale_y_continuous(expand = c(0.5, 0.5)) +
-      ggplot2::scale_x_continuous(limits = c(0, 1)) +
+      ggplot2::scale_x_continuous(limits = c(-0.1, 1), expand = ggplot2::expansion(mult = 0.01)) +
       ggplot2::theme_void() +
       ggplot2::theme(legend.position = 'none')
 
@@ -149,8 +160,7 @@ Ostats_multivariate_plot <- function(plots,
 
     for (i in 1:length(sp_in_plot)) {
       sp_plot_dat <- traits_plot[sp_plot == sp_in_plot[i], ]
-      # Only generate hypervolume with at least 3 measurements
-      # Generate UNSCALED hypervolume.
+
       if (nrow(sp_plot_dat) > 2) {
         # Suppress all progress messages from hypervolume functions, including those from underlying C functions.
         invisible(utils::capture.output(suppressWarnings(suppressMessages({
@@ -160,7 +170,7 @@ Ostats_multivariate_plot <- function(plots,
     }
 
     # Generate contours for all hypervolumes
-    contours_list <- lapply(hv_list, function(hv) if (class(hv) == 'Hypervolume') get_contours(hv, trait_combs, axis_buffer_factor) else NA)
+    contours_list <- lapply(hv_list, function(hv) if (class(hv) == 'Hypervolume') get_contours(hv, trait_combs, axis_buffer_factor, contour_level) else NA)
     # Join contours to data frame
     for (i in 1:length(contours_list)) contours_list[[i]][, 'sp'] = sp_in_plot[i]
     contours_df <- do.call(rbind, contours_list)
@@ -176,8 +186,8 @@ Ostats_multivariate_plot <- function(plots,
         ggplot2::geom_polygon(data = dat_polygons, ggplot2::aes(x = x, y = y, group = interaction(sp, polygon_id), color = sp), fill = 'transparent') +
         ggplot2::coord_cartesian(xlim = range(contours_df$x[contours_df$trait_x == trait_combs[1, i]]),
                                  ylim = range(contours_df$y[contours_df$trait_y == trait_combs[2, i]])) +
-        ggplot2::scale_x_continuous(expand = c(0, 0)) +
-        ggplot2::scale_y_continuous(expand = c(0, 0)) +
+        ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = axis_expansion)) +
+        ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = axis_expansion)) +
         color_scale +
         plot_theme +
         ggplot2::labs(x = trait_combs[1, i], y = trait_combs[2, i])
@@ -233,7 +243,7 @@ Ostats_multivariate_plot <- function(plots,
 
 #' Unexported function to draw contours somewhat modified from hypervolume::plot.HypervolumeList
 #' @noRd
-get_contours <- function(hv, trait_combs, axis_buffer_factor) {
+get_contours <- function(hv, trait_combs, axis_buffer_factor, contour_level) {
   hv_density <- nrow(hv@RandomPoints)/hv@Volume
   hv_dimensionality <- hv@Dimensionality
   radius_critical <- hv_density^(-1/hv_dimensionality)
@@ -245,7 +255,7 @@ get_contours <- function(hv, trait_combs, axis_buffer_factor) {
     range_y <- range(hv@RandomPoints[, trait_combs[2, i]])
     range_y_buffered <- range_y + c(-1, 1) * axis_buffer_factor * diff(range_y)
     kde <- MASS::kde2d(hv@RandomPoints[, trait_combs[1, i]], hv@RandomPoints[, trait_combs[2, i]], n = 50, h = radius_critical, lims = c(range_x_buffered, range_y_buffered))
-    contour_lines <- grDevices::contourLines(kde, levels = 0.01)
+    contour_lines <- grDevices::contourLines(kde, levels = contour_level)
     contour_line_dfs <- list()
     for (j in 1:length(contour_lines)) {
       contour_line_dfs[[j]] <- with(contour_lines[[j]], data.frame(polygon_id = j, x = x, y = y))
