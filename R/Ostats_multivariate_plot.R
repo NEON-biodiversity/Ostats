@@ -127,14 +127,14 @@ Ostats_multivariate_plot <- function(plots,
     }
 
     # Generate legend for plot by drawing colored points.
-    legend_panel <- ggplot2::ggplot(data.frame(x = 0, y = seq_along(sp_names), sp = sp_names),
+    legend_panel <- ggplot2::ggplot(data.frame(x = 0.05, y = seq_along(sp_names), sp = sp_names),
                                     ggplot2::aes(x = x, y = y, label = sp)) +
       ggplot2::geom_text(hjust = 0) +
-      ggplot2::geom_text(data = data.frame(x = 0, y = length(sp_names) + 1, label = plot_label), ggplot2::aes(label = label), hjust = 0, fontface = 'bold') +
-      ggplot2::geom_point(x = -0.2, mapping = ggplot2::aes(color = sp), size = 3) +
+      ggplot2::geom_text(data = data.frame(x = 0.05, y = length(sp_names) + 1, label = plot_label), ggplot2::aes(label = label), hjust = 0, fontface = 'bold') +
+      ggplot2::geom_point(x = 0, mapping = ggplot2::aes(color = sp), size = 3) +
       color_scale +
       ggplot2::scale_y_continuous(expand = c(0.5, 0.5)) +
-      ggplot2::scale_x_continuous(limits = c(-1, 1)) +
+      ggplot2::scale_x_continuous(limits = c(0, 1)) +
       ggplot2::theme_void() +
       ggplot2::theme(legend.position = 'none')
 

@@ -89,8 +89,20 @@ be weighted by species abundances." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li>
-  <a href="../articles/index.html">Articles</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/Ostats-introduction.html">O-stats: pairwise community-level niche overlap statistics</a>
+    </li>
+    <li>
+      <a href="../articles/Ostats-multivariate.html">Multivariate O-statistics</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -122,7 +134,8 @@ be weighted by species abundances.</p>
     <pre class="usage"><span class='fu'>community_overlap</span><span class='op'>(</span>
   <span class='va'>traits</span>,
   <span class='va'>sp</span>,
-  data_type <span class='op'>=</span> <span class='st'>"linear"</span>,
+  discrete <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  circular <span class='op'>=</span> <span class='cn'>FALSE</span>,
   normal <span class='op'>=</span> <span class='cn'>TRUE</span>,
   output <span class='op'>=</span> <span class='st'>"median"</span>,
   weight_type <span class='op'>=</span> <span class='st'>"hmean"</span>,
@@ -147,9 +160,16 @@ matrix in the multivariate case where each column is a trait.</p></td>
 taxon of each individual.</p></td>
     </tr>
     <tr>
-      <th>data_type</th>
-      <td><p>data type can be "linear", "circular", or "circular_discrete".
-Default to "linear".</p></td>
+      <th>discrete</th>
+      <td><p>whether trait data may take continuous or discrete values. Defaults to
+<code>FALSE</code> (all traits continuous). A single logical value or a logical
+vector with length equal to the number of columns in traits.</p></td>
+    </tr>
+    <tr>
+      <th>circular</th>
+      <td><p>whether trait data are circular (e.g., hours or angles). Defaults to
+<code>FALSE</code> (all traits non-circular). A single logical value or a logical
+vector with length equal to the number of columns in traits.</p></td>
     </tr>
     <tr>
       <th>normal</th>
@@ -173,12 +193,13 @@ within a community. This can be used to generate null models.</p></td>
     <tr>
       <th>unique_values</th>
       <td><p>Vector of all possible discrete values that <code>traits</code>
-can take. Only used if <code>data_type</code> is "circular_discrete".</p></td>
+can take. Only used if <code>discrete = TRUE</code> and <code>circular = TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>circular_args</th>
-      <td><p>list of additional arguments to be passed to
-<code><a href='https://rdrr.io/pkg/circular/man/circular.html'>circular</a></code>. Only used if <code>data_type</code> is "circular".</p></td>
+      <td><p>optional list of additional arguments to pass to
+<code><a href='https://rdrr.io/pkg/circular/man/circular.html'>circular</a></code>. Only used if <code>circular = TRUE</code> and
+<code>discrete = FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>density_args</th>
@@ -212,10 +233,6 @@ output to mean, specify the argument output = "mean".</p>
     <p>Read, Q. D. et al. Among-species overlap in rodent body size
   distributions predicts species richness along a temperature gradient.
   Ecography 41, 1718-1727 (2018).</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='https://rdrr.io/pkg/Ostats/man/pairwise_overlap.html'>pairwise_overlap</a></code> to calculate overlap between two empirical
-density estimates.</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>Ostats</span><span class='op'>)</span>

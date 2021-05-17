@@ -46,8 +46,20 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
 <li>
-  <a href="../articles/index.html">Articles</a>
+      <a href="../articles/Ostats-introduction.html">O-stats: pairwise community-level niche overlap statistics</a>
+    </li>
+    <li>
+      <a href="../articles/Ostats-multivariate.html">Multivariate O-statistics</a>
+    </li>
+  </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right"></ul>
@@ -298,7 +310,7 @@
                              random_seed <span class="op">=</span> <span class="fl">444</span>,
                              run_null_model <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
-<p>Now calculate the multivariate O-statistic for the traits combined, using all default arguments. The <code>random_seed</code> is still used even in the absence of a null model for the hypervolume construction.</p>
+<p>Now calculate the multivariate O-statistic for the traits combined, using all default arguments. The <code>random_seed</code> is still used even in the absence of a null model because the hypervolumes are constructed with a stochastic algorithm.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pitcher_multivariate</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Ostats_multivariate.html">Ostats_multivariate</a></span><span class="op">(</span>traits <span class="op">=</span> <span class="va">pitcher_trait_matrix_scaled</span>,
                                             plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">pitcher_trait_matrix_scaled</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
@@ -324,8 +336,10 @@
 <ul>
 <li>Show the ostats multivariate plot function</li>
 <li>Show a couple different plots to illustrate the effects of different arguments</li>
+<li>Give credit to hypervolume package for the plot.Hypervolumelist function</li>
 </ul>
-<p>Here is a plot of the overlap of the hypervolumes in 4-dimensional space formed by the individual traits of the pitcher plants at each site. Notice that we don’t use the scaled traits for plotting; instead we use the actual ratios so that the axes are interpretable.</p>
+<p>We can visualize the overlap of the different hypervolumes using the function <code><a href="../reference/Ostats_multivariate_plot.html">Ostats_multivariate_plot()</a></code>. This function returns a list of plot objects, one for each community. Each plot displays an upper triangular matrix of panels, one for each pair of traits, with the cross-sections of the hypervolumes in those two dimensions, as well as the raw data points.</p>
+<p>For example, we can plot the overlap of the hypervolumes in 4-dimensional space formed by the individual traits of the pitcher plants at each site. Notice that we don’t use the scaled traits for plotting; instead we use the actual ratios so that the axes are interpretable.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/Ostats_multivariate_plot.html">Ostats_multivariate_plot</a></span><span class="op">(</span>plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">pitcher_trait_matrix</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
                          sp <span class="op">=</span> <span class="va">pitcher_sites</span>,
@@ -333,7 +347,19 @@
                          overlap_dat <span class="op">=</span> <span class="va">pitcher_multivariate</span>,
                          plot_points <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
-<p><img src="Ostats-multivariate_files/figure-html/unnamed-chunk-9-1.png" width="576"></p>
+<p><img src="Ostats-multivariate_files/figure-html/default%20plot-1.png" width="864"></p>
+<p>We can customize the plot by supplying a color palette to the <code>colorvalues</code> argument (the default is a colorblind-friendly palette imported from <a href="https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html">viridis</a>), and add additional spacing around the hypervolume contours using the <code>axis_buffer_factor</code> argument. The default value of this argument is <code>0.25</code>, or 25% of the range of the data in all directions. In some cases adding additional spacing may be necessary because the contours may extend farther than that. Finally, we can suppress plotting the raw data and only plot the contours using <code>plot_points = FALSE</code>.</p>
+<p>FIXME: in the actual function we should include argument to buffer the plot itself, not just the contour estimation.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/Ostats_multivariate_plot.html">Ostats_multivariate_plot</a></span><span class="op">(</span>plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">pitcher_trait_matrix</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
+                         sp <span class="op">=</span> <span class="va">pitcher_sites</span>,
+                         traits <span class="op">=</span> <span class="va">pitcher_trait_matrix</span>,
+                         overlap_dat <span class="op">=</span> <span class="va">pitcher_multivariate</span>,
+                         colorvalues <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html">rainbow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">sites</span><span class="op">)</span><span class="op">)</span>,
+                         axis_buffer_factor <span class="op">=</span> <span class="fl">0.5</span>,
+                         plot_points <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span></code></pre></div>
+<p><img src="Ostats-multivariate_files/figure-html/custom%20plot-1.png" width="864"></p>
 </div>
 <div id="some-practical-notes" class="section level1">
 <h1 class="hasAnchor">

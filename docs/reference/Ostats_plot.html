@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plotting Community Overlap — Ostats_plot • Ostats</title>
+<title>Plot community trait overlap — Ostats_plot • Ostats</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,10 @@
 
 
 
-<meta property="og:title" content="Plotting Community Overlap — Ostats_plot" />
+<meta property="og:title" content="Plot community trait overlap — Ostats_plot" />
 <meta property="og:description" content="This function plots the overlap of traits among
- species for each community." />
+ species for each community. If there are multiple traits,
+ each trait is plotted separately in one-dimensional space." />
 
 
 
@@ -86,9 +87,6 @@
   </a>
 </li>
 <li>
-  <a href="../articles/Ostats.html">Get started</a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -99,7 +97,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/multivariate-Ostats.html">Multivariate O-statistics</a>
+      <a href="../articles/Ostats-introduction.html">O-stats: pairwise community-level niche overlap statistics</a>
+    </li>
+    <li>
+      <a href="../articles/Ostats-multivariate.html">Multivariate O-statistics</a>
     </li>
   </ul>
 </li>
@@ -119,14 +120,15 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plotting Community Overlap</h1>
+    <h1>Plot community trait overlap</h1>
     
     <div class="hidden name"><code>Ostats_plot.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>This function plots the overlap of traits among
- species for each community.</p>
+ species for each community. If there are multiple traits,
+ each trait is plotted separately in one-dimensional space.</p>
     </div>
 
     <pre class="usage"><span class='fu'>Ostats_plot</span><span class='op'>(</span>
@@ -141,6 +143,7 @@
   alpha <span class='op'>=</span> <span class='fl'>0.5</span>,
   adjust <span class='op'>=</span> <span class='fl'>2</span>,
   limits_x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>1.5</span><span class='op'>)</span>,
+  legend <span class='op'>=</span> <span class='cn'>FALSE</span>,
   name_x <span class='op'>=</span> <span class='st'>"trait value"</span>,
   name_y <span class='op'>=</span> <span class='st'>"probability density"</span>,
   means <span class='op'>=</span> <span class='cn'>FALSE</span>
@@ -159,11 +162,13 @@
     </tr>
     <tr>
       <th>traits</th>
-      <td><p>A vector of trait measurements for each individual, or a matrix or data frame with rows representing individuals and columns representing traits.</p></td>
+      <td><p>A vector of trait measurements for each individual, or a matrix
+or data frame with rows representing individuals and columns representing traits.</p></td>
     </tr>
     <tr>
       <th>overlap_dat</th>
-      <td><p>Optional: an object containing the output of <code><a href='Ostats.html'>Ostats</a></code>. If provided, overlap statistics will be displayed in the plot panels.</p></td>
+      <td><p>Optional: an object containing the output of <code><a href='Ostats.html'>Ostats</a></code>.
+If provided, overlap statistics will be displayed in the plot panels.</p></td>
     </tr>
     <tr>
       <th>use_plots</th>
@@ -175,11 +180,15 @@
     </tr>
     <tr>
       <th>scale</th>
-      <td><p>If you want the scale of x, y or both x and y axis to be independent, set the argument to "free_x", "free_y" or "free" respectively. Default = "fixed" which uses the same scale across all sites. See <code><a href='https://ggplot2.tidyverse.org/reference/facet_grid.html'>facet_grid</a></code>.</p></td>
+      <td><p>If you want the scale of x, y or both x and y axis to be independent,
+set the argument to "free_x", "free_y" or "free" respectively.
+Default = "fixed" which uses the same scale across all sites.
+See <code><a href='https://ggplot2.tidyverse.org/reference/facet_grid.html'>facet_grid</a></code>.</p></td>
     </tr>
     <tr>
       <th>colorvalues</th>
-      <td><p>Vector of color values for the density polygons. Defaults to a viridis palette if none provided.</p></td>
+      <td><p>Vector of color values for the density polygons.
+Defaults to a viridis palette if none provided.</p></td>
     </tr>
     <tr>
       <th>alpha</th>
@@ -187,11 +196,18 @@
     </tr>
     <tr>
       <th>adjust</th>
-      <td><p>the bandwidth adjustment of the density polygons. Default is 2. See <code><a href='https://rdrr.io/r/stats/density.html'>density</a></code>.</p></td>
+      <td><p>the bandwidth adjustment of the density polygons. Default is 2.
+See <code><a href='https://rdrr.io/r/stats/density.html'>density</a></code>.</p></td>
     </tr>
     <tr>
       <th>limits_x</th>
-      <td><p>Vector of length 2, with multiplicative factor to apply to the minimum and maximum values of each trait to expand the limits of the x axis. Default is 0.5 times the minimum and 1.5 times the maximum value of each trait.</p></td>
+      <td><p>Vector of length 2, with multiplicative factor to apply to the minimum
+and maximum values of each trait to expand the limits of the x axis.
+Default is 0.5 times the minimum and 1.5 times the maximum value of each trait.</p></td>
+    </tr>
+    <tr>
+      <th>legend</th>
+      <td><p>Whether to include a legend. Defaults to <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>name_x</th>
@@ -203,16 +219,22 @@
     </tr>
     <tr>
       <th>means</th>
-      <td><p>if TRUE, trait means for each species are plotted in an additional plot column next to the traits distribution plots for each site. Default is FALSE.</p></td>
+      <td><p>if TRUE, trait means for each species are plotted in an additional plot
+column next to the traits distribution plots for each site. Default is</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Density plots of species trait distribution plotted on the same graph
+    <p>Density plots of species trait distributions plotted together
  for each community to show how they overlap each other.
- The overlap value obtained as output from <code><a href='Ostats.html'>Ostats</a></code> is labelled on each community graph.
- If more than one trait is provided, a list of plots will be returned.</p>
+ The overlap value obtained as output from <code><a href='Ostats.html'>Ostats</a></code>
+ is labelled on each community graph, if provided by the user.</p>
+<p>The class of the returned object is <code>Ostats_plot_object</code>. Calling
+ <code>print</code> on this object will invoke a method to draw the plot using
+ <code><a href='https://rdrr.io/r/grid/grid.draw.html'>grid.draw</a></code>.</p>
+<p>If more than one trait is provided, a list of objects of class
+ <code>Ostats_plot_object</code> will be returned.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='Ostats.html'>Ostats</a></code> to Calculate O-statistics (community-level
@@ -231,7 +253,7 @@
 <span class='fu'>Ostats_plot</span><span class='op'>(</span>plots <span class='op'>=</span> <span class='va'>plots</span>, sp <span class='op'>=</span> <span class='va'>sp</span>, traits <span class='op'>=</span> <span class='va'>traits</span>,
            overlap_dat <span class='op'>=</span> <span class='va'>small_mammal_Ostats</span>,
            use_plots <span class='op'>=</span> <span class='va'>use_plots</span>, means <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 61 rows containing non-finite values (stat_density).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Groups with fewer than two data points have been dropped.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Groups with fewer than two data points have been dropped.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 2 rows containing missing values (geom_vline).</span></div><div class='img'><img src='Ostats_plot-1.png' alt='' width='700' height='433' /></div></pre>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 61 rows containing non-finite values (stat_density).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Groups with fewer than two data points have been dropped.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Groups with fewer than two data points have been dropped.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 2 rows containing missing values.</span></div><div class='img'><img src='Ostats_plot-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

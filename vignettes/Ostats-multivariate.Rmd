@@ -71,35 +71,42 @@ pitcher_traits <- pitcher_traits[pitcher_traits$site_id %in% sites, ]
 
 Here we calculate the univariate O-statistics for each of the pitcher traits separately, then a single multivariate O-statistic representing overlap of the trait hypervolumes. 
 
-We will use four morphological ratios as traits to remove size-dependence: the ratios of pitcher length, keel width, mouth diameter, and lip thickness to pitcher width.
+When estimating hypervolumes, as with any other multivariate analysis, it is critical to ensure that the hypervolume axes are not too highly correlated with one another. If traits are too highly correlated, the calculated hypervolume will not accurately represent the distribution in trait space. In this case, we resolve the issue by excluding a few of the traits with high correlations. You could also choose to use a variance maximization procedure like PCA instead.
 
-First ensure that the data are in the appropriate form for `Ostats()` and `Ostats_multivariate()`. For this example we will remove individuals with incomplete data.
+First ensure that the data are in the appropriate form for `Ostats()` and `Ostats_multivariate()`. For this example we will remove individuals with incomplete data. Using `cor()` on the cleaned dataset, we can see the relatively high correlations among some of the traits.
 
 ```{r}
 pitcher_traits <- pitcher_traits[complete.cases(pitcher_traits), ]
 
 pitcher_sites <- as.factor(pitcher_traits$site_id)
 
-pitcher_trait_matrix <- as.matrix(pitcher_traits[, c('pitcher_length', 'keel_width', 'mouth_diameter', 'lip_thickness')])
-
-pitcher_trait_matrix <- sweep(pitcher_trait_matrix, 1, pitcher_traits$pitcher_width, `/`)
-
+round(cor(pitcher_traits[, -(1:2)]), 2)
 ```
 
-The traits are all on a ratio scale but we should center and scale all the columns to ensure that the hypervolume overlap statistic is not influenced by different magnitudes of each trait.
+We select four traits that represent dimensions of different parts of the plant's anatomy. As a result they are relatively uncorrelated with one another: rosette diameter, pitcher width, mouth diameter, and lip thickness.
+
+```{r}
+traits_to_use <- c("rosette_diameter_1", "pitcher_width", "mouth_diameter", "lip_thickness")
+
+pitcher_trait_matrix <- as.matrix(pitcher_traits[, traits_to_use])
+
+round(cor(pitcher_trait_matrix), 2)
+```
+
+Next we center and scale all the columns to ensure that the hypervolume overlap statistic is not influenced by different magnitudes of each trait.
 
 ```{r}
 apply(pitcher_trait_matrix, 2, range)
 
 pitcher_trait_matrix_scaled <- scale(pitcher_trait_matrix, center = TRUE, scale = TRUE)
 
-apply(pitcher_trait_matrix_scaled, 2, range)
+round(apply(pitcher_trait_matrix_scaled, 2, range), 2)
 ```
 
 
-Next calculate the univariate O-statistics for each of the four traits. **Currently in the example we will not use null model, but eventually it should.**
+Next calculate the univariate O-statistics for each of the four traits. 
 
-```{r, message = FALSE, results = 'hide'}
+```{r univariate O-stats, message = FALSE, results = 'hide'}
 pitcher_univariate <- Ostats(traits = pitcher_trait_matrix_scaled,
                              plots = factor(rep(1, nrow(pitcher_trait_matrix_scaled))),
                              sp = pitcher_sites,
@@ -108,9 +115,9 @@ pitcher_univariate <- Ostats(traits = pitcher_trait_matrix_scaled,
 )
 ```
 
-Now calculate the multivariate O-statistic for the traits combined, using all default arguments. The `random_seed` is still used even in the absence of a null model for the hypervolume construction.
+Now calculate the multivariate O-statistic for the traits combined, using all default arguments. The `random_seed` is still used even in the absence of a null model because the hypervolumes are constructed with a stochastic algorithm.
 
-```{r, message = FALSE, results = 'hide'}
+```{r multivariate O-stats, message = FALSE, results = 'hide'}
 pitcher_multivariate <- Ostats_multivariate(traits = pitcher_trait_matrix_scaled,
                                             plots = factor(rep(1, nrow(pitcher_trait_matrix_scaled))),
                                             sp = pitcher_sites,
@@ -134,18 +141,35 @@ The single multivariate O-statistic is not comparable to the univariate statisti
 
 - Show the ostats multivariate plot function
 - Show a couple different plots to illustrate the effects of different arguments
+- Give credit to hypervolume package for the plot.Hypervolumelist function
 
-Here is a plot of the overlap of the hypervolumes in 4-dimensional space formed by the individual traits of the pitcher plants at each site. Notice that we don't use the scaled traits for plotting; instead we use the actual ratios so that the axes are interpretable. 
+We can visualize the overlap of the different hypervolumes using the function `Ostats_multivariate_plot()`. This function returns a list of plot objects, one for each community. Each plot displays an upper triangular matrix of panels, one for each pair of traits, with the cross-sections of the hypervolumes in those two dimensions, as well as the raw data points.
 
-```{r, message = FALSE, fig.height = 6, fig.width = 6}
+For example, we can plot the overlap of the hypervolumes in 4-dimensional space formed by the individual traits of the pitcher plants at each site. ~~Notice that we don't use the scaled traits for plotting; instead we use the raw trait values so that the axes are interpretable.~~ 
+
+```{r default plot, message = FALSE, fig.height = 9, fig.width = 9}
 Ostats_multivariate_plot(plots = factor(rep(1, nrow(pitcher_trait_matrix))),
                          sp = pitcher_sites,
-                         traits = pitcher_trait_matrix,
+                         traits = pitcher_trait_matrix_scaled,
                          overlap_dat = pitcher_multivariate,
                          plot_points = TRUE
 )
 ```
 
+We can customize the plot by supplying a color palette to the `colorvalues` argument (the default is a colorblind-friendly palette imported from [viridis](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html)), and add additional spacing around the hypervolume contours using the `axis_buffer_factor` argument. The default value of this argument is `0.25`, or 25% of the range of the data in all directions. In some cases adding additional spacing may be necessary because the contours may extend farther than that. Finally, we can suppress plotting the raw data and only plot the contours using `plot_points = FALSE`.
+
+FIXME: in the actual function we should include argument to buffer the plot itself, not just the contour estimation.
+
+```{r custom plot, message = FALSE, fig.height = 9, fig.width = 9}
+Ostats_multivariate_plot(plots = factor(rep(1, nrow(pitcher_trait_matrix))),
+                         sp = pitcher_sites,
+                         traits = pitcher_trait_matrix,
+                         overlap_dat = pitcher_multivariate,
+                         colorvalues = rainbow(length(sites)),
+                         axis_buffer_factor = 0.5,
+                         plot_points = FALSE
+)
+```
 
 # Some practical notes
 

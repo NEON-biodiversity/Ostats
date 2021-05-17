@@ -40,7 +40,10 @@
 
 
 <meta property="og:title" content="Plot multivariate community overlap — Ostats_multivariate_plot" />
-<meta property="og:description" content="Placeholder. MORE DESCRIPTION GOES HERE." />
+<meta property="og:description" content="This function plots the overlap of traits among
+ species for each community in multivariate space, showing
+ projections of trait hypervolumes into two-dimensional space for
+ all pairs of traits." />
 
 
 
@@ -85,9 +88,6 @@
   </a>
 </li>
 <li>
-  <a href="../articles/Ostats.html">Get started</a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -98,7 +98,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/multivariate-Ostats.html">Multivariate O-statistics</a>
+      <a href="../articles/Ostats-introduction.html">O-stats: pairwise community-level niche overlap statistics</a>
+    </li>
+    <li>
+      <a href="../articles/Ostats-multivariate.html">Multivariate O-statistics</a>
     </li>
   </ul>
 </li>
@@ -124,7 +127,10 @@
     </div>
 
     <div class="ref-description">
-    <p>Placeholder. MORE DESCRIPTION GOES HERE.</p>
+    <p>This function plots the overlap of traits among
+ species for each community in multivariate space, showing
+ projections of trait hypervolumes into two-dimensional space for
+ all pairs of traits.</p>
     </div>
 
     <pre class="usage"><span class='fu'>Ostats_multivariate_plot</span><span class='op'>(</span>
@@ -204,9 +210,24 @@ such as <code>method</code>. If none are provided, default values are used.</p><
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Two-dimensional projections of species trait hypervolumes for each pair of traits,
+ plotted together for each community to show how they overlap each other.
+ The overlap value obtained as output from <code><a href='Ostats_multivariate.html'>Ostats_multivariate</a></code>
+ is labelled on each community graph, if provided by the user.</p>
+<p>The class of the returned object is <code>Ostats_plot_object</code>. Calling
+ <code>print</code> on this object will invoke a method to draw the plot using
+ <code><a href='https://rdrr.io/r/grid/grid.draw.html'>grid.draw</a></code>.</p>
+<p>If more than one community is provided, a list of objects of class
+ <code>Ostats_plot_object</code> will be returned.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>MORE DOCUMENTATION GOES HERE</p>
+    <p>Some of the code for generating contour lines is modified from
+  <code><a href='https://rdrr.io/pkg/hypervolume/man/plot.Hypervolume.html'>plot.HypervolumeList</a></code>.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='Ostats_multivariate.html'>Ostats_multivariate</a></code> for generating multivariate O-statistics</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

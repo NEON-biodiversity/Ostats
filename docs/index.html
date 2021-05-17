@@ -78,7 +78,7 @@
 <div id="ostats-o-statistics-or-pairwise-community-level-niche-overlap-statistics" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#ostats-o-statistics-or-pairwise-community-level-niche-overlap-statistics" class="anchor"></a>Ostats: O-statistics, or pairwise community-level niche overlap statistics</h1></div>
-<p>The Ostats package calculates overlap statistic to measure the degree of community-level trait overlap by fitting nonparametric kernel density functions to each species’ trait distribution and calculating their areas of overlap (Mouillot et al. 2005, Geange et al. 2011, Read et al. 2018). For instance, the median pairwise overlap for a community is calculated by first determining the overlap of each species pair in trait space, and then taking the median overlap of each species pair in a community. The <code><a href="reference/Ostats.html">Ostats()</a></code> function calculates separate univariate overlap statistics for each trait, while the <code><a href="reference/Ostats_multivariate.html">Ostats_multivariate()</a></code> function calculates a single multivariate overlap statistic for all traits. Grady et al. (2018) provide a teaching module that goes into detail about how to interpret the O-stats results presented in Read et al. (2018).</p>
+<p>The Ostats package calculates overlap statistic to measure the degree of community-level trait overlap by fitting nonparametric kernel density functions to each species’ trait distribution and calculating their areas of overlap (Mouillot et al. 2005, Geange et al. 2011, Read et al. 2018). For instance, the median pairwise overlap for a community is calculated by first determining the overlap of each species pair in trait space, and then taking the median overlap of each species pair in a community. The <code><a href="reference/Ostats.html">Ostats()</a></code> function calculates separate univariate overlap statistics for each trait, while the <code><a href="reference/Ostats_multivariate.html">Ostats_multivariate()</a></code> function calculates a single multivariate overlap statistic for all traits. O-statistics can be evaluated against null models to obtain standardized effect sizes. Grady et al. (2018) provide a teaching module that goes into detail about how to interpret the O-stats results presented in Read et al. (2018).</p>
 <div id="authors" class="section level2">
 <h2 class="hasAnchor">
 <a href="#authors" class="anchor"></a>Authors</h2>
@@ -96,7 +96,12 @@
 <h2 class="hasAnchor">
 <a href="#how-to-install" class="anchor"></a>How to install</h2>
 <p>Type the following into your R prompt.</p>
-<pre><code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github('NEON-biodiversity/Ostats')</a></code></pre>
+<pre><code><a href="https://remotes.r-lib.org/reference/install_github.html">remotes::install_github('NEON-biodiversity/Ostats')</a></code></pre>
+</div>
+<div id="getting-started" class="section level2">
+<h2 class="hasAnchor">
+<a href="#getting-started" class="anchor"></a>Getting started</h2>
+<p>See <a href="http:/neon-biodiversity.github.io/Ostats/articles/Ostats-introduction.html">the Ostats introduction vignette</a> for more information.</p>
 </div>
 <div id="references" class="section level2">
 <h2 class="hasAnchor">
