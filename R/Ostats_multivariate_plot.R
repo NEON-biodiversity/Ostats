@@ -58,7 +58,7 @@ Ostats_multivariate_plot <- function(plots,
                                      plot_points = TRUE,
                                      contour_level,
                                      axis_expansion = 0.01,
-                                     axis_buffer_factor = 0.25,
+                                     contour_buffer_factor = 0.25,
                                      panel_height = 3,
                                      panel_width = 3,
                                      units = 'cm',
@@ -170,7 +170,7 @@ Ostats_multivariate_plot <- function(plots,
     }
 
     # Generate contours for all hypervolumes
-    contours_list <- lapply(hv_list, function(hv) if (class(hv) == 'Hypervolume') get_contours(hv, trait_combs, axis_buffer_factor, contour_level) else NA)
+    contours_list <- lapply(hv_list, function(hv) if (class(hv) == 'Hypervolume') get_contours(hv, trait_combs, contour_buffer_factor, contour_level) else NA)
     # Join contours to data frame
     for (i in 1:length(contours_list)) contours_list[[i]][, 'sp'] = sp_in_plot[i]
     contours_df <- do.call(rbind, contours_list)
@@ -243,7 +243,7 @@ Ostats_multivariate_plot <- function(plots,
 
 #' Unexported function to draw contours somewhat modified from hypervolume::plot.HypervolumeList
 #' @noRd
-get_contours <- function(hv, trait_combs, axis_buffer_factor, contour_level) {
+get_contours <- function(hv, trait_combs, contour_buffer_factor, contour_level) {
   hv_density <- nrow(hv@RandomPoints)/hv@Volume
   hv_dimensionality <- hv@Dimensionality
   radius_critical <- hv_density^(-1/hv_dimensionality)
@@ -251,9 +251,9 @@ get_contours <- function(hv, trait_combs, axis_buffer_factor, contour_level) {
   contour_list <- list()
   for (i in 1:ncol(trait_combs)) {
     range_x <- range(hv@RandomPoints[, trait_combs[1, i]])
-    range_x_buffered <- range_x + c(-1, 1) * axis_buffer_factor * diff(range_x)
+    range_x_buffered <- range_x + c(-1, 1) * contour_buffer_factor * diff(range_x)
     range_y <- range(hv@RandomPoints[, trait_combs[2, i]])
-    range_y_buffered <- range_y + c(-1, 1) * axis_buffer_factor * diff(range_y)
+    range_y_buffered <- range_y + c(-1, 1) * contour_buffer_factor * diff(range_y)
     kde <- MASS::kde2d(hv@RandomPoints[, trait_combs[1, i]], hv@RandomPoints[, trait_combs[2, i]], n = 50, h = radius_critical, lims = c(range_x_buffered, range_y_buffered))
     contour_lines <- grDevices::contourLines(kde, levels = contour_level)
     contour_line_dfs <- list()
