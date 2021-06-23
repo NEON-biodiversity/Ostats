@@ -87,7 +87,7 @@ To explore the drivers of variation in body size overlap, `Ostats()` can impleme
 
 * The argument `discrete` has a default value of `FALSE` for continuous variables. If `TRUE`, the data are treated as discrete.
 
-* The argument `circular` defaults to `TRUE`, meaning the data are on a linear scale (i.e., body masses of individual small mammals). The alternative  is `TRUE` for data that are periodic (e.g., measured in radians or degrees). 
+* The argument `circular` defaults to `FALSE`, meaning the data are on a linear scale (i.e., body masses of individual small mammals). The alternative  is `TRUE` for data that are periodic (e.g., measured in radians or degrees). 
 
 * The argument `output` specifies whether the median or mean of all pairwise overlap values between distributions of species will be returned. The default value for output is `"median"`. The choice between median and mean for the output is up to the investigator's discretion, and it is a good idea to see how much this choice influences the results of the analysis. For examples of analyses using the median and mean, respectively, see Read et al. 2018 and Mouillot et al. 2015.  
 

@@ -94,6 +94,9 @@ Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_typ
   if(is.numeric(traits) == FALSE) stop("traits must be a numeric matrix.")
   if(length(unique(sp)) == 1) warning("only one taxon is present; overlap cannot be calculated.")
 
+  # If traits is a vector, coerce to a single column matrix.
+  if(is.vector(traits)) traits <- matrix(data = traits, ncol = 1, dimnames = list(names(traits)))
+
   # If user did not supply a random seed, generate one and print a message.
   if (run_null_model && missing(random_seed)) {
     random_seed <- round(as.numeric(Sys.time()) %% 12345)
