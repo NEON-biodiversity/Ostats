@@ -14,6 +14,7 @@ community_overlap(
   weight_type = "hmean",
   randomize_weights = FALSE,
   unique_values = NULL,
+  raw = FALSE,
   circular_args = list(),
   density_args = list(),
   hypervolume_set_args = list()
@@ -48,6 +49,9 @@ within a community. This can be used to generate null models.}
 \item{unique_values}{Vector of all possible discrete values that \code{traits}
 can take. Only used if \code{discrete = TRUE} and \code{circular = TRUE}.}
 
+\item{raw}{If \code{TRUE}, also return the raw individual pairwise overlaps
+used to calculate the community-level statistic. Default is \code{FALSE}.}
+
 \item{circular_args}{optional list of additional arguments to pass to
 \code{\link[circular]{circular}}. Only used if \code{circular = TRUE} and
 \code{discrete = FALSE}.}
@@ -60,8 +64,10 @@ can take. Only used if \code{discrete = TRUE} and \code{circular = TRUE}.}
 \code{\link[hypervolume]{hypervolume_set}}. Used only in multivariate case.}
 }
 \value{
-The function returns overall species overlap for a community. At default, it returns the
-median of pairwise overlaps weighted by harmonic means of abundances for the community.
+The function returns the O-statistic for the community as a numeric value. If
+\code{raw = TRUE}, instead a list is returned, where the first element \code{value} is
+the numeric value, and the second element \code{raw} is a data frame with all the raw
+pairwise overlaps.
 }
 \description{
 This function calculates the median or mean of pairwise overlaps between density
@@ -74,9 +80,9 @@ estimates of all species in a community taking complete cases with species abund
 greater than 1 from the dataset. The default calculates the median of pairwise overlaps
 for the whole community using the harmonic means of abundances of the species pairs as
 weights, which minimizes the effect of outliners and rare species.If the argument
-weight_type = "none", no weights are used for the calculation of mean/median. If
-weight_type = "mean", arithmetic means of abundances are used as weights. To change the
-output to mean, specify the argument output = "mean".
+\code{weight_type = "none"}, no weights are used for the calculation of mean/median. If
+\code{weight_type = "mean"}, arithmetic means of abundances are used as weights. To change the
+output to mean, specify the argument \code{output = "mean"}.
 }
 \examples{
 library(Ostats)
