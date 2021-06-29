@@ -82,7 +82,7 @@ This function plots the overlap of traits among
 }
 \details{
 Some of the code for generating contour lines is modified from
-  \code{\link[hypervolume]{plot.HypervolumeList}}.
+  \code{\link[hypervolume:plot.Hypervolume]{plot.HypervolumeList}}.
 }
 \seealso{
 \code{\link{Ostats_multivariate}} for generating multivariate O-statistics

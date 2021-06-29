@@ -23,6 +23,8 @@
 #'   within a community. This can be used to generate null models.
 #' @param unique_values Vector of all possible discrete values that \code{traits}
 #'   can take. Only used if \code{discrete = TRUE} and \code{circular = TRUE}.
+#' @param raw If \code{TRUE}, also return the raw individual pairwise overlaps
+#'   used to calculate the community-level statistic. Default is \code{FALSE}.
 #' @param circular_args optional list of additional arguments to pass to
 #'  \code{\link[circular]{circular}}. Only used if \code{circular = TRUE} and
 #'  \code{discrete = FALSE}.
@@ -37,12 +39,14 @@
 #' greater than 1 from the dataset. The default calculates the median of pairwise overlaps
 #' for the whole community using the harmonic means of abundances of the species pairs as
 #' weights, which minimizes the effect of outliners and rare species.If the argument
-#' weight_type = "none", no weights are used for the calculation of mean/median. If
-#' weight_type = "mean", arithmetic means of abundances are used as weights. To change the
-#' output to mean, specify the argument output = "mean".
+#' \code{weight_type = "none"}, no weights are used for the calculation of mean/median. If
+#' \code{weight_type = "mean"}, arithmetic means of abundances are used as weights. To change the
+#' output to mean, specify the argument \code{output = "mean"}.
 #'
-#' @return The function returns overall species overlap for a community. At default, it returns the
-#' median of pairwise overlaps weighted by harmonic means of abundances for the community.
+#' @return The function returns the O-statistic for the community as a numeric value. If
+#' \code{raw = TRUE}, instead a list is returned, where the first element \code{value} is
+#' the numeric value, and the second element \code{raw} is a data frame with all the raw
+#' pairwise overlaps.
 #'
 #' @references Read, Q. D. et al. Among-species overlap in rodent body size
 #'   distributions predicts species richness along a temperature gradient.
@@ -62,7 +66,7 @@
 #'    sp = factor(dat$taxonID))
 #'
 #' @export
-community_overlap <- function(traits, sp, discrete = FALSE, circular = FALSE, normal = TRUE, output = "median", weight_type= "hmean", randomize_weights = FALSE, unique_values = NULL, circular_args = list(), density_args = list(), hypervolume_set_args = list()) {
+community_overlap <- function(traits, sp, discrete = FALSE, circular = FALSE, normal = TRUE, output = "median", weight_type= "hmean", randomize_weights = FALSE, unique_values = NULL, raw = FALSE, circular_args = list(), density_args = list(), hypervolume_set_args = list()) {
 
   # Return error if circular or discrete are specified with multivariate data.
   if (circular & 'matrix' %in% class(traits)) {
@@ -80,7 +84,8 @@ community_overlap <- function(traits, sp, discrete = FALSE, circular = FALSE, no
   abunds <- abunds[abunds>1]
   dat <- dat[dat$sp %in% names(abunds), ]
   traitlist <- split(dat[, -ncol(dat)], dat$sp)
-  nspp <- length(traitlist)
+  uniquespp <- unique(dat$sp)
+  nspp <- length(uniquespp)
 
   # Overlap cannot be calculated if there are less than 2 species with at least 2 individuals each.
   if (nspp < 2) return(NA)
@@ -103,16 +108,17 @@ community_overlap <- function(traits, sp, discrete = FALSE, circular = FALSE, no
   overlaps <- NULL
   abund_pairs <- NULL
 
-  for (sp_a in 1:(nspp-1)) {
-    for (sp_b in (sp_a+1):nspp) {
+  # All possible pairwise combinations.
+  combs <- combn(1:nspp, 2)
 
-      overlaps <- c(overlaps, pairwise_overlap(density_list[[sp_a]], density_list[[sp_b]], discrete, density_args, hypervolume_set_args))
+  for (idx in 1:ncol(combs)) {
+
+      overlaps <- c(overlaps, pairwise_overlap(density_list[[combs[1, idx]]], density_list[[combs[2, idx]]], discrete, density_args, hypervolume_set_args))
       if (weight_type == "hmean")
-        abund_pairs <- c(abund_pairs, 2/(1/abunds[sp_a] + 1/abunds[sp_b]))
+        abund_pairs <- c(abund_pairs, 2/(1/abunds[combs[1, idx]] + 1/abunds[combs[2, idx]]))
       if (weight_type == "mean")
-        abund_pairs <- c(abund_pairs, (abunds[sp_a] + abunds[sp_b]))
+        abund_pairs <- c(abund_pairs, (abunds[combs[1, idx]] + abunds[combs[2, idx]]))
 
-    }
   }
 
   if (randomize_weights == TRUE){
@@ -130,7 +136,17 @@ community_overlap <- function(traits, sp, discrete = FALSE, circular = FALSE, no
   if (output == "mean" && weight_type == "none"){
     final_output <- mean(overlaps)}
 
-return(final_output)
+  if (raw == TRUE) {
+    # Create a data frame of raw overlaps to return as well.
+    overlaps_df <- as.data.frame(cbind(t(combs), overlaps))
+    overlaps_df[,1] <- uniquespp[overlaps_df[,1]]
+    overlaps_df[,2] <- uniquespp[overlaps_df[,2]]
+    names(overlaps_df) <- c('species1', 'species2', 'overlap')
+
+    return(list(value = final_output, raw = overlaps_df))
+  } else {
+    return(final_output)
+  }
 }
 
 
