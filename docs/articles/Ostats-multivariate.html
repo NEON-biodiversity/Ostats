@@ -76,7 +76,7 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Multivariate O-statistics</h1>
-                        <h4 class="author">Quentin D. Read, (INSERT OTHER AUTHORS)</h4>
+                        <h4 class="author">Quentin D. Read, (INSERT OTHER AUTHORS. Authors of this doc aren’t necessarily all package authors, just those who specifically contributed to this vignette.)</h4>
             
       
       
@@ -89,26 +89,10 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">Ostats</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">pitcher_traits</span><span class="op">)</span></code></pre></div>
-<div id="notes" class="section level1">
-<h1 class="hasAnchor">
-<a href="#notes" class="anchor"></a>Notes</h1>
-<ul>
-<li>Remove this section in the final version.</li>
-<li>Authors of this doc aren’t necessarily all package authors, just those who specifically contributed to this vignette.</li>
-<li>Outline of the vignette:
-<ul>
-<li>Explain multivariate O-stats, using hypervolumes</li>
-<li>Show a “toy” version of the pitcher plant dataset</li>
-<li>Run a few different variants of multivariate O-stats on them</li>
-<li>Create some plots</li>
-</ul>
-</li>
-</ul>
-</div>
 <div id="overview" class="section level1">
 <h1 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h1>
-<p>This vignette is intended for users who are already familiar with the single-variable O-statistics we introduce in the first package vignette (LINK TO IT).</p>
+<p>This vignette is intended for users who are already familiar with the single-variable O-statistics we introduce in the <a href="Ostats-introduction.html">first package vignette</a>.</p>
 <p>1- Hutchinson: niche is n-dimensional hypervolume 2 - trait ecologists are interested in tradeoffs among traits or interactions among multiple traits 3 - the underlying math and theory here were worked out by Blonder et al. 4- Functions from their hypervolume package are used in Ostats</p>
 <p>(Isa is editing…) 1 - The occurrence range of a species can be determined by a set of factors which are called fundamental niche // The set of factors where the species can potentially occur is called the fundamental niche. However,[the fundamental niche can be reduced by competitors or predators] the presence of competitors or predators can reduce this space, causing the species to occur only in a fraction of that potential space. The set of factors where the species actually occurs is called the fundamental niche. Since the niche of a species can be determined by several abiotic and biotic variables, hutchinson (1952) determined the concept of Hypervolume as …. "". [The concepts of fundamental and realized niche were first proposed by Hutchinson in 1957,] [Since then] many approaches have been developed to measure hypervolume niche of a species (GIVE EXAMPLES - hypervolume). Because traits…… eclogists are intrestes in tradeoffs among traits or interactions among them. Here we…… the underlying math and theory here were worked out by Blonder et al…</p>
 </div>
@@ -270,10 +254,6 @@
 <div id="calculating-hypervolume-o-statistics" class="section level1">
 <h1 class="hasAnchor">
 <a href="#calculating-hypervolume-o-statistics" class="anchor"></a>Calculating hypervolume O-statistics</h1>
-<ul>
-<li>Calculate ostats multivariate</li>
-<li>Do a couple different versions with different arguments passed to hypervolume() to demonstrate the sensitivity of results to those args</li>
-</ul>
 <p>Here we calculate the univariate O-statistics for each of the pitcher traits separately, then a single multivariate O-statistic representing overlap of the trait hypervolumes.</p>
 <p>When estimating hypervolumes, as with any other multivariate analysis, it is critical to ensure that the hypervolume axes are not too highly correlated with one another. If traits are too highly correlated, the calculated hypervolume will not accurately represent the distribution in trait space. In this case, we resolve the issue by excluding a few of the traits with high correlations. You could also choose to use a variance maximization procedure like PCA instead.</p>
 <p>First ensure that the data are in the appropriate form for <code><a href="../reference/Ostats.html">Ostats()</a></code> and <code><a href="../reference/Ostats_multivariate.html">Ostats_multivariate()</a></code>. For this example we will remove individuals with incomplete data. Using <code><a href="https://rdrr.io/r/stats/cor.html">cor()</a></code> on the cleaned dataset, we can see the relatively high correlations among some of the traits.</p>
@@ -329,12 +309,14 @@
 <span class="co">#&gt;      rosette_diameter_1 pitcher_width mouth_diameter lip_thickness</span>
 <span class="co">#&gt; [1,]              -1.31         -1.96          -2.64         -1.81</span>
 <span class="co">#&gt; [2,]               3.62          4.36           2.31          3.21</span></code></pre></div>
+<div id="univariate-versus-multivariate-o-statistics" class="section level2">
+<h2 class="hasAnchor">
+<a href="#univariate-versus-multivariate-o-statistics" class="anchor"></a>Univariate versus multivariate O-statistics</h2>
 <p>Next calculate the univariate O-statistics for each of the four traits.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pitcher_univariate</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Ostats.html">Ostats</a></span><span class="op">(</span>traits <span class="op">=</span> <span class="va">pitcher_trait_matrix_scaled</span>,
                              plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">pitcher_trait_matrix_scaled</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
                              sp <span class="op">=</span> <span class="va">pitcher_sites</span>,
-                             random_seed <span class="op">=</span> <span class="fl">444</span>,
                              run_null_model <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
 <p>Now calculate the multivariate O-statistic for the traits combined, using all default arguments. The <code>random_seed</code> is still used even in the absence of a null model because the hypervolumes are constructed with a stochastic algorithm.</p>
@@ -343,8 +325,11 @@
                                             plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">pitcher_trait_matrix_scaled</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
                                             sp <span class="op">=</span> <span class="va">pitcher_sites</span>,
                                             random_seed <span class="op">=</span> <span class="fl">333</span>,
-                                            run_null_model <span class="op">=</span> <span class="cn">FALSE</span>
+                                            run_null_model <span class="op">=</span> <span class="cn">FALSE</span>, 
+                                            hypervolume_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">'box'</span><span class="op">)</span>,
+                                            hypervolume_set_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>num.points.max <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
+<p>Notice that <code><a href="../reference/Ostats_multivariate.html">Ostats_multivariate()</a></code> accepts additional arguments to <code><a href="https://rdrr.io/pkg/hypervolume/man/hypervolume.html">hypervolume::hypervolume()</a></code>, which it uses to construct the hypervolumes, and <code><a href="https://rdrr.io/pkg/hypervolume/man/hypervolume_set.html">hypervolume::hypervolume_set()</a></code>, which it uses to estimate the hypervolume overlaps. For example, the default method for hypervolume construction is <code>method = "gaussian"</code>, and the default maximum number of points to use for hypervolume overlap estimation is <code>num.points.max = 10^(3+sqrt(n))</code>, where <code>n</code> is the number of dimensions. In this vignette, we modified the defaults to use a different method (<code>"box"</code>) for hypervolume construction and fewer points (<code>1000</code>) for overlap estimation: <code>hypervolume_args = list(method = 'box'), hypervolume_set_args = list(num.points.max = 1000).</code> Those options speed processing time dramatically. See the help documentation for <code><a href="https://rdrr.io/pkg/hypervolume/man/hypervolume.html">hypervolume::hypervolume</a></code> and <code><a href="https://rdrr.io/pkg/hypervolume/man/hypervolume_set.html">hypervolume::hypervolume_set</a></code> for more details.</p>
 <p>Compare the univariate and multivariate O-statistics.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pitcher_univariate</span><span class="op">$</span><span class="va">overlaps_norm</span>
@@ -353,31 +338,87 @@
 
 <span class="va">pitcher_multivariate</span><span class="op">$</span><span class="va">overlaps_norm</span>
 <span class="co">#&gt;        [,1]</span>
-<span class="co">#&gt; 1 0.6818708</span></code></pre></div>
+<span class="co">#&gt; 1 0.7441601</span></code></pre></div>
 <p>The single multivariate O-statistic is not comparable to the univariate statistics because of differing dimensionality. Therefore we need to evaluate them against null models.</p>
-<p><strong>Here run the multivariate O-stats with different args to hypervolume, and with null models</strong></p>
+</div>
+<div id="null-models-for-multivariate-o-statistics" class="section level2">
+<h2 class="hasAnchor">
+<a href="#null-models-for-multivariate-o-statistics" class="anchor"></a>Null models for multivariate O-statistics</h2>
+<p>If <code>run_null_model</code> is set to <code>TRUE</code>, <code><a href="../reference/Ostats_multivariate.html">Ostats_multivariate()</a></code> will do <code>nperm</code> iterations of a null model, defaulting to <code>99</code>. Here we use a smaller number for demonstration purposes.</p>
+<p>First, for comparison purposes, run the null models for the univariate O-statistics for each of the four traits.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pitcher_univariate_withnull</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Ostats.html">Ostats</a></span><span class="op">(</span>traits <span class="op">=</span> <span class="va">pitcher_trait_matrix_scaled</span>,
+                                      plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">pitcher_trait_matrix_scaled</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
+                                      sp <span class="op">=</span> <span class="va">pitcher_sites</span>,
+                                      random_seed <span class="op">=</span> <span class="fl">666</span>,
+                                      run_null_model <span class="op">=</span> <span class="cn">TRUE</span>,
+                                      nperm <span class="op">=</span> <span class="fl">50</span>
+<span class="op">)</span></code></pre></div>
+<p>Next, do the same for the multivariate overlap.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pitcher_multivariate_withnull</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Ostats_multivariate.html">Ostats_multivariate</a></span><span class="op">(</span>traits <span class="op">=</span> <span class="va">pitcher_trait_matrix_scaled</span>,
+                                            plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">pitcher_trait_matrix_scaled</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
+                                            sp <span class="op">=</span> <span class="va">pitcher_sites</span>,
+                                            random_seed <span class="op">=</span> <span class="fl">555</span>,
+                                            run_null_model <span class="op">=</span> <span class="cn">TRUE</span>,
+                                            nperm <span class="op">=</span> <span class="fl">50</span>,
+                                            hypervolume_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">'box'</span><span class="op">)</span>,
+                                            hypervolume_set_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>num.points.max <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
+<span class="op">)</span></code></pre></div>
+<p>Comparing the standardized effect sizes, normalized to remove the effect of varying sample sizes across sites, we can see that three of the four individual traits have O-statistics significantly lower than the null expectation (lower than the 2.5%ile of the null distribution), while the multivariate O-statistic is not significantly different from the null expectation:</p>
+<table class="table">
+<thead><tr class="header">
+<th align="left">O-statistic</th>
+<th align="right">rosette diameter</th>
+<th align="right">pitcher width</th>
+<th align="right">mouth diameter</th>
+<th align="right">lip thickness</th>
+<th align="right">multivariate</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">observed</td>
+<td align="right">0.528</td>
+<td align="right">0.742</td>
+<td align="right">0.820</td>
+<td align="right">0.573</td>
+<td align="right">0.745</td>
+</tr>
+<tr class="even">
+<td align="left">null 2.5%</td>
+<td align="right">0.722</td>
+<td align="right">0.760</td>
+<td align="right">0.767</td>
+<td align="right">0.731</td>
+<td align="right">0.727</td>
+</tr>
+<tr class="odd">
+<td align="left">null 97.5%</td>
+<td align="right">0.866</td>
+<td align="right">0.875</td>
+<td align="right">0.888</td>
+<td align="right">0.869</td>
+<td align="right">0.786</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div id="visualizing-hypervolume-o-statistics" class="section level1">
 <h1 class="hasAnchor">
 <a href="#visualizing-hypervolume-o-statistics" class="anchor"></a>Visualizing hypervolume O-statistics</h1>
-<ul>
-<li>Show the ostats multivariate plot function</li>
-<li>Show a couple different plots to illustrate the effects of different arguments</li>
-<li>Give credit to hypervolume package for the plot.Hypervolumelist function</li>
-</ul>
 <p>We can visualize the overlap of the different hypervolumes using the function <code><a href="../reference/Ostats_multivariate_plot.html">Ostats_multivariate_plot()</a></code>. This function returns a list of plot objects, one for each community. Each plot displays an upper triangular matrix of panels, one for each pair of traits, with the cross-sections of the hypervolumes in those two dimensions, as well as the raw data points.</p>
 <p>For example, we can plot the overlap of the hypervolumes in 4-dimensional space formed by the individual traits of the pitcher plants at each site. Note that although we calculated the hypervolume overlaps on the scaled traits, we are plotting the hypervolumes using the unscaled trait axes. However, this requires us to set the argument <code>contour_level = 0.0001</code> because the unscaled hypervolumes have too low densities to plot using the default <code>contour_level = 0.01</code>.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/Ostats_multivariate_plot.html">Ostats_multivariate_plot</a></span><span class="op">(</span>plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">pitcher_trait_matrix</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
                          sp <span class="op">=</span> <span class="va">pitcher_sites</span>,
                          traits <span class="op">=</span> <span class="va">pitcher_trait_matrix</span>,
                          contour_level <span class="op">=</span> <span class="fl">0.0001</span>,
-                         overlap_dat <span class="op">=</span> <span class="va">pitcher_multivariate</span>,
+                         overlap_dat <span class="op">=</span> <span class="va">pitcher_multivariate</span>
 <span class="op">)</span></code></pre></div>
 <p><img src="Ostats-multivariate_files/figure-html/default%20plot-1.png" width="864"></p>
 <p>We can customize the plot by supplying a color palette to the <code>colorvalues</code> argument (the default is a colorblind-friendly palette imported from <a href="https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html">viridis</a>), and add additional spacing around the hypervolume contours using the <code>axis_expansion</code> argument. The default value of this argument is <code>0.01</code>, or 1% in all directions. Finally, we can suppress plotting the raw data and only plot the contours using <code>plot_points = FALSE</code>.</p>
-<p>FIXME: in the actual function we should include argument to buffer the plot itself, not just the contour estimation.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/Ostats_multivariate_plot.html">Ostats_multivariate_plot</a></span><span class="op">(</span>plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">pitcher_trait_matrix</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
                          sp <span class="op">=</span> <span class="va">pitcher_sites</span>,
                          traits <span class="op">=</span> <span class="va">pitcher_trait_matrix</span>,
@@ -388,6 +429,7 @@
                          plot_points <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
 <p><img src="Ostats-multivariate_files/figure-html/custom%20plot-1.png" width="864"></p>
+<p>The code underlying <code><a href="../reference/Ostats_multivariate_plot.html">Ostats_multivariate_plot()</a></code> was adapted from the <code>plot.Hypervolumelist()</code> function in the <code>hypervolume</code> package.</p>
 </div>
 <div id="some-practical-notes" class="section level1">
 <h1 class="hasAnchor">
