@@ -1,6 +1,6 @@
 ---
 title: "Multivariate O-statistics"
-author: "Quentin D. Read, (INSERT OTHER AUTHORS)"
+author: "Quentin D. Read, (INSERT OTHER AUTHORS. Authors of this doc aren't necessarily all package authors, just those who specifically contributed to this vignette.)"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{multivariate-Ostats}
@@ -22,19 +22,9 @@ library(Ostats)
 data(pitcher_traits)
 ```
 
-# Notes
-
-- Remove this section in the final version.
-- Authors of this doc aren't necessarily all package authors, just those who specifically contributed to this vignette.
-- Outline of the vignette:
-  + Explain multivariate O-stats, using hypervolumes
-  + Show a "toy" version of the pitcher plant dataset
-  + Run a few different variants of multivariate O-stats on them
-  + Create some plots
-  
 # Overview
 
-This vignette is intended for users who are already familiar with the single-variable O-statistics we introduce in the first package vignette (LINK TO IT).
+This vignette is intended for users who are already familiar with the single-variable O-statistics we introduce in the [first package vignette](Ostats-introduction.html).
 
 1- Hutchinson: niche is n-dimensional hypervolume
 2 - trait ecologists are interested in tradeoffs among traits or interactions among multiple traits
@@ -70,9 +60,6 @@ pitcher_traits <- pitcher_traits[pitcher_traits$site_id %in% sites, ]
 
 # Calculating hypervolume O-statistics
 
-- Calculate ostats multivariate 
-- Do a couple different versions with different arguments passed to hypervolume() to demonstrate the sensitivity of results to those args
-
 Here we calculate the univariate O-statistics for each of the pitcher traits separately, then a single multivariate O-statistic representing overlap of the trait hypervolumes. 
 
 When estimating hypervolumes, as with any other multivariate analysis, it is critical to ensure that the hypervolume axes are not too highly correlated with one another. If traits are too highly correlated, the calculated hypervolume will not accurately represent the distribution in trait space. In this case, we resolve the issue by excluding a few of the traits with high correlations. You could also choose to use a variance maximization procedure like PCA instead.
@@ -107,6 +94,7 @@ pitcher_trait_matrix_scaled <- scale(pitcher_trait_matrix, center = TRUE, scale 
 round(apply(pitcher_trait_matrix_scaled, 2, range), 2)
 ```
 
+## Univariate versus multivariate O-statistics
 
 Next calculate the univariate O-statistics for each of the four traits. 
 
@@ -114,7 +102,6 @@ Next calculate the univariate O-statistics for each of the four traits.
 pitcher_univariate <- Ostats(traits = pitcher_trait_matrix_scaled,
                              plots = factor(rep(1, nrow(pitcher_trait_matrix_scaled))),
                              sp = pitcher_sites,
-                             random_seed = 444,
                              run_null_model = FALSE
 )
 ```
@@ -126,9 +113,14 @@ pitcher_multivariate <- Ostats_multivariate(traits = pitcher_trait_matrix_scaled
                                             plots = factor(rep(1, nrow(pitcher_trait_matrix_scaled))),
                                             sp = pitcher_sites,
                                             random_seed = 333,
-                                            run_null_model = FALSE
+                                            run_null_model = FALSE, 
+                                            hypervolume_args = list(method = 'box'),
+                                            hypervolume_set_args = list(num.points.max = 1000)
 )
 ```
+
+Notice that `Ostats_multivariate()` accepts additional arguments to `hypervolume::hypervolume()`, which it uses to construct the hypervolumes, and `hypervolume::hypervolume_set()`, which it uses to estimate the hypervolume overlaps. For example, the default method for hypervolume construction is `method = "gaussian"`, and the default maximum number of points to use for hypervolume overlap estimation is `num.points.max = 10^(3+sqrt(n))`, where `n` is the number of dimensions. In this vignette, we modified the defaults to use a different method (`"box"`) for hypervolume construction and fewer points (`1000`) for overlap estimation: `hypervolume_args = list(method = 'box'), hypervolume_set_args = list(num.points.max = 1000).` Those options speed processing time dramatically. See the help documentation for `hypervolume::hypervolume` and `hypervolume::hypervolume_set` for more details.
+
 Compare the univariate and multivariate O-statistics.
 
 ```{r}
@@ -139,13 +131,54 @@ pitcher_multivariate$overlaps_norm
 
 The single multivariate O-statistic is not comparable to the univariate statistics because of differing dimensionality. Therefore we need to evaluate them against null models.
 
-**Here run the multivariate O-stats with different args to hypervolume, and with null models**
+## Null models for multivariate O-statistics 
+
+If `run_null_model` is set to `TRUE`, `Ostats_multivariate()` will do `nperm` iterations of a null model, defaulting to `99`. Here we use a smaller number for demonstration purposes.
+
+First, for comparison purposes, run the null models for the univariate O-statistics for each of the four traits.
+
+```{r univariate null, message = FALSE, results = 'hide'}
+pitcher_univariate_withnull <- Ostats(traits = pitcher_trait_matrix_scaled,
+                                      plots = factor(rep(1, nrow(pitcher_trait_matrix_scaled))),
+                                      sp = pitcher_sites,
+                                      random_seed = 666,
+                                      run_null_model = TRUE,
+                                      nperm = 50
+)
+```
+
+Next, do the same for the multivariate overlap. 
+
+```{r multivariate null, message = FALSE, results = 'hide'}
+pitcher_multivariate_withnull <- Ostats_multivariate(traits = pitcher_trait_matrix_scaled,
+                                            plots = factor(rep(1, nrow(pitcher_trait_matrix_scaled))),
+                                            sp = pitcher_sites,
+                                            random_seed = 555,
+                                            run_null_model = TRUE,
+                                            nperm = 50,
+                                            hypervolume_args = list(method = 'box'),
+                                            hypervolume_set_args = list(num.points.max = 1000)
+)
+```
+
+Comparing the standardized effect sizes, normalized to remove the effect of varying sample sizes across sites, we can see that three of the four individual traits have O-statistics significantly lower than the null expectation (lower than the 2.5%ile of the null distribution), while the multivariate O-statistic is not significantly different from the null expectation:
+
+```{r, echo = FALSE}
+uni_result <- with(pitcher_univariate_withnull, rbind(overlaps_norm, 
+                                                      overlaps_norm_ses$raw_lower,
+                                                      overlaps_norm_ses$raw_upper))
+multi_result <- with(pitcher_multivariate_withnull, c(overlaps_norm,
+                                                      overlaps_norm_ses$raw_lower,
+                                                      overlaps_norm_ses$raw_upper))
+knitr::kable(data.frame(Ostat = c('observed', 'null 2.5%', 'null 97.5%'),
+                        cbind(uni_result, multi_result)),
+             row.names = FALSE,
+             col.names = c('O-statistic', 'rosette diameter', 'pitcher width', 'mouth diameter', 'lip thickness', 'multivariate'),
+             digits = 3)
+```
+
 
 # Visualizing hypervolume O-statistics
-
-- Show the ostats multivariate plot function
-- Show a couple different plots to illustrate the effects of different arguments
-- Give credit to hypervolume package for the plot.Hypervolumelist function
 
 We can visualize the overlap of the different hypervolumes using the function `Ostats_multivariate_plot()`. This function returns a list of plot objects, one for each community. Each plot displays an upper triangular matrix of panels, one for each pair of traits, with the cross-sections of the hypervolumes in those two dimensions, as well as the raw data points.
 
@@ -156,13 +189,11 @@ Ostats_multivariate_plot(plots = factor(rep(1, nrow(pitcher_trait_matrix))),
                          sp = pitcher_sites,
                          traits = pitcher_trait_matrix,
                          contour_level = 0.0001,
-                         overlap_dat = pitcher_multivariate,
+                         overlap_dat = pitcher_multivariate
 )
 ```
 
 We can customize the plot by supplying a color palette to the `colorvalues` argument (the default is a colorblind-friendly palette imported from [viridis](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html)), and add additional spacing around the hypervolume contours using the `axis_expansion` argument. The default value of this argument is `0.01`, or 1% in all directions. Finally, we can suppress plotting the raw data and only plot the contours using `plot_points = FALSE`.
-
-FIXME: in the actual function we should include argument to buffer the plot itself, not just the contour estimation.
 
 ```{r custom plot, message = FALSE, fig.height = 9, fig.width = 9}
 Ostats_multivariate_plot(plots = factor(rep(1, nrow(pitcher_trait_matrix))),
@@ -175,6 +206,8 @@ Ostats_multivariate_plot(plots = factor(rep(1, nrow(pitcher_trait_matrix))),
                          plot_points = FALSE
 )
 ```
+
+The code underlying `Ostats_multivariate_plot()` was adapted from the `plot.Hypervolumelist()` function in the `hypervolume` package.
 
 # Some practical notes
 

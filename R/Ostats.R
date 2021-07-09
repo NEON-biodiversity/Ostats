@@ -202,7 +202,7 @@ Ostats <- function(traits, plots, sp, discrete = FALSE, circular = FALSE, output
       for (s in 1:nlevels(plots)) {
         for (t in 1:ncol(traits)) {
           if (!swap_means) {
-            overlap_norm_sti <- try(community_overlap(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], discrete = discrete[t], circular = circular[t], output = output, weight_type = weight_type, normal = TRUE, unique_values = unique_values, randomize_weights = shuffle_weights, circular_args = circular_args, density_args = density_args), TRUE)
+            overlap_norm_sti <- try(community_overlap(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]), discrete = discrete[t], circular = circular[t], output = output, weight_type = weight_type, normal = TRUE, unique_values = unique_values, randomize_weights = shuffle_weights, circular_args = circular_args, density_args = density_args), TRUE)
             overlap_unnorm_sti <- try(community_overlap(traits = traits[plots == levels(plots)[s], t], sp = sample(sp[plots == levels(plots)[s]]), discrete = discrete[t], circular = circular[t],output = output, weight_type = weight_type, normal = FALSE, randomize_weights = shuffle_weights, unique_values = unique_values, circular_args = circular_args, density_args = density_args), TRUE)
           } else {
             traits_st <- traits[plots==levels(plots)[s], t]

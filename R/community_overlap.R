@@ -109,7 +109,7 @@ community_overlap <- function(traits, sp, discrete = FALSE, circular = FALSE, no
   abund_pairs <- NULL
 
   # All possible pairwise combinations.
-  combs <- combn(1:nspp, 2)
+  combs <- utils::combn(1:nspp, 2)
 
   for (idx in 1:ncol(combs)) {
 
