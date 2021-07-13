@@ -76,7 +76,7 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Multivariate O-statistics</h1>
-                        <h4 class="author">Quentin D. Read, (INSERT OTHER AUTHORS. Authors of this doc aren’t necessarily all package authors, just those who specifically contributed to this vignette.)</h4>
+                        <h4 class="author">Quentin D. Read, Isadora E. Fluck</h4>
             
       
       
@@ -92,18 +92,15 @@
 <div id="overview" class="section level1">
 <h1 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h1>
-<p>This vignette is intended for users who are already familiar with the single-variable O-statistics we introduce in the <a href="Ostats-introduction.html">first package vignette</a>.</p>
-<p>1- Hutchinson: niche is n-dimensional hypervolume 2 - trait ecologists are interested in tradeoffs among traits or interactions among multiple traits 3 - the underlying math and theory here were worked out by Blonder et al. 4- Functions from their hypervolume package are used in Ostats</p>
-<p>(Isa is editing…) 1 - The occurrence range of a species can be determined by a set of factors which are called fundamental niche // The set of factors where the species can potentially occur is called the fundamental niche. However,[the fundamental niche can be reduced by competitors or predators] the presence of competitors or predators can reduce this space, causing the species to occur only in a fraction of that potential space. The set of factors where the species actually occurs is called the fundamental niche. Since the niche of a species can be determined by several abiotic and biotic variables, hutchinson (1952) determined the concept of Hypervolume as …. "". [The concepts of fundamental and realized niche were first proposed by Hutchinson in 1957,] [Since then] many approaches have been developed to measure hypervolume niche of a species (GIVE EXAMPLES - hypervolume). Because traits…… eclogists are intrestes in tradeoffs among traits or interactions among them. Here we…… the underlying math and theory here were worked out by Blonder et al…</p>
+<p>This vignette on multi-variable community-level trait overlap statistics is intended for users who are already familiar with the single-variable O-statistics we introduce in the <a href="Ostats-introduction.html">first package vignette</a>.</p>
+<p>We decided to include functions in our package to estimate community-level niche overlap statistics (O-statistics) in multivariate space because of ecologists’ long-standing interest in how species’ niches take shape across multiple environmental dimensions. Since the niche of a species can be determined by several abiotic and biotic variables, Hutchinson (1957) introduced the mathematical formulation of a niche as an <em>n</em>-dimensional hypervolume. Since then, many approaches have been developed to measure the multivariate niche of a species (Green 1971; Swanson et al. 2015). Quantifying the niche in multiple dimensions can help understand how life strategy trade-offs and interactions among multiple traits shape organisms’ structure and function.</p>
+<p>Blonder and colleagues rekindled interest in using hypervolumes to describe species’ niches in multiple dimensions. They worked out the underlying theory (Blonder et al. 2014; Lamanna et al. 2014; Blonder 2018) and released the R package <a href="https://cran.r-project.org/package=hypervolume">hypervolume</a>. Their package uses stochastic geometry to estimate multivariate kernel densities and . The multivariate O-statistic estimation in the <code>Ostats</code> package relies on functions imported from <a href="https://cran.r-project.org/package=hypervolume">hypervolume</a>.</p>
+<p>In this vignette, we demonstrate how you can use functions in the <code>Ostats</code> package to study trait overlap in multiple dimensions.</p>
 </div>
 <div id="example-dataset" class="section level1">
 <h1 class="hasAnchor">
 <a href="#example-dataset" class="anchor"></a>Example dataset</h1>
-<ul>
-<li>Pitcher plant traits, morphological measurements taken from sites around North America</li>
-<li>Specific site locations have been removed</li>
-<li>Univariate plots of pitcher traits (distributions)</li>
-</ul>
+<p>The dataset we use in this vignette includes traits collected on carnivorous pitchers of the northern pitcher plant, <em>Sarracenia purpurea</em>, at 36 sites across the species’ native North American latitudinal range (30.197°N – 53.722°N; Freedman et al. 2021). Pitcher traits measured include orthogonal rosette diameters, pitcher length, pitcher width, keel width, mouth diameter, and lip thickness. See Ellison and Gotelli (2002) for a diagram illustrating traits measured. Site locations and identifying information have been removed for this example.</p>
 <p>Here we show a few randomly selected rows from the pitcher traits dataset. Here, all individuals are of the same species. Therefore we will use populations (sites) as the <code>sp</code> variable in our analysis, with a single value for <code>plots</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
@@ -296,7 +293,7 @@
 <span class="co">#&gt; pitcher_width               0.12</span>
 <span class="co">#&gt; mouth_diameter              0.47</span>
 <span class="co">#&gt; lip_thickness               1.00</span></code></pre></div>
-<p>Next we center and scale all the columns to ensure that the hypervolume overlap statistic is not influenced by different magnitudes of each trait.</p>
+<p>Next we center and scale all the columns to ensure that the hypervolume O-statistic is not influenced by different magnitudes of each trait.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">pitcher_trait_matrix</span>, <span class="fl">2</span>, <span class="va">range</span><span class="op">)</span>
 <span class="co">#&gt;      rosette_diameter_1 pitcher_width mouth_diameter lip_thickness</span>
@@ -312,14 +309,14 @@
 <div id="univariate-versus-multivariate-o-statistics" class="section level2">
 <h2 class="hasAnchor">
 <a href="#univariate-versus-multivariate-o-statistics" class="anchor"></a>Univariate versus multivariate O-statistics</h2>
-<p>Next calculate the univariate O-statistics for each of the four traits.</p>
+<p>For demonstration purposes, let’s calculate the univariate O-statistics for each of the four traits so that we can compare them to the multivariate statistic.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pitcher_univariate</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Ostats.html">Ostats</a></span><span class="op">(</span>traits <span class="op">=</span> <span class="va">pitcher_trait_matrix_scaled</span>,
                              plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">pitcher_trait_matrix_scaled</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
                              sp <span class="op">=</span> <span class="va">pitcher_sites</span>,
                              run_null_model <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
-<p>Now calculate the multivariate O-statistic for the traits combined, using all default arguments. The <code>random_seed</code> is still used even in the absence of a null model because the hypervolumes are constructed with a stochastic algorithm.</p>
+<p>Now calculate the multivariate O-statistic for the traits combined. We still specify the argument <code>random_seed</code> even in the absence of a null model, because the hypervolumes are constructed with a stochastic algorithm.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pitcher_multivariate</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Ostats_multivariate.html">Ostats_multivariate</a></span><span class="op">(</span>traits <span class="op">=</span> <span class="va">pitcher_trait_matrix_scaled</span>,
                                             plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">pitcher_trait_matrix_scaled</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
@@ -408,7 +405,7 @@
 <h1 class="hasAnchor">
 <a href="#visualizing-hypervolume-o-statistics" class="anchor"></a>Visualizing hypervolume O-statistics</h1>
 <p>We can visualize the overlap of the different hypervolumes using the function <code><a href="../reference/Ostats_multivariate_plot.html">Ostats_multivariate_plot()</a></code>. This function returns a list of plot objects, one for each community. Each plot displays an upper triangular matrix of panels, one for each pair of traits, with the cross-sections of the hypervolumes in those two dimensions, as well as the raw data points.</p>
-<p>For example, we can plot the overlap of the hypervolumes in 4-dimensional space formed by the individual traits of the pitcher plants at each site. Note that although we calculated the hypervolume overlaps on the scaled traits, we are plotting the hypervolumes using the unscaled trait axes. However, this requires us to set the argument <code>contour_level = 0.0001</code> because the unscaled hypervolumes have too low densities to plot using the default <code>contour_level = 0.01</code>.</p>
+<p>For example, we can plot the overlap of the hypervolumes in 4-dimensional space formed by the individual traits of the pitcher plants at each site. Note that although we calculated the hypervolume overlaps on the scaled traits, we are plotting the hypervolumes using the unscaled trait axes. However, this requires us to set the argument <code>contour_level = 0.0001</code> because the densities of the unscaled hypervolumes are too low to plot using the default <code>contour_level = 0.01</code>.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/Ostats_multivariate_plot.html">Ostats_multivariate_plot</a></span><span class="op">(</span>plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">pitcher_trait_matrix</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
                          sp <span class="op">=</span> <span class="va">pitcher_sites</span>,
@@ -429,15 +426,29 @@
                          plot_points <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
 <p><img src="Ostats-multivariate_files/figure-html/custom%20plot-1.png" width="864"></p>
-<p>The code underlying <code><a href="../reference/Ostats_multivariate_plot.html">Ostats_multivariate_plot()</a></code> was adapted from the <code>plot.Hypervolumelist()</code> function in the <code>hypervolume</code> package.</p>
+<p>The code underlying <code><a href="../reference/Ostats_multivariate_plot.html">Ostats_multivariate_plot()</a></code> was adapted from the <code>plot.Hypervolumelist()</code> function in the <a href="https://cran.r-project.org/package=hypervolume">hypervolume</a> package.</p>
 </div>
 <div id="some-practical-notes" class="section level1">
 <h1 class="hasAnchor">
 <a href="#some-practical-notes" class="anchor"></a>Some practical notes</h1>
+<p>When working with multivariate trait data, it is critical to examine correlations among traits in the dataset. If you construct hypervolumes with traits that are highly correlated and measure their overlap, you will get spurious results. In addition, it’s important to consider the issue of dimensionality. It is difficult if not impossible to estimate hypervolume overlap in more than five or six dimensions. A study that quantified trait space across a wide variety of systems found that using three to six dimensions jointly maximizes trait space quality and computational feasibility (Mouillot et al., in press). Others have critiqued using hypervolume kernel density estimation to quantify species niches (Qiao et al. 2017); the technical issues only get worse as more dimensions are added. Using a variance maximization technique like PCA could be helpful to reduce dimensionality. Regardless of what method you choose, the absolute amount of overlap can’t be compared among hypervolumes with different dimensionality, making it especially important to compare the O-statistics with null distributions.</p>
+<p>Finally, some work has shown that trait-based inference derived from analyzing multiple traits may not improve our understanding of biological systems in many cases, relative to inference based on one well-chosen biologically meaningful trait (CITE, but see Kraft et al. 2015). In light of that, you should carefully consider which trait or traits are relevant to your research question. Whenever possible, compare inference based on single trait overlap to the inference you get when considering multiple traits, and select the most parsimonious model.</p>
+</div>
+<div id="works-cited" class="section level1">
+<h1 class="hasAnchor">
+<a href="#works-cited" class="anchor"></a>Works cited</h1>
 <ul>
-<li>Warning that it’s important to make sure there aren’t a lot of correlated traits in your dataset or you will end up with spurious hypervolumes</li>
-<li>Absolute amount of overlap can’t be compared among hypervolumes with different dimensionality, so it’s especially important to run null models</li>
-<li>Biologically, it’s been shown that the multi-trait stuff does not contribute that much to what we can infer. This may not be worth discussing in the vignette, but should be discussed in the paper.</li>
+<li>Blonder, B. 2018. Hypervolume concepts in niche- and trait-based ecology. <em>Ecography</em> 41:1441–1455.</li>
+<li>Blonder, B., C. Lamanna, C. Violle, and B.J. Enquist, 2014. The n-dimensional hypervolume. <em>Global Ecology and Biogeography</em> 23:595–609.</li>
+<li>Ellison, A.M., and N.J. Gotelli. 2002. Nitrogen availability alters the expression of carnivory in the Northern Pitcher Plant, <em>Sarracenia purpurea</em>. <em>Proceedings of the National Academy of Science</em> 99(7):4409-12.</li>
+<li>Freedman, Z.B., A. McGrew, B. Baiser, M. Besson, D. Gravel, T. Poisot, S. Record, L.B. Trotta, and N.J. Gotelli. 2021. Environment-host-microbial interactions shape the <em>Sarracenia purpurea</em> microbiome at the continental scale. <em>Ecology</em> 102(5):e03308.</li>
+<li>Green, R.H. 1971. A multivariate statistical approach to the Hutchinsonian niche: bivalve molluscs of central Canada. <em>Ecology</em> 52:543–556.</li>
+<li>Hutchinson, G.E. 1957. Concluding remarks. <em>Cold Spring Harb. Symp. Quant. Biol.</em> 22:415–427.</li>
+<li>Kraft, N.J.B., O. Godoy, and J.M. Levine. 2015. Plant functional traits and the multidimensional nature of species coexistence. <em>Proceedings of the National Academy of Sciences</em> 112:797–802.</li>
+<li>Lamanna, C., B. Blonder, C. Violle, N.J.B. Kraft, B. Sandel, I. Imova, J.C. Donoghue, J.-C. Svenning, B.J. McGill, B. Boyle, V. Buzzard, S. Dolins., P.M. Jorgensen., A. Marcuse-Kubitza, N. Morueta-Holme, R.K. Peet, W.H. Piel, J. Regetz, M. Schildhauer, N. Spencer, B. Thiers, S.K. Wiser., and B.J. Enquist. 2014. Functional trait space and the latitudinal diversity gradient. <em>Proceedings of the National Academy of Sciences</em> 111:13745–13750.</li>
+<li>Mouillot, D., N. Loiseau, M. Grenié, A.C. Algar, M. Allegra, M.M. Cadotte, N. Casajus, P. Denelle, M. Guéguen, A. Maire, B. Maitner, B.J. McGill, M. McLean, N. Mouquet, F. Munoz, W. Thuiller, S. Villéger, C. Violle, and A. Auber. The dimensionality and structure of species trait spaces. <em>Ecology Letters</em>, in press.</li>
+<li>Qiao, H., L.E. Escobar, E.E. Saupe, L. Ji, and J. Soberón. 2017. A cautionary note on the use of hypervolume kernel density estimators in ecological niche modelling. <em>Global Ecology and Biogeography</em> 26:1066–1070.</li>
+<li>Swanson, H.K., M. Lysy, M. Power, A.D. Stasko, J.D. Johnson, and J.D. Reist. 2015. A new probabilistic method for quantifying n-dimensional ecological niches and niche overlap. <em>Ecology</em> 96:318–324.</li>
 </ul>
 </div>
   </div>

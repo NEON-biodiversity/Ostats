@@ -15,6 +15,7 @@ These data represent trait information collected on carnivorous pitchers of the 
 }
 \references{
 Ellison, A.M., and N.J. Gotelli. 2002. Nitrogen availability alters the expression of carnivory in the Northern Pitcher Plant, *Sarracenia purpurea*. *Proceedings of the National Academy of Science* 99(7):4409-12.
+
 Freedman, Z.B., A. McGrew, B. Baiser, M. Besson, D. Gravel, T. Poisot, S. Record, L.B. Trotta, and N.J. Gotelli. 2021. Environment-host-microbial interactions shape the *Sarracenia purpurea* microbiome at the continental scale. *Ecology*, 102(5):e03308.
 }
 \keyword{datasets}

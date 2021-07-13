@@ -4,17 +4,6 @@ The Ostats package calculates overlap statistic to measure the degree of communi
 
 Ostats is part of the collaborative Macrosystems Biodiversity Project, *Local- to continental-scale drivers of biodiversity across the National Ecological Observatory Network (NEON)*. For more information on this project, see the [ Macrosystems Biodiversity Website](https://neon-biodiversity.github.io/).
 
-## Funding 
-National Science Foundation Division of Environmental Biology (Population & Community Ecology, MacroSysBIO & NEON-Enabled Science); Awards to P.L. Zarnetske (Michigan State University); S. Record (Bryn Mawr College); Ben Baiser (University of Florida); Angela Strecker (Western Washington University).
-
-[![NSF-1926567](https://img.shields.io/badge/NSF-1926567-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1926567)
-
-[![NSF-1926568](https://img.shields.io/badge/NSF-1926568-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1926568)
-
-[![NSF-1926569](https://img.shields.io/badge/NSF-1926569-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1926569)
-
-[![NSF-1926610](https://img.shields.io/badge/NSF-1926610-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1926610)
-
 ## Authors
 
 * Quentin D. Read
@@ -36,6 +25,17 @@ remotes::install_github('NEON-biodiversity/Ostats')
 ## Getting started
 
 See [the Ostats introduction vignette](http:/neon-biodiversity.github.io/Ostats/articles/Ostats-introduction.html) for more information.  
+
+## Funding 
+
+National Science Foundation Division of Environmental Biology (Population & Community Ecology, MacroSysBIO & NEON-Enabled Science); Awards to P.L. Zarnetske (Michigan State University); S. Record (Bryn Mawr College); Ben Baiser (University of Florida); Angela Strecker (Western Washington University).
+
+The National Ecological Observatory Network is a program sponsored by the National Science Foundation and operated under cooperative agreement by Battelle. This material is based in part upon work supported by the National Science Foundation through the NEON Program.
+
+[![NSF-1926567](https://img.shields.io/badge/NSF-1926567-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1926567)
+[![NSF-1926568](https://img.shields.io/badge/NSF-1926568-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1926568)
+[![NSF-1926569](https://img.shields.io/badge/NSF-1926569-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1926569)
+[![NSF-1926610](https://img.shields.io/badge/NSF-1926610-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1926610)
 
 ## References
 
