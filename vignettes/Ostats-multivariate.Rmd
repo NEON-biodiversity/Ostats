@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(Ostats)
-data(pitcher_traits)
+data(pitcher_traits_subset)
 ```
 
 # Overview
@@ -34,7 +34,7 @@ In this vignette, we demonstrate how you can use functions in the `Ostats` packa
 
 # Example dataset
 
-The dataset we use in this vignette includes traits collected on carnivorous pitchers of the northern pitcher plant, *Sarracenia purpurea*, at 36 sites across the species' native North American latitudinal range (30.197°N – 53.722°N; Freedman et al. 2021). Pitcher traits measured include orthogonal rosette diameters, pitcher length, pitcher width, keel width, mouth diameter, and lip thickness. See Ellison and Gotelli (2002) for a diagram illustrating traits measured. Site locations and identifying information have been removed for this example.
+The dataset we use in this vignette includes traits collected on carnivorous pitchers of the northern pitcher plant, *Sarracenia purpurea*, at 5 sites in North America and represent a subset of data from Freedman et al. (2021). Pitcher traits measured include orthogonal rosette diameters, pitcher length, pitcher width, keel width, mouth diameter, and lip thickness. See Ellison and Gotelli (2002) for a diagram illustrating traits measured. Site locations and identifying information have been removed for this example.
 
 Here we show a few randomly selected rows from the pitcher traits dataset. Here, all individuals are of the same species. Therefore we will use populations (sites) as the `sp` variable in our analysis, with a single value for `plots`. 
 
@@ -43,13 +43,6 @@ set.seed(1)
 idx <- sort(sample(nrow(pitcher_traits), 10, replace = FALSE))
 
 knitr::kable(pitcher_traits[idx,])
-```
-
-For a more manageable example, let's select five sites.
-
-```{r}
-sites <- c('COL', 'CRI', 'FLK', 'MYR', 'SAC')
-pitcher_traits <- pitcher_traits[pitcher_traits$site_id %in% sites, ]
 ```
 
 
