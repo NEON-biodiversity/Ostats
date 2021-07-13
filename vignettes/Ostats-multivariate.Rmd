@@ -1,6 +1,6 @@
 ---
 title: "Multivariate O-statistics"
-author: "Quentin D. Read, (INSERT OTHER AUTHORS. Authors of this doc aren't necessarily all package authors, just those who specifically contributed to this vignette.)"
+author: "Quentin D. Read, Isadora E. Fluck"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{multivariate-Ostats}
@@ -24,22 +24,17 @@ data(pitcher_traits)
 
 # Overview
 
-This vignette is intended for users who are already familiar with the single-variable O-statistics we introduce in the [first package vignette](Ostats-introduction.html).
+This vignette on multi-variable community-level trait overlap statistics is intended for users who are already familiar with the single-variable O-statistics we introduce in the [first package vignette](Ostats-introduction.html).
 
-1- Hutchinson: niche is n-dimensional hypervolume
-2 - trait ecologists are interested in tradeoffs among traits or interactions among multiple traits
-3 - the underlying math and theory here were worked out by Blonder et al.
-4- Functions from their hypervolume package are used in Ostats
+We decided to include functions in our package to estimate community-level niche overlap statistics (O-statistics) in multivariate space because of ecologists' long-standing interest in how species' niches take shape across multiple environmental dimensions. Since the niche of a species can be determined by several abiotic and biotic variables, Hutchinson (1957) introduced the mathematical formulation of a niche as an *n*-dimensional hypervolume. Since then, many approaches have been developed to measure the multivariate niche of a species (Green 1971; Swanson et al. 2015). Quantifying the niche in multiple dimensions can help understand how life strategy trade-offs and interactions among multiple traits shape organisms' structure and function.
 
-(Isa is editing...)
-1 - The occurrence range of a species can be determined by a set of factors which are called fundamental niche // The set of factors where the species can potentially occur is called the fundamental niche. However,[the fundamental niche can be reduced by competitors or predators] the presence of competitors or predators can reduce this space, causing the species to occur only in a fraction of that potential space. The set of factors where the species actually occurs is called the fundamental niche. Since the niche of a species can be determined by several abiotic and biotic variables, hutchinson  (1952) determined the concept of Hypervolume as .... "". [The concepts of fundamental and realized niche were first proposed by Hutchinson in 1957,] [Since then] many approaches have been developed to measure hypervolume niche of a species (GIVE EXAMPLES - hypervolume). Because traits...... eclogists are intrestes in tradeoffs among traits or interactions among them. Here we...... the underlying math and theory here were worked out by Blonder et al...
+Blonder and colleagues rekindled interest in using hypervolumes to describe species’ niches in multiple dimensions. They worked out the underlying theory (Blonder et al. 2014; Lamanna et al. 2014; Blonder 2018) and released the R package [hypervolume][hypervolume]. Their package uses stochastic geometry to estimate multivariate kernel densities and . The multivariate O-statistic estimation in the `Ostats` package relies on functions imported from [hypervolume][hypervolume].
 
+In this vignette, we demonstrate how you can use functions in the `Ostats` package to study trait overlap in multiple dimensions.
 
 # Example dataset
 
-- Pitcher plant traits, morphological measurements taken from sites around North America
-- Specific site locations have been removed
-- Univariate plots of pitcher traits (distributions)
+The dataset we use in this vignette includes traits collected on carnivorous pitchers of the northern pitcher plant, *Sarracenia purpurea*, at 36 sites across the species' native North American latitudinal range (30.197°N – 53.722°N; Freedman et al. 2021). Pitcher traits measured include orthogonal rosette diameters, pitcher length, pitcher width, keel width, mouth diameter, and lip thickness. See Ellison and Gotelli (2002) for a diagram illustrating traits measured. Site locations and identifying information have been removed for this example.
 
 Here we show a few randomly selected rows from the pitcher traits dataset. Here, all individuals are of the same species. Therefore we will use populations (sites) as the `sp` variable in our analysis, with a single value for `plots`. 
 
@@ -207,7 +202,7 @@ Ostats_multivariate_plot(plots = factor(rep(1, nrow(pitcher_trait_matrix))),
 )
 ```
 
-The code underlying `Ostats_multivariate_plot()` was adapted from the `plot.Hypervolumelist()` function in the `hypervolume` package.
+The code underlying `Ostats_multivariate_plot()` was adapted from the `plot.Hypervolumelist()` function in the [hypervolume][hypervolume] package.
 
 # Some practical notes
 
@@ -217,6 +212,15 @@ Finally, some work has shown that trait-based inference derived from analyzing m
 
 # Works cited
 
-Mouillot et al., Ecology Letters, in press.
+- Blonder, B. 2018. Hypervolume concepts in niche- and trait-based ecology. *Ecography* 41:1441–1455.
+- Blonder, B., C. Lamanna, C. Violle, and B.J. Enquist, 2014. The n-dimensional hypervolume. *Global Ecology and Biogeography* 23:595–609.
+- Ellison, A.M., and N.J. Gotelli. 2002. Nitrogen availability alters the expression of carnivory in the Northern Pitcher Plant, *Sarracenia purpurea*. *Proceedings of the National Academy of Science* 99(7):4409-12.
+- Freedman, Z.B., A. McGrew, B. Baiser, M. Besson, D. Gravel, T. Poisot, S. Record, L.B. Trotta, and N.J. Gotelli. 2021. Environment-host-microbial interactions shape the *Sarracenia purpurea* microbiome at the continental scale. *Ecology* 102(5):e03308.
+- Green, R.H. 1971. A multivariate statistical approach to the Hutchinsonian niche: bivalve molluscs of central Canada. *Ecology* 52:543–556.
+- Hutchinson, G.E. 1957. Concluding remarks. *Cold Spring Harb. Symp. Quant. Biol.* 22:415–427.
+- Lamanna, C., B. Blonder, C. Violle, N.J.B. Kraft, B. Sandel, I. Imova, J.C. Donoghue, J.-C. Svenning, B.J. McGill, B. Boyle, V. Buzzard, S. Dolins., P.M. Jorgensen., A. Marcuse-Kubitza, N. Morueta-Holme, R.K. Peet, W.H. Piel, J. Regetz, M. Schildhauer, N. Spencer, B. Thiers, S.K. Wiser., and B.J. Enquist. 2014. Functional trait space and the latitudinal diversity gradient. *Proceedings of the National Academy of Sciences* 111:13745–13750. 
+- Mouillot, D., N. Loiseau, M. Grenié, A.C. Algar, M. Allegra, M.M. Cadotte, N. Casajus, P. Denelle, M. Guéguen, A. Maire, B. Maitner, B.J. McGill, M. McLean, N. Mouquet, F. Munoz, W. Thuiller, S. Villéger, C. Violle, and A. Auber. The dimensionality and structure of species trait spaces. *Ecology Letters*, in press.
+- Qiao, H., L.E. Escobar, E.E. Saupe, L. Ji, and J. Soberón. 2017. A cautionary note on the use of hypervolume kernel density estimators in ecological niche modelling. *Global Ecology and Biogeography* 26:1066–1070.
+- Swanson, H.K., M. Lysy, M. Power, A.D. Stasko, J.D. Johnson, and J.D. Reist. 2015. A new probabilistic method for quantifying n-dimensional ecological niches and niche overlap. *Ecology* 96:318–324.
 
-Qiao et al. 2017. Global Ecology and Biogeography.
+[hypervolume]: https://cran.r-project.org/package=hypervolume
