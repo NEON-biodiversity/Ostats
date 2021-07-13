@@ -84,7 +84,7 @@ pitcher_trait_matrix <- as.matrix(pitcher_traits[, traits_to_use])
 round(cor(pitcher_trait_matrix), 2)
 ```
 
-Next we center and scale all the columns to ensure that the hypervolume overlap statistic is not influenced by different magnitudes of each trait.
+Next we center and scale all the columns to ensure that the hypervolume O-statistic is not influenced by different magnitudes of each trait.
 
 ```{r}
 apply(pitcher_trait_matrix, 2, range)
@@ -96,7 +96,7 @@ round(apply(pitcher_trait_matrix_scaled, 2, range), 2)
 
 ## Univariate versus multivariate O-statistics
 
-Next calculate the univariate O-statistics for each of the four traits. 
+For demonstration purposes, let's calculate the univariate O-statistics for each of the four traits so that we can compare them to the multivariate statistic.
 
 ```{r univariate O-stats, message = FALSE, results = 'hide'}
 pitcher_univariate <- Ostats(traits = pitcher_trait_matrix_scaled,
@@ -106,7 +106,7 @@ pitcher_univariate <- Ostats(traits = pitcher_trait_matrix_scaled,
 )
 ```
 
-Now calculate the multivariate O-statistic for the traits combined, using all default arguments. The `random_seed` is still used even in the absence of a null model because the hypervolumes are constructed with a stochastic algorithm.
+Now calculate the multivariate O-statistic for the traits combined. We still specify the argument `random_seed` even in the absence of a null model, because the hypervolumes are constructed with a stochastic algorithm.
 
 ```{r multivariate O-stats, message = FALSE, results = 'hide'}
 pitcher_multivariate <- Ostats_multivariate(traits = pitcher_trait_matrix_scaled,
@@ -182,7 +182,7 @@ knitr::kable(data.frame(Ostat = c('observed', 'null 2.5%', 'null 97.5%'),
 
 We can visualize the overlap of the different hypervolumes using the function `Ostats_multivariate_plot()`. This function returns a list of plot objects, one for each community. Each plot displays an upper triangular matrix of panels, one for each pair of traits, with the cross-sections of the hypervolumes in those two dimensions, as well as the raw data points.
 
-For example, we can plot the overlap of the hypervolumes in 4-dimensional space formed by the individual traits of the pitcher plants at each site. Note that although we calculated the hypervolume overlaps on the scaled traits, we are plotting the hypervolumes using the unscaled trait axes. However, this requires us to set the argument `contour_level = 0.0001` because the unscaled hypervolumes have too low densities to plot using the default `contour_level = 0.01`.
+For example, we can plot the overlap of the hypervolumes in 4-dimensional space formed by the individual traits of the pitcher plants at each site. Note that although we calculated the hypervolume overlaps on the scaled traits, we are plotting the hypervolumes using the unscaled trait axes. However, this requires us to set the argument `contour_level = 0.0001` because the densities of the unscaled hypervolumes are too low to plot using the default `contour_level = 0.01`.
 
 ```{r default plot, message = FALSE, fig.height = 9, fig.width = 9}
 Ostats_multivariate_plot(plots = factor(rep(1, nrow(pitcher_trait_matrix))),
@@ -211,6 +211,12 @@ The code underlying `Ostats_multivariate_plot()` was adapted from the `plot.Hype
 
 # Some practical notes
 
-- Warning that it's important to make sure there aren't a lot of correlated traits in your dataset or you will end up with spurious hypervolumes
-- Absolute amount of overlap can't be compared among hypervolumes with different dimensionality, so it's especially important to run null models
-- Biologically, it's been shown that the multi-trait stuff does not contribute that much to what we can infer. This may not be worth discussing in the vignette, but should be discussed in the paper.
+When working with multivariate trait data, it is critical to examine correlations among traits in the dataset. If you construct hypervolumes with traits that are highly correlated and measure their overlap, you will get spurious results. In addition, it's important to consider the issue of dimensionality. It is difficult if not impossible to estimate hypervolume overlap in more than five or six dimensions. A study that quantified trait space across a wide variety of systems found that using three to six dimensions jointly maximizes trait space quality and computational feasibility (Mouillot et al., in press). Others have critiqued using hypervolume kernel density estimation to quantify species niches (Qiao et al. 2017); the technical issues only get worse as more dimensions are added. Using a variance maximization technique like PCA could be helpful to reduce dimensionality. Regardless of what method you choose, the absolute amount of overlap can't be compared among hypervolumes with different dimensionality, making it especially important to compare the O-statistics with null distributions. 
+
+Finally, some work has shown that trait-based inference derived from analyzing multiple traits may not improve our understanding of biological systems in many cases, relative to inference based on one well-chosen biologically meaningful trait (CITE). In light of that, you should carefully consider which trait or traits are relevant to your research question. Whenever possible, compare inference based on single trait overlap to the inference you get when considering multiple traits, and select the most parsimonious model.
+
+# Works cited
+
+Mouillot et al., Ecology Letters, in press.
+
+Qiao et al. 2017. Global Ecology and Biogeography.
