@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(Ostats)
-data(pitcher_traits_subset)
+data(pitcher_traits)
 ```
 
 # Overview
