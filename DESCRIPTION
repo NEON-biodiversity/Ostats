@@ -10,8 +10,16 @@ Authors@R: c(person(c('Quentin', 'D.'), 'Read', role = c('aut', 'cre'), email = 
              person(c('Phoebe', 'L.'), 'Zarnetske', role = 'aut'),
              person('Sydne', 'Record', role = 'aut')
              )
-Description: This is a placeholder for later.
-    Use four spaces when indenting paragraphs within the Description. Later, we will put some nice content here.
+Description: The Ostats package calculates overlap statistic to measure the degree of community-level trait overlap by 
+    fitting nonparametric kernel density functions to each species’ trait distribution and calculating their areas of overlap.
+    For instance, the median pairwise overlap for a community is calculated by first determining the overlap of each species pair 
+    in trait space, and then taking the median overlap of each species pair in a community. 
+    The Ostats() function calculates separate univariate overlap statistics for each trait, 
+    while the Ostats_multivariate() function calculates a single multivariate overlap statistic for all traits. 
+    O-statistics can be evaluated against null models to obtain standardized effect sizes. 
+    Ostats is part of the collaborative Macrosystems Biodiversity Project, Local- to continental-scale drivers of biodiversity 
+    across the National Ecological Observatory Network (NEON). For more information on this project, see the 
+    Macrosystems Biodiversity Website (https://neon-biodiversity.github.io/).
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
