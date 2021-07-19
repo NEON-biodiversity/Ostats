@@ -34,7 +34,7 @@ In this vignette, we demonstrate how you can use functions in the `Ostats` packa
 
 # Example dataset
 
-The dataset we use in this vignette includes traits collected on carnivorous pitchers of the northern pitcher plant, *Sarracenia purpurea*, at 5 sites in North America and represent a subset of data from Freedman et al. (2021). Pitcher traits measured include orthogonal rosette diameters, pitcher length, pitcher width, keel width, mouth diameter, and lip thickness. See Ellison and Gotelli (2002) for a diagram illustrating traits measured. Site locations and identifying information have been removed for this example.
+The dataset we use in this vignette includes traits collected on carnivorous pitchers of the northern pitcher plant, *Sarracenia purpurea*, at 5 sites in North America and represent a subset of data from Freedman et al. (2021). Pitcher traits measured include orthogonal rosette diameters, pitcher length, pitcher width, keel width, mouth diameter, and lip thickness. See Ellison and Gotelli (2002) for a diagram illustrating traits measured, or see the dataset documentation page for more details by typing `?pitcher_traits` in your console. Site locations and identifying information have been removed for this example.
 
 Here we show a few randomly selected rows from the pitcher traits dataset. Here, all individuals are of the same species. Therefore we will use populations (sites) as the `sp` variable in our analysis, with a single value for `plots`. 
 
@@ -189,7 +189,7 @@ Ostats_multivariate_plot(plots = factor(rep(1, nrow(pitcher_trait_matrix))),
                          traits = pitcher_trait_matrix,
                          contour_level = 0.0001,
                          overlap_dat = pitcher_multivariate,
-                         colorvalues = rainbow(length(sites)),
+                         colorvalues = rainbow(length(unique(pitcher_sites))),
                          axis_expansion = 0.05,
                          plot_points = FALSE
 )
@@ -201,7 +201,7 @@ The code underlying `Ostats_multivariate_plot()` was adapted from the `plot.Hype
 
 When working with multivariate trait data, it is critical to examine correlations among traits in the dataset. If you construct hypervolumes with traits that are highly correlated and measure their overlap, you will get spurious results. In addition, it's important to consider the issue of dimensionality. It is difficult if not impossible to estimate hypervolume overlap in more than five or six dimensions. A study that quantified trait space across a wide variety of systems found that using three to six dimensions jointly maximizes trait space quality and computational feasibility (Mouillot et al., in press). Others have critiqued using hypervolume kernel density estimation to quantify species niches (Qiao et al. 2017); the technical issues only get worse as more dimensions are added. Using a variance maximization technique like PCA could be helpful to reduce dimensionality. Regardless of what method you choose, the absolute amount of overlap can't be compared among hypervolumes with different dimensionality, making it especially important to compare the O-statistics with null distributions. 
 
-Finally, some work has shown that trait-based inference derived from analyzing multiple traits may not improve our understanding of biological systems in many cases, relative to inference based on one well-chosen biologically meaningful trait (CITE, but see Kraft et al. 2015). In light of that, you should carefully consider which trait or traits are relevant to your research question. Whenever possible, compare inference based on single trait overlap to the inference you get when considering multiple traits, and select the most parsimonious model.
+Finally, some work has shown that trait-based inference derived from analyzing multiple traits may not improve our understanding of biological systems in many cases, relative to inference based on one well-chosen biologically meaningful trait, especially when many commonly-measured traits are different manifestations of the same few underlying biological processes (Swenson , but see Kraft et al. 2015). In light of that, you should carefully consider which trait or traits are relevant to your research question. Whenever possible, compare inference based on single trait overlap to the inference you get when considering multiple traits, and select the most parsimonious model.
 
 # Works cited
 
@@ -216,5 +216,7 @@ Finally, some work has shown that trait-based inference derived from analyzing m
 - Mouillot, D., N. Loiseau, M. Grenié, A.C. Algar, M. Allegra, M.M. Cadotte, N. Casajus, P. Denelle, M. Guéguen, A. Maire, B. Maitner, B.J. McGill, M. McLean, N. Mouquet, F. Munoz, W. Thuiller, S. Villéger, C. Violle, and A. Auber. The dimensionality and structure of species trait spaces. *Ecology Letters*, in press.
 - Qiao, H., L.E. Escobar, E.E. Saupe, L. Ji, and J. Soberón. 2017. A cautionary note on the use of hypervolume kernel density estimators in ecological niche modelling. *Global Ecology and Biogeography* 26:1066–1070.
 - Swanson, H.K., M. Lysy, M. Power, A.D. Stasko, J.D. Johnson, and J.D. Reist. 2015. A new probabilistic method for quantifying n-dimensional ecological niches and niche overlap. *Ecology* 96:318–324.
+- Swenson, N.G. 2013. The assembly of tropical tree communities – the advances and shortcomings of phylogenetic and functional trait analyses. *Ecography* 36:264–276.
+
 
 [hypervolume]: https://cran.r-project.org/package=hypervolume
