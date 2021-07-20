@@ -181,7 +181,7 @@ Ostats_multivariate_plot(plots = factor(rep(1, nrow(pitcher_trait_matrix))),
 )
 ```
 
-We can customize the plot by supplying a color palette to the `colorvalues` argument (the default is a colorblind-friendly palette imported from [viridis](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html)), and add additional spacing around the hypervolume contours using the `axis_expansion` argument. The default value of this argument is `0.01`, or 1% in all directions. Finally, we can suppress plotting the raw data and only plot the contours using `plot_points = FALSE`.
+We can customize the plot by supplying a color palette to the `colorvalues` argument (the default is a colorblind-friendly palette imported from [viridis](https://CRAN.R-project.org/package=viridis/vignettes/intro-to-viridis.html)), and add additional spacing around the hypervolume contours using the `axis_expansion` argument. The default value of this argument is `0.01`, or 1% in all directions. Finally, we can suppress plotting the raw data and only plot the contours using `plot_points = FALSE`.
 
 ```{r custom plot, message = FALSE, fig.height = 9, fig.width = 9}
 Ostats_multivariate_plot(plots = factor(rep(1, nrow(pitcher_trait_matrix))),

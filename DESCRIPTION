@@ -1,6 +1,6 @@
 Package: Ostats
 Type: Package
-Title: O-stats, or pairwise community-level niche overlap statistics
+Title: O-stats, or Pairwise Community-Level Niche Overlap Statistics
 Version: 0.1.0
 Authors@R: c(person(c('Quentin', 'D.'), 'Read', role = c('aut', 'cre'), email = 'qread@sesync.org'),
              person('Arya', 'Yue', role = 'aut'),
@@ -14,13 +14,14 @@ Description: The Ostats package calculates overlap statistic to measure the degr
     fitting nonparametric kernel density functions to each species’ trait distribution and calculating their areas of overlap.
     For instance, the median pairwise overlap for a community is calculated by first determining the overlap of each species pair 
     in trait space, and then taking the median overlap of each species pair in a community. 
+    This median overlap value is called the O-statistic (O for overlap).
     The Ostats() function calculates separate univariate overlap statistics for each trait, 
     while the Ostats_multivariate() function calculates a single multivariate overlap statistic for all traits. 
     O-statistics can be evaluated against null models to obtain standardized effect sizes. 
-    Ostats is part of the collaborative Macrosystems Biodiversity Project, Local- to continental-scale drivers of biodiversity 
-    across the National Ecological Observatory Network (NEON). For more information on this project, see the 
-    Macrosystems Biodiversity Website (https://neon-biodiversity.github.io/).
-License: GPL-3 + file LICENSE
+    Ostats is part of the collaborative Macrosystems Biodiversity Project "Local- to continental-scale drivers of biodiversity 
+    across the National Ecological Observatory Network (NEON)."" For more information on this project, see the 
+    Macrosystems Biodiversity Website (<https://neon-biodiversity.github.io/>).
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends:
