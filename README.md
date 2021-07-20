@@ -24,7 +24,7 @@ remotes::install_github('NEON-biodiversity/Ostats')
 
 ## Getting started
 
-See [the Ostats introduction vignette](Ostats-introduction.html) for more information.  
+See [the Ostats introduction vignette](https://neon-biodiversity.github.io/Ostats/articles/Ostats-introduction.html) for more information.  
 
 ## Funding 
 
