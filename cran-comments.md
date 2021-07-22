@@ -42,3 +42,4 @@ This submission corrects issues raised by Uwe and Gregor from the previous submi
 - Argument verbose added to Ostats() and Ostats_multivariate(). If set to TRUE, message() is used to display progress messages, rather than print().
 - References added to the description field of the DESCRIPTION file. I only included references to our group's own published work in the DESCRIPTION file. Other references listed in the README.md file are for further reading and not appropriate for the DESCRIPTION file.
 - Added BugReports field to DESCRIPTION.
+- Example added for Ostats_multivariate().

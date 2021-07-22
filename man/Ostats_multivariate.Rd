@@ -116,6 +116,24 @@ This function calculates multivariate O-statistics and optionally evaluates them
   Effect size statistics are calculated by z-transforming the O-statistics
   using the mean and standard deviation of the null distribution.
 }
+\examples{
+# overlap statistics among populations of pitcher plants at different sites
+library(Ostats)
+
+# Select three dimensions and scale data
+dat <- as.matrix(pitcher_traits[, c("rosette_diameter_1", "pitcher_width", "mouth_diameter")])
+dat <- scale(dat, center = TRUE, scale = TRUE)
+
+Ostats_multi_example <- Ostats_multivariate(traits = dat,
+                                            plots = factor(rep(1, nrow(dat))),
+                                            sp = factor(pitcher_traits$site_id),
+                                            random_seed = 111,
+                                            run_null_model = FALSE,
+                                            hypervolume_args = list(method = 'box'),
+                                            hypervolume_set_args = list(num.points.max = 1000)
+)
+
+}
 \references{
 Blonder, B. Hypervolume concepts in niche- and trait-based ecology.
   Ecography 41, 1441–1455 (2018). https://doi.org/10.1111/ecog.03187

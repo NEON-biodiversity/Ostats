@@ -85,7 +85,25 @@
 #' @seealso \code{\link{Ostats_multivariate_plot}} for plotting multivariate trait overlap in
 #' each community.
 #'
+#' @examples
+#' # overlap statistics among populations of pitcher plants at different sites
+#' library(Ostats)
+#'
+#' # Select three dimensions and scale data
+#' dat <- as.matrix(pitcher_traits[, c("rosette_diameter_1", "pitcher_width", "mouth_diameter")])
+#' dat <- scale(dat, center = TRUE, scale = TRUE)
+#'
+#' Ostats_multi_example <- Ostats_multivariate(traits = dat,
+#'                                             plots = factor(rep(1, nrow(dat))),
+#'                                             sp = factor(pitcher_traits$site_id),
+#'                                             random_seed = 111,
+#'                                             run_null_model = FALSE,
+#'                                             hypervolume_args = list(method = 'box'),
+#'                                             hypervolume_set_args = list(num.points.max = 1000)
+#' )
+#'
 #' @export
+#'
 Ostats_multivariate <- function(traits, plots, sp, output = "median", weight_type = "hmean", run_null_model = TRUE, nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE, random_seed = NULL, hypervolume_args = list(), hypervolume_set_args = list(), verbose = FALSE) {
   # Required input: a matrix called traits (nrows=n individuals, ncols=n traits),
   # a vector called plots which is a factor with length equal to nrow(traits),
