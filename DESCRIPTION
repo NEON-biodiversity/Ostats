@@ -1,6 +1,6 @@
 Package: Ostats
 Type: Package
-Title: O-stats, or Pairwise Community-Level Niche Overlap Statistics
+Title: O-Stats, or Pairwise Community-Level Niche Overlap Statistics
 Version: 0.1.0
 Authors@R: c(person(c('Quentin', 'D.'), 'Read', role = c('aut', 'cre'), email = 'qread@sesync.org'),
              person('Arya', 'Yue', role = 'aut'),
@@ -10,19 +10,25 @@ Authors@R: c(person(c('Quentin', 'D.'), 'Read', role = c('aut', 'cre'), email = 
              person(c('Phoebe', 'L.'), 'Zarnetske', role = 'aut'),
              person('Sydne', 'Record', role = 'aut')
              )
-Description: The Ostats package calculates overlap statistic to measure the degree of community-level trait overlap by 
-    fitting nonparametric kernel density functions to each species’ trait distribution and calculating their areas of overlap.
-    For instance, the median pairwise overlap for a community is calculated by first determining the overlap of each species pair 
+Description: O-statistics, or overlap statistics, measure the degree of community-level trait overlap. 
+    They are estimated by fitting nonparametric kernel density functions to each species’ trait 
+    distribution and calculating their areas of overlap. For instance, the median pairwise overlap 
+    for a community is calculated by first determining the overlap of each species pair 
     in trait space, and then taking the median overlap of each species pair in a community. 
     This median overlap value is called the O-statistic (O for overlap).
     The Ostats() function calculates separate univariate overlap statistics for each trait, 
     while the Ostats_multivariate() function calculates a single multivariate overlap statistic for all traits. 
     O-statistics can be evaluated against null models to obtain standardized effect sizes. 
-    Ostats is part of the collaborative Macrosystems Biodiversity Project "Local- to continental-scale drivers of biodiversity 
-    across the National Ecological Observatory Network (NEON)."" For more information on this project, see the 
-    Macrosystems Biodiversity Website (<https://neon-biodiversity.github.io/>).
+    Ostats is part of the collaborative Macrosystems Biodiversity Project "Local- to continental-scale 
+    drivers of biodiversity across the National Ecological Observatory Network (NEON)." 
+    For more information on this project, see the Macrosystems Biodiversity Website 
+    (<https://neon-biodiversity.github.io/>). Calculation of O-statistics is described in
+    Read et al. (2018) <doi:10.1111/ecog.03641>, and a teaching module for introducing the
+    underlying biological concepts at an undergraduate level is described in Grady et al.
+    (2018) <http://tiee.esa.org/vol/v14/issues/figure_sets/grady/abstract.html>.
 License: MIT + file LICENSE
 Encoding: UTF-8
+BugReports: https://github.com/NEON-biodiversity/Ostats/issues
 LazyData: true
 Depends:
     R (>= 3.5.0)

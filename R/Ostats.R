@@ -44,6 +44,7 @@
 #' @param density_args additional arguments to pass to \code{\link[stats]{density}}, such as
 #' \code{bw}, \code{n}, or \code{adjust}. If none are provided, default values
 #' are used.
+#' @param verbose If \code{TRUE}, progress messages are displayed. Defaults to \code{FALSE}.
 #'
 #' @details This function calculates overlap statistics and optionally evaluates them
 #'   against a local null model. By default, it calculates the median of pairwise
@@ -106,7 +107,6 @@
 #' each community.
 #'
 #' @examples
-#' \dontrun{
 #' # overlap statistics for body weights of small mammals in NEON sites
 #' library(Ostats)
 #'
@@ -118,14 +118,13 @@
 #'
 #' #Run O-stats on the data with only a few null model iterations
 #' Ostats_example <- Ostats(traits = as.matrix(dat[,'log_weight']),
-#'                    sp = factor(dat$taxonID), data_type = "linear",
+#'                    sp = factor(dat$taxonID),
 #'                    plots = factor(dat$siteID),
 #'                    nperm = 10)
-#' }
 #' @export
 #'
 #'
-Ostats <- function(traits, plots, sp, discrete = FALSE, circular = FALSE, output = "median", weight_type= "hmean", run_null_model = TRUE, nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE, random_seed = NULL, unique_values = NULL, circular_args = list(), density_args = list()) {
+Ostats <- function(traits, plots, sp, discrete = FALSE, circular = FALSE, output = "median", weight_type= "hmean", run_null_model = TRUE, nperm = 99, nullqs = c(0.025, 0.975), shuffle_weights = FALSE, swap_means = FALSE, random_seed = NULL, unique_values = NULL, circular_args = list(), density_args = list(), verbose = FALSE) {
   # Required input: a matrix called traits (nrows=n individuals, ncols=n traits),
   # a vector called plots which is a factor with length equal to nrow(traits),
   # a vector called sp which is a factor with length equal to nrow(traits),
@@ -173,9 +172,10 @@ Ostats <- function(traits, plots, sp, discrete = FALSE, circular = FALSE, output
   dimnames(overlaps_unnorm) <- list(levels(plots), dimnames(traits)[[2]])
 
   # Calculation of observed O-Stats
-
-  print('Calculating observed local O-stats for each community . . .')
-  pb <- utils::txtProgressBar(min = 0, max = nlevels(plots), style = 3)
+  if (verbose) {
+    message('Calculating observed local O-stats for each community . . .')
+    pb <- utils::txtProgressBar(min = 0, max = nlevels(plots), style = 3)
+  }
 
   for (s in 1:nlevels(plots)) {
     for (t in 1:ncol(traits)) {
@@ -184,16 +184,19 @@ Ostats <- function(traits, plots, sp, discrete = FALSE, circular = FALSE, output
       overlap_unnorm_st <- try(community_overlap(traits = traits[plots == levels(plots)[s], t], sp = sp[plots == levels(plots)[s]], discrete = discrete[t], circular = circular[t], output = output, weight_type = weight_type, normal = FALSE, unique_values = unique_values, circular_args = circular_args, density_args = density_args), TRUE)
       overlaps_unnorm[s, t] <- if (inherits(overlap_unnorm_st, 'try-error')) NA else overlap_unnorm_st
     }
-    utils::setTxtProgressBar(pb, s)
+
+    if (verbose) utils::setTxtProgressBar(pb, s)
 
   }
 
-  close(pb)
+  if (verbose) close(pb)
 
   if (run_null_model) {
 
-    print('Calculating null distributions of O-stats . . . ')
-    pb <- utils::txtProgressBar(min = 0, max = nperm, style = 3)
+    if (verbose) {
+      message('Calculating null distributions of O-stats . . . ')
+      pb <- utils::txtProgressBar(min = 0, max = nperm, style = 3)
+    }
 
     # Null model generation and calculation of null O-Stats
 
@@ -224,10 +227,10 @@ Ostats <- function(traits, plots, sp, discrete = FALSE, circular = FALSE, output
           overlaps_unnorm_null[s, t, i] <- if (inherits(overlap_unnorm_sti, 'try-error')) NA else overlap_unnorm_sti
         }
       }
-      utils::setTxtProgressBar(pb, i)
+      if (verbose) utils::setTxtProgressBar(pb, i)
     }
 
-    close(pb)
+    if (verbose) close(pb)
 
     # Extract quantiles to get standardized effect sizes for the overlap stats
     overlaps_norm_ses <- get_ses(overlaps_norm, overlaps_norm_null, nullqs)

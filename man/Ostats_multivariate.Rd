@@ -17,7 +17,8 @@ Ostats_multivariate(
   swap_means = FALSE,
   random_seed = NULL,
   hypervolume_args = list(),
-  hypervolume_set_args = list()
+  hypervolume_set_args = list(),
+  verbose = FALSE
 )
 }
 \arguments{
@@ -60,6 +61,8 @@ By default, \code{method = "gaussian"}.}
 
 \item{hypervolume_set_args}{additional arguments to pass to \code{\link[hypervolume]{hypervolume_set}},
 such as \code{num.points.max}. If none are provided, default values are used.}
+
+\item{verbose}{If \code{TRUE}, progress messages are displayed. Defaults to \code{FALSE}.}
 }
 \value{
 The function returns a list containing four objects:

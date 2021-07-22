@@ -20,7 +20,8 @@ Ostats(
   random_seed = NULL,
   unique_values = NULL,
   circular_args = list(),
-  density_args = list()
+  density_args = list(),
+  verbose = FALSE
 )
 }
 \arguments{
@@ -78,6 +79,8 @@ Note that continuous circular data must be provided in radian units.}
 \item{density_args}{additional arguments to pass to \code{\link[stats]{density}}, such as
 \code{bw}, \code{n}, or \code{adjust}. If none are provided, default values
 are used.}
+
+\item{verbose}{If \code{TRUE}, progress messages are displayed. Defaults to \code{FALSE}.}
 }
 \value{
 The function returns a list containing four objects:
@@ -137,7 +140,6 @@ This function calculates overlap statistics and optionally evaluates them
   using the mean and standard deviation of the null distribution.
 }
 \examples{
-\dontrun{
 # overlap statistics for body weights of small mammals in NEON sites
 library(Ostats)
 
@@ -149,10 +151,9 @@ dat$log_weight <- log10(dat$weight)
 
 #Run O-stats on the data with only a few null model iterations
 Ostats_example <- Ostats(traits = as.matrix(dat[,'log_weight']),
-                   sp = factor(dat$taxonID), data_type = "linear",
+                   sp = factor(dat$taxonID),
                    plots = factor(dat$siteID),
                    nperm = 10)
-}
 }
 \references{
 Read, Q. D. et al. Among-species overlap in rodent body size
