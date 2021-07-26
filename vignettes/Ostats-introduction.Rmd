@@ -30,16 +30,9 @@ and calculating their areas of overlap (Mouillot et al. 2005, Geange et al. 2011
 
 Note that we have written an accompanying teaching module to Read et al. (2018), which walks through a figure set exercise for the manuscript (Grady et al. 2018). This teaching module may be helpful to review for interpretation of the overlap statistics and graphs.
 
-# Installing the Ostats package
-
-`Ostats` is available on Github and can be installed using the devtools package with the line of code below.
-```{r eval=FALSE}
-remotes::install_github('NEON-biodiversity/Ostats')
-```
-
 ***
 
-The Ostats package can be used to do the following:
+The `Ostats` package can be used to do the following:
 
   * Calculate overlap statistics for single traits and evaluate them against a null model using `Ostats()`. `Ostats()` accepts both linear (e.g., body size) and circular (e.g., time, angles) data.
   

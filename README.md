@@ -1,8 +1,20 @@
-# Ostats: O-statistics, or Pairwise Community-Level Niche Cverlap Statistics
+# Ostats: O-statistics, or Pairwise Community-Level Niche Overlap Statistics
 
-The `Ostats` package calculates overlap statistic to measure the degree of community-level trait overlap by fitting nonparametric kernel density functions to each species' trait distribution and calculating their areas of overlap (Mouillot et al. 2005, Geange et al. 2011, Read et al. 2018). For instance, the median pairwise overlap for a community is calculated by first determining the overlap of each species pair in trait space, and then taking the median overlap of each species pair in a community. This median overlap value is called the O-statistic (O for overlap). The `Ostats()` function calculates separate univariate overlap statistics for each trait, while the `Ostats_multivariate()` function calculates a single multivariate overlap statistic for all traits. O-statistics can be evaluated against null models to obtain standardized effect sizes. Grady et al. (2018) provide a teaching module that goes into detail about how to interpret the results presented in Read et al. (2018).
+<!-- badges: start -->
+[![cran
+checks](https://cranchecks.info/badges/worst/Ostats)](https://CRAN.R-project.org/web/checks/check_results_Ostats.html)
+[![rstudio mirror
+downloads](https://cranlogs.r-pkg.org/badges/Ostats)](https://CRAN.R-project.org/package=Ostats)
+[![Project Status: Active – The project has reached a stable, usable
+state and is being actively
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/Ostats)](https://CRAN.R-project.org/package=Ostats)
+<!-- badges: end -->
 
-Ostats is part of the collaborative Macrosystems Biodiversity Project *Local- to continental-scale drivers of biodiversity across the National Ecological Observatory Network (NEON)*. For more information on this project, see the [Macrosystems Biodiversity Website](https://neon-biodiversity.github.io/).
+The 'Ostats' package calculates overlap statistic to measure the degree of community-level trait overlap by fitting nonparametric kernel density functions to each species' trait distribution and calculating their areas of overlap (Mouillot et al. 2005, Geange et al. 2011, Read et al. 2018). For instance, the median pairwise overlap for a community is calculated by first determining the overlap of each species pair in trait space, and then taking the median overlap of each species pair in a community. This median overlap value is called the O-statistic (O for overlap). The `Ostats()` function calculates separate univariate overlap statistics for each trait, while the `Ostats_multivariate()` function calculates a single multivariate overlap statistic for all traits. O-statistics can be evaluated against null models to obtain standardized effect sizes. Grady et al. (2018) provide a teaching module that goes into detail about how to interpret the results presented in Read et al. (2018).
+
+'Ostats' is part of the collaborative Macrosystems Biodiversity Project *Local- to continental-scale drivers of biodiversity across the National Ecological Observatory Network (NEON)*. For more information on this project, see the [Macrosystems Biodiversity Website](https://neon-biodiversity.github.io/).
 
 ## Authors
 
@@ -16,7 +28,13 @@ Ostats is part of the collaborative Macrosystems Biodiversity Project *Local- to
 
 ## How to install
 
-Type the following into your R prompt.
+To install the stable version of the package from CRAN, type the following into your R prompt.
+
+```
+install.packages('Ostats')
+```
+
+The development version of the package has more recent updates but may not be as thoroughly tested as the stable CRAN version. To install the development version, type the following into your R prompt.
 
 ```
 remotes::install_github('NEON-biodiversity/Ostats')

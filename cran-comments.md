@@ -32,7 +32,7 @@ No ERRORs, WARNINGs, or NOTEs on either platform.
 
 # Comments on third CRAN submission
 
-July 22, 2021
+July 23, 2021
 
 This submission corrects issues raised by Uwe and Gregor from the previous submission.
 
@@ -42,4 +42,6 @@ This submission corrects issues raised by Uwe and Gregor from the previous submi
 - Argument verbose added to Ostats() and Ostats_multivariate(). If set to TRUE, message() is used to display progress messages, rather than print().
 - References added to the description field of the DESCRIPTION file. I only included references to our group's own published work in the DESCRIPTION file. Other references listed in the README.md file are for further reading and not appropriate for the DESCRIPTION file.
 - Added BugReports field to DESCRIPTION.
-- Example added for Ostats_multivariate().
+- Example added for Ostats_multivariate(). Both examples now run in about 7 seconds each.
+
+Again successfully tested on R 4.0.5 Windows 10, R 4.0.3 Ubuntu 16.04, with no ERRORs, WARNINGs, or NOTEs.
