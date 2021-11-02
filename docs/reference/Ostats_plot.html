@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/darkly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -82,7 +82,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -106,7 +106,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/NEON-biodiversity/Ostats/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -121,7 +126,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Plot community trait overlap</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/NEON-biodiversity/Ostats/blob/master/R/Ostats_plot.R'><code>R/Ostats_plot.R</code></a></small>
     <div class="hidden name"><code>Ostats_plot.Rd</code></div>
     </div>
 
@@ -241,19 +246,24 @@ column next to the traits distribution plots for each site. Default is</p></td>
  pairwise niche overlap statistics)</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># set the arguments:</span>
-<span class='va'>plots</span> <span class='op'>&lt;-</span> <span class='va'>small_mammal_data</span><span class='op'>$</span><span class='va'>siteID</span>
-<span class='va'>sp</span> <span class='op'>&lt;-</span> <span class='va'>small_mammal_data</span><span class='op'>$</span><span class='va'>taxonID</span>
-<span class='va'>traits</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log10</a></span><span class='op'>(</span><span class='va'>small_mammal_data</span><span class='op'>$</span><span class='va'>weight</span><span class='op'>)</span>
-
-<span class='co'># to plot only selected sites:</span>
-<span class='va'>use_plots</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'BART'</span>,<span class='st'>'KONZ'</span>,<span class='st'>'JORN'</span><span class='op'>)</span>
-
-
-<span class='fu'>Ostats_plot</span><span class='op'>(</span>plots <span class='op'>=</span> <span class='va'>plots</span>, sp <span class='op'>=</span> <span class='va'>sp</span>, traits <span class='op'>=</span> <span class='va'>traits</span>,
-           overlap_dat <span class='op'>=</span> <span class='va'>small_mammal_Ostats</span>,
-           use_plots <span class='op'>=</span> <span class='va'>use_plots</span>, means <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 61 rows containing non-finite values (stat_density).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Groups with fewer than two data points have been dropped.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Groups with fewer than two data points have been dropped.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 2 rows containing missing values.</span></div><div class='img'><img src='Ostats_plot-1.png' alt='' width='700' height='433' /></div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'># set the arguments:</span></span>
+<span class='r-in'><span class='va'>plots</span> <span class='op'>&lt;-</span> <span class='va'>small_mammal_data</span><span class='op'>$</span><span class='va'>siteID</span></span>
+<span class='r-in'><span class='va'>sp</span> <span class='op'>&lt;-</span> <span class='va'>small_mammal_data</span><span class='op'>$</span><span class='va'>taxonID</span></span>
+<span class='r-in'><span class='va'>traits</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log10</a></span><span class='op'>(</span><span class='va'>small_mammal_data</span><span class='op'>$</span><span class='va'>weight</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># to plot only selected sites:</span></span>
+<span class='r-in'><span class='va'>use_plots</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'BART'</span>,<span class='st'>'KONZ'</span>,<span class='st'>'JORN'</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>Ostats_plot</span><span class='op'>(</span>plots <span class='op'>=</span> <span class='va'>plots</span>, sp <span class='op'>=</span> <span class='va'>sp</span>, traits <span class='op'>=</span> <span class='va'>traits</span>,</span>
+<span class='r-in'>           overlap_dat <span class='op'>=</span> <span class='va'>small_mammal_Ostats</span>,</span>
+<span class='r-in'>           use_plots <span class='op'>=</span> <span class='va'>use_plots</span>, means <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Removed 61 rows containing non-finite values (stat_density).</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Groups with fewer than two data points have been dropped.</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Groups with fewer than two data points have been dropped.</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Removed 2 rows containing missing values.</span>
+<span class='r-plt img'><img src='Ostats_plot-1.png' alt='' width='700' height='433' /></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

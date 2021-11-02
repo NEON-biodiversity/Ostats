@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>O-stats: pairwise community-level niche overlap statistics • Ostats</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/darkly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -65,7 +65,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/NEON-biodiversity/Ostats/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -79,13 +79,13 @@
 
       
 
-      </header><div class="row">
+      </header><script src="Ostats-introduction_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>O-stats: pairwise community-level niche overlap statistics</h1>
                         <h4 class="author">Arya Yue, Quentin D. Read, Isadora Essig Fluck, Benjamin Baiser, John M. Grady, Phoebe L. Zarnetske, Sydne Record</h4>
             
-            <h4 class="date">2021-07-26</h4>
+            <h4 class="date">2021-11-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/NEON-biodiversity/Ostats/blob/master/vignettes/Ostats-introduction.Rmd"><code>vignettes/Ostats-introduction.Rmd</code></a></small>
       <div class="hidden name"><code>Ostats-introduction.Rmd</code></div>
@@ -124,7 +124,7 @@
 <code class="sourceCode R"><span class="co"># Load the Ostats package. </span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">Ostats</span><span class="op">)</span>
 
-<span class="va">dat</span> <span class="op">&lt;-</span> <span class="va">small_mammal_data</span><span class="op">[</span><span class="va">small_mammal_data</span><span class="op">$</span><span class="va">siteID</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'HARV'</span>, <span class="st">'JORN'</span><span class="op">)</span>, 
+<span class="va">dat</span> <span class="op">&lt;-</span> <span class="va">small_mammal_data</span><span class="op">[</span><span class="va">small_mammal_data</span><span class="op">$</span><span class="va">siteID</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'HARV'</span>, <span class="st">'JORN'</span><span class="op">)</span>, 
                          <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'siteID'</span>, <span class="st">'taxonID'</span>, <span class="st">'weight'</span><span class="op">)</span><span class="op">]</span>
 <span class="va">dat</span> <span class="op">&lt;-</span> <span class="va">dat</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">weight</span><span class="op">)</span>, <span class="op">]</span>
 <span class="va">dat</span><span class="op">$</span><span class="va">log_weight</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">weight</span><span class="op">)</span></code></pre></div>
@@ -355,7 +355,7 @@
 <li><p><code>colorvalues</code> is a vector of color values for the density polygons. This argument defaults to a <code>viridis</code> palette if no other is provided. It is recommended that the number of colors be equal to the number of taxa in the community to ensure that the same color is not repeated for different taxa.</p></li>
 <li><p><code>alpha</code> defines the transparency level for colors that fill the density polygons with the default being <code>0.5</code>.</p></li>
 <li><p><code>adjust</code> is a value that is multiplied by the bandwidth adjustment of the density curves. The smaller this value is, the more closely the kernel density estimate will fit local variation in density. The default is 2. See <code><a href="https://rdrr.io/r/stats/density.html">stats::density</a></code>.</p></li>
-<li><p><code>limits_x</code> a vector of length 2: it sets the limits of the x-axis. The default x-axis limits are: a minimum of <code>0.5</code> times the minimum observed trait measurement (with <code>NA</code>s removed) and a maximum of <code>1.5</code> times the maximum observed trait measurement (<code><a href="https://rdrr.io/r/base/c.html">c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE))</a></code>).</p></li>
+<li><p><code>limits_x</code> a vector of length 2: it sets the limits of the x-axis. The default x-axis limits are: a minimum of <code>0.5</code> times the minimum observed trait measurement (with <code>NA</code>s removed) and a maximum of <code>1.5</code> times the maximum observed trait measurement (<code>c(0.5*min(trait,na.rm=TRUE), 1.5*max(trait,na.rm=TRUE))</code>).</p></li>
 <li><p><code>scale</code> If you want the scale of x, y or both x and y axis to be adjusted according to each site density probability, set the argument to <code>"free_x"</code>, <code>"free_y"</code> or <code>"free"</code> respectively. Default = <code>"fixed"</code> which uses the same scale across all sites. See <code><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">ggplot2::facet_grid</a></code>.</p></li>
 <li><p><code>name_x</code> is a character string indicating the name of the x-axis (i.e., the name of the trait) with a default of <code>'trait value'</code>.</p></li>
 <li><p><code>name_y</code> is a character string indicating the name of the y-axis with a default of <code>'Probability Density'</code>.</p></li>

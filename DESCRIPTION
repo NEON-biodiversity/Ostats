@@ -2,7 +2,7 @@ Package: Ostats
 Type: Package
 Title: O-Stats, or Pairwise Community-Level Niche Overlap Statistics
 Version: 0.1.0
-Authors@R: c(person(c('Quentin', 'D.'), 'Read', role = c('aut', 'cre'), email = 'qread@sesync.org'),
+Authors@R: c(person(c('Quentin', 'D.'), 'Read', role = c('aut', 'cre'), email = 'quentin.read@usda.gov'),
              person('Arya', 'Yue', role = 'aut'),
              person(c('Isadora', 'E.'), 'Fluck', role = 'aut'),
              person('Benjamin', 'Baiser', role = 'aut'),
@@ -28,6 +28,7 @@ Description: O-statistics, or overlap statistics, measure the degree of communit
     (2018) <http://tiee.esa.org/vol/v14/issues/figure_sets/grady/abstract.html>.
 License: MIT + file LICENSE
 Encoding: UTF-8
+URL: https://neon-biodiversity.github.io/Ostats/
 BugReports: https://github.com/NEON-biodiversity/Ostats/issues
 LazyData: true
 Depends:
