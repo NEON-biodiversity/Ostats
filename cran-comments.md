@@ -45,3 +45,17 @@ This submission corrects issues raised by Uwe and Gregor from the previous submi
 - Example added for Ostats_multivariate(). Both examples now run in about 7 seconds each.
 
 Again successfully tested on R 4.0.5 Windows 10, R 4.0.3 Ubuntu 16.04, with no ERRORs, WARNINGs, or NOTEs.
+
+# Comments on initial submission of version 0.1.1
+
+Submitted to CRAN on 15 November 2021
+
+This submission resolves the CRAN check errors caused by an update to one of the Ostats package's dependencies (hypervolume).
+
+## Test environments
+
+- R 4.1.1, Windows 10
+
+## R CMD check results
+
+0 errors | 0 warnings | 0 notes
