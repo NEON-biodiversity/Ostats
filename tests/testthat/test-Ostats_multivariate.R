@@ -7,7 +7,7 @@ iris_traits <- as.matrix(iris[,1:4])
 # Test 1: Does iris return appropriate output?
 result1 <- Ostats_multivariate(traits = iris_traits, plots = factor(rep(c('a','b'),times=75)), sp = iris$Species, random_seed = 111, run_null_model = FALSE, hypervolume_args = list(method = 'box'), hypervolume_set_args = list(num.points.max = 1000))
 result1 <- as.numeric(result1$overlaps_norm)
-expected1 <- c(0.71, 0.79)
+expected1 <- c(0.755, 0.783)
 
 test_that (
   "Ostats_multivariate returns expected output",

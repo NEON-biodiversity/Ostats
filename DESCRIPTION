@@ -1,7 +1,7 @@
 Package: Ostats
 Type: Package
 Title: O-Stats, or Pairwise Community-Level Niche Overlap Statistics
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(person(c('Quentin', 'D.'), 'Read', role = c('aut', 'cre'), email = 'quentin.read@usda.gov'),
              person('Arya', 'Yue', role = 'aut'),
              person(c('Isadora', 'E.'), 'Fluck', role = 'aut'),
@@ -43,7 +43,7 @@ Imports:
     viridis,
     grid,
     MASS
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Suggests: 
     testthat (>= 2.1.0),
     knitr,
