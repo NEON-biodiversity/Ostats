@@ -86,16 +86,18 @@
 #' each community.
 #'
 #' @examples
-#' # overlap statistics among populations of pitcher plants at different sites
+#' # overlap statistic between populations of pitcher plants at two different sites
 #'
-#' # Select three dimensions and scale data
-#' dat <- as.matrix(pitcher_traits[, c("rosette_diameter_1", "pitcher_width", "mouth_diameter")])
+#' # Select two sites and three dimensions and scale data
+#' site_index <- pitcher_traits[, 'site_id'] %in% c('FLK', 'MYR')
+#' dat <- as.matrix(pitcher_traits[site_index,
+#'                                c('rosette_diameter_1', 'pitcher_width', 'mouth_diameter')])
 #' dat <- scale(dat, center = TRUE, scale = TRUE)
 #'
-#' # When generating hypervolumes, sample fewer points than usual for example purposes
+#' # Here a low number is used for num.points.max for example purposes
 #' Ostats_multi_example <- Ostats_multivariate(traits = dat,
 #'                                             plots = factor(rep(1, nrow(dat))),
-#'                                             sp = factor(pitcher_traits$site_id),
+#'                                             sp = factor(pitcher_traits$site_id[site_index]),
 #'                                             random_seed = 111,
 #'                                             run_null_model = FALSE,
 #'                                             hypervolume_args = list(method = 'box'),

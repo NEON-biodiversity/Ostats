@@ -64,7 +64,9 @@ This submission resolves the CRAN check errors caused by an update to one of the
 
 Submitted to CRAN on 16 November 2021
 
-This submission reduces the runtime of the Ostats_multivariate() example to <5 seconds by removing unnecessary library() calls from examples.
+This submission reduces the run time of the Ostats_multivariate() example to <5 seconds.
+
+The only remaining note is an indication that the maintainer's email address has been updated, which is desirable.
 
 ## Test environments
 
@@ -73,4 +75,4 @@ This submission reduces the runtime of the Ostats_multivariate() example to <5 s
 
 ## R CMD check results
 
-0 errors | 0 warnings | 0 notes
+0 errors | 0 warnings | 1 note
