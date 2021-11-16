@@ -59,3 +59,18 @@ This submission resolves the CRAN check errors caused by an update to one of the
 ## R CMD check results
 
 0 errors | 0 warnings | 0 notes
+
+# Comments on second submission of version 0.1.1
+
+Submitted to CRAN on 16 November 2021
+
+This submission reduces the runtime of the Ostats_multivariate() example to <5 seconds by removing unnecessary library() calls from examples.
+
+## Test environments
+
+- R 4.1.1, Windows 10
+- R 4.1.1, Red Hat Enterprise Linux 8
+
+## R CMD check results
+
+0 errors | 0 warnings | 0 notes

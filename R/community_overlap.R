@@ -53,8 +53,6 @@
 #'   Ecography 41, 1718-1727 (2018).
 #'
 #' @examples
-#' library(Ostats)
-#'
 #' # Keep only the relevant part of small mammal data
 #' dat <- small_mammal_data[small_mammal_data$siteID %in% c('HARV','JORN'), ]
 #' dat <- dat[!is.na(dat$weight), ]

@@ -108,7 +108,6 @@
 #'
 #' @examples
 #' # overlap statistics for body weights of small mammals in NEON sites
-#' library(Ostats)
 #'
 #' # Keep only the relevant part of data
 #' dat <- small_mammal_data[small_mammal_data$siteID %in% c('HARV','JORN'), ]

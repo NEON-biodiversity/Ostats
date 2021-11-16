@@ -85,8 +85,6 @@ weights, which minimizes the effect of outliners and rare species.If the argumen
 output to mean, specify the argument \code{output = "mean"}.
 }
 \examples{
-library(Ostats)
-
 # Keep only the relevant part of small mammal data
 dat <- small_mammal_data[small_mammal_data$siteID \%in\% c('HARV','JORN'), ]
 dat <- dat[!is.na(dat$weight), ]
