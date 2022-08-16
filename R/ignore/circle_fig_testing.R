@@ -63,16 +63,31 @@ ggplot_dist <- ggplot2::ggplot(plot_dat) +
 )
 
 # Solution: manually bin the discrete data first, grouped by sp and plots,
+
+## calculate manual jitter factor
+jitter_width <- 10/diff(x_limits)
+jitter_seq <- seq(from = -jitter_width, to = jitter_width, length.out = length(unique(sp)))
+
+# If desired to normalize:
+segment_heights <- by(plot_dat, list(sp, plots), function(x) cbind(sp = x$sp[1], plots = x$plots[1], as.data.frame.table(table(x$time)/sum(x$time), stringsAsFactors = FALSE)))
+
+# If not desired to normalize:
 segment_heights <- by(plot_dat, list(sp, plots), function(x) cbind(sp = x$sp[1], plots = x$plots[1], as.data.frame.table(table(x$time), stringsAsFactors = FALSE)))
+
 plot_binned <- do.call(rbind, segment_heights)
 plot_binned$Var1 <- as.numeric(plot_binned$Var1)
 
+# Jitter manually
+plot_binned$Var1 <- plot_binned$Var1 + jitter_seq[plot_binned$sp]
+
 # This does a great job of resolving the issue except for the overplotting
-# But if position_dodge is used it will
+# But if position_dodge is used it will cause them to curve
+# Use manual jittering to deal with this
+
 (
   ggplot_dist <- ggplot2::ggplot(plot_binned) +
-    #ggplot2::geom_segment(aes(x = Var1, xend = Var1, y = 0, yend = Freq, group = sp, color = sp), alpha = 1/2, position = position_dodge(width = 1/2), size = 1) +
-    ggplot2::geom_segment(aes(x = Var1, xend = Var1, y = 0, yend = Freq, group = sp, color = sp), alpha = 1/2, position = "identity", size = 1.5) +
+    ggplot2::geom_segment(aes(x = Var1, xend = Var1, y = 0, yend = Freq, group = sp, color = sp), alpha = 1/2, size = 1.2) +
+   # ggplot2::geom_segment(aes(x = Var1, xend = Var1, y = 0, yend = Freq, group = sp, color = sp), alpha = 1/2, position = "identity", size = 1.5) +
     #ggplot2::stat_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], group = 'sp', fill = 'sp'), alpha = alpha, geom='polygon', position = 'identity') +
     ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
     ggplot2::scale_color_manual(values = colorvalues) +
@@ -85,6 +100,8 @@ plot_binned$Var1 <- as.numeric(plot_binned$Var1)
 
 ### Use circular::density() to get kernel density estimate for circular data and plot.\
 ## test for one combination
+
+library(circular)
 x <- plot_dat$time[plot_dat$species == "Camponotus castaneus" & plot_dat$plots == 1]
 xcirc <- circular(x, units = 'hours')
 
