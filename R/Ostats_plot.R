@@ -16,7 +16,9 @@
 #' Defaults to a viridis palette if none provided.
 #'@param alpha defines the transparency level for the density polygons. Default is 0.5.
 #'@param adjust the bandwidth adjustment of the density polygons. Default is 2.
-#' See \code{\link[stats]{density}}.
+#' See \code{\link[stats]{density}}. Only used if \code{discrete = FALSE}.
+#'@param bin_width the width of each bin of the histograms. Default is 1.
+#' Only used if \code{discrete = TRUE}.
 #'@param limits_x Vector of length 2, with multiplicative factor to apply to the minimum
 #' and maximum values of each trait to expand the limits of the x axis.
 #' Default is 0.5 times the minimum and 1.5 times the maximum value of each trait.
@@ -80,6 +82,7 @@ Ostats_plot<-function(plots,
                       colorvalues = NULL,
                       alpha = 0.5,
                       adjust = 2,
+                      bin_width = 1,
                       limits_x = c(0.5, 1.5),
                       legend = FALSE,
                       name_x = 'trait value',
@@ -174,16 +177,19 @@ Ostats_plot<-function(plots,
     if (!discrete) {
       if (normalize) {
         ggplot_dist <- ggplot2::ggplot(plot_dat) +
-          ggplot2::geom_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], group = 'sp', fill = 'sp'), alpha = alpha, position = 'identity')
+          ggplot2::geom_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], group = 'sp', fill = 'sp'), alpha = alpha, position = 'identity', color = NA)
       } else {
         ggplot_dist <- ggplot2::ggplot(plot_dat) +
-          ggplot2::geom_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], y = 'ggplot2::after_stat(count)', group = 'sp', fill = 'sp'), alpha = alpha, position = 'identity')
+          ggplot2::geom_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], y = 'ggplot2::after_stat(count)', group = 'sp', fill = 'sp'), alpha = alpha, position = 'identity', color = NA)
       }
     } else {
-      # FIXME allow bin width argument
-      # FIXME allow no normalization of density
-      ggplot_dist <- ggplot2::ggplot(plot_dat) +
-        ggplot2::geom_histogram(ggplot2::aes_string(x = dimnames(traits)[[2]][i], group = 'sp', fill = 'sp'), alpha = alpha, position = 'identity')
+      if (normalize) {
+        ggplot_dist <- ggplot2::ggplot(plot_dat) +
+          ggplot2::geom_histogram(ggplot2::aes_string(x = dimnames(traits)[[2]][i], y = 'ggplot2::after_stat(density * width)', fill = 'sp'), alpha = alpha, position = 'identity', binwidth = bin_width)
+      } else {
+        ggplot_dist <- ggplot2::ggplot(plot_dat) +
+          ggplot2::geom_histogram(ggplot2::aes_string(x = dimnames(traits)[[2]][i], fill = 'sp'), alpha = alpha, position = 'identity', binwidth = bin_width)
+      }
     }
 
     ggplot_dist <- ggplot_dist +
