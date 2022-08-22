@@ -41,12 +41,20 @@
 #' \code{circular}. Default is \code{FALSE}.
 #'
 #'@return Density plots of species trait distributions plotted together
-#'  for each community to show how they overlap each other.
+#'  for each community to show how they overlap each other. Each community
+#'  is plotted on a separate panel within a multipanel figure.
 #'  The overlap value obtained as output from \code{\link{Ostats}}
 #'  is labelled on each community graph, if provided by the user.
 #'
+#'  If trait values are discrete rather than continuous, histograms are
+#'  plotted instead of kernel density plots.
+#'
+#'  If trait values are circular, a circular kernel density estimate for
+#'  each species is plotted on a polar coordinate plot. If trait values are
+#'  both circular and discrete, a "sunburst" plot is returned.
+#'
 #'  The class of the returned object is \code{Ostats_plot_object}. Calling
-#'  \code{print} on this object will invoke a method to draw the plot using
+#'  \code{print} on this object will draw the plot using
 #'  \code{\link[grid]{grid.draw}}.
 #'
 #'  If more than one trait is provided, a list of objects of class
@@ -220,7 +228,11 @@ Ostats_plot<-function(plots,
     }
 
     } else {
-      # FIXME Include all the circular stuff here.
+      if (!discrete) {
+        # FIXME Here put the code for the circular continuous plot (polar density)
+      } else {
+        # FIXME Here put the code for the circular discrete plot (sunburst)
+      }
     }
 
     # Assign class attribute Ostats_plot_object so that the plot has a default print method.
