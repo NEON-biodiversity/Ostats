@@ -37,17 +37,6 @@ ggplot2::theme_set(
                                        strip.background = ggplot2::element_blank()))
 
 
-(
-ggplot_dist <- ggplot2::ggplot(plot_dat) +
-  ggplot2::stat_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], group = 'sp', fill = 'sp'), alpha = alpha, geom='polygon', position = 'identity') +
-  ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
-  ggplot2::scale_fill_manual(values = colorvalues) +
-  ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
-  #ggplot2::scale_y_continuous(name = name_y, expand = c(0,0)) +
-  ggplot2::coord_polar()
-  #ggplot2::theme(legend.position = if (!legend | means) 'none' else 'right')
-)
-
 # Discrete plot.
 # Issue: If area is used, it keeps getting wider as you get further from the origin so it gives a biased depiction of the overlap.
 (

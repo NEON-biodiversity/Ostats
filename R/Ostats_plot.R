@@ -27,8 +27,16 @@
 #' See \code{\link[ggplot2]{facet_grid}}.
 #'@param name_x x-axis label. Default is 'trait value'
 #'@param name_y y-axis label. Default is 'probability density'
-#'@param means if TRUE, trait means for each species are plotted in an additional plot
-#' column next to the traits distribution plots for each site. Default is
+#'@param normalize if \code{TRUE}, areas of density plots are normalized to be equal
+#' across taxa; if \code{FALSE}, areas will be proportional to abundance.
+#' Default is \code{TRUE}.
+#'@param means if \code{TRUE}, trait means for each species are plotted in an additional plot
+#' column next to the traits distribution plots for each site. Default is \code{FALSE}.
+#'@param discrete if \code{TRUE}, plots histograms at discrete trait values instead
+#' of smooth kernel density plots. Default is \code{FALSE}.
+#'@param circular if \code{TRUE}, plots density plots or histograms using polar
+#' coordinates, and estimates density using method for objects of class
+#' \code{circular}. Default is \code{FALSE}.
 #'
 #'@return Density plots of species trait distributions plotted together
 #'  for each community to show how they overlap each other.
@@ -76,9 +84,12 @@ Ostats_plot<-function(plots,
                       legend = FALSE,
                       name_x = 'trait value',
                       name_y = 'probability density',
-                      means = FALSE) {
+                      normalize = TRUE,
+                      means = FALSE,
+                      circular = FALSE,
+                      discrete = FALSE) {
 
-
+  if (means & discrete) stop('Plotting trait means is not supported for discrete traits.')
 
   # Unless a subset of sites is provided, use all sites in dataset.
   if (is.null(use_plots)) {
@@ -117,6 +128,28 @@ Ostats_plot<-function(plots,
 
   names(colorvalues) <- unique(sp)
 
+  # If data are discrete and circular, generate bin counts manually (not necessary for discrete non-circular)
+  if (discrete & circular) {
+    # calculate manual jitter factor
+    # FIXME The jittering must also be done for each trait.
+    jitter_width <- 10/diff(x_limits)
+    jitter_seq <- seq(from = -jitter_width, to = jitter_width, length.out = length(unique(sp)))
+
+    # FIXME This currently hardcodes in "time" as the variable. It must be applied across multiple columns.
+    if (normalize) {
+      segment_heights <- by(plot_dat, list(sp, plots), function(x) cbind(sp = x$sp[1], plots = x$plots[1], as.data.frame.table(table(x$time)/sum(x$time), stringsAsFactors = FALSE)))
+    } else {
+      segment_heights <- by(plot_dat, list(sp, plots), function(x) cbind(sp = x$sp[1], plots = x$plots[1], as.data.frame.table(table(x$time), stringsAsFactors = FALSE)))
+    }
+
+    plot_binned <- do.call(rbind, segment_heights)
+    plot_binned$Var1 <- as.numeric(plot_binned$Var1)
+
+    # Jitter manually
+    plot_binned$Var1 <- plot_binned$Var1 + jitter_seq[plot_binned$sp]
+  }
+
+
   plot_list <- list()
 
   ggplot2::theme_set(
@@ -134,10 +167,20 @@ Ostats_plot<-function(plots,
                                    lab = paste('Overlap =', signif(ostat_norm[,i], 2)))
     }
 
+    if (!circular) {
+
     x_limits <- limits_x * range(traits[, i], na.rm = TRUE)
 
-    ggplot_dist <- ggplot2::ggplot(plot_dat) +
-      ggplot2::stat_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], group = 'sp', fill = 'sp'), alpha = alpha, geom='polygon', position = 'identity') +
+    if (!discrete) {
+      ggplot_dist <- ggplot2::ggplot(plot_dat) +
+        ggplot2::stat_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], group = 'sp', fill = 'sp'), alpha = alpha, geom='polygon', position = 'identity')
+    } else {
+      # FIXME allow bin width argument
+      ggplot_dist <- ggplot2::ggplot(plot_dat) +
+        ggplot2::geom_histogram(ggplot2::aes_string(x = dimnames(traits)[[2]][i], group = 'sp', fill = 'sp'), alpha = alpha, position = 'identity')
+    }
+
+    ggplot_dist <- ggplot_dist +
       ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
       ggplot2::scale_fill_manual(values = colorvalues) +
       ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
@@ -162,6 +205,10 @@ Ostats_plot<-function(plots,
       ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ggplot_means, ncol = 2, widths = if (!legend) c(1, 1) else c(1, 1.3))
     } else {
       ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ncol = 1)
+    }
+
+    } else {
+      # FIXME Include all the circular stuff here.
     }
 
     # Assign class attribute Ostats_plot_object so that the plot has a default print method.
