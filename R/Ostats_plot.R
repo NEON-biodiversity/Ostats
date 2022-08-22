@@ -172,10 +172,16 @@ Ostats_plot<-function(plots,
     x_limits <- limits_x * range(traits[, i], na.rm = TRUE)
 
     if (!discrete) {
-      ggplot_dist <- ggplot2::ggplot(plot_dat) +
-        ggplot2::stat_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], group = 'sp', fill = 'sp'), alpha = alpha, geom='polygon', position = 'identity')
+      if (normalize) {
+        ggplot_dist <- ggplot2::ggplot(plot_dat) +
+          ggplot2::geom_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], group = 'sp', fill = 'sp'), alpha = alpha, position = 'identity')
+      } else {
+        ggplot_dist <- ggplot2::ggplot(plot_dat) +
+          ggplot2::geom_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], y = 'ggplot2::after_stat(count)', group = 'sp', fill = 'sp'), alpha = alpha, position = 'identity')
+      }
     } else {
       # FIXME allow bin width argument
+      # FIXME allow no normalization of density
       ggplot_dist <- ggplot2::ggplot(plot_dat) +
         ggplot2::geom_histogram(ggplot2::aes_string(x = dimnames(traits)[[2]][i], group = 'sp', fill = 'sp'), alpha = alpha, position = 'identity')
     }
