@@ -109,12 +109,11 @@ circ_dens_data <- by(plot_dat, list(sp, plots), calc_circ_dens)
 plot_binned <- do.call(rbind, circ_dens_data)
 
 (
-xcircdens_gg <- ggplot2::ggplot(plot_binned, aes(x=x, y=y, fill=sp)) +
+ggplot_dist <- ggplot2::ggplot(plot_binned, aes(x=x, y=y, fill=sp)) +
   ggplot2::geom_polygon(alpha = 1/3) +
     ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
   ggplot2::scale_fill_manual(values = colorvalues) +
   ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
   ggplot2::scale_y_continuous(name = name_y, expand = c(0,0)) +
   ggplot2::coord_polar()
-#ggplot2::theme(legend.position = if (!legend | means) 'none' else 'right')
 )

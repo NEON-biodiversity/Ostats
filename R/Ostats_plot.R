@@ -39,6 +39,9 @@
 #'@param circular if \code{TRUE}, plots density plots or histograms using polar
 #' coordinates, and estimates density using method for objects of class
 #' \code{circular}. Default is \code{FALSE}.
+#' @param circular_args optional list of additional arguments to pass to
+#'  \code{\link[circular]{circular}}. Only used if \code{circular = TRUE} and
+#'  \code{discrete = FALSE}.
 #'
 #'@return Density plots of species trait distributions plotted together
 #'  for each community to show how they overlap each other. Each community
@@ -98,7 +101,8 @@ Ostats_plot<-function(plots,
                       normalize = TRUE,
                       means = FALSE,
                       circular = FALSE,
-                      discrete = FALSE) {
+                      discrete = FALSE,
+                      circular_args = list()) {
 
   if (means & discrete) stop('Plotting trait means is not supported for discrete traits.')
 
@@ -229,9 +233,42 @@ Ostats_plot<-function(plots,
 
     } else {
       if (!discrete) {
-        # FIXME Here put the code for the circular continuous plot (polar density)
+        # FIXME This has time hard-coded in as the trait; it will need to be changed.
+        calc_circ_dens <- function(dat) {
+          xcirc <- circular::circular(dat$time, units = 'hours')
+          xcircdens <- circular::density.circular(xcirc, bw = 24)
+          cbind(sp = dat$sp[1], plots = dat$plots[1], with(xcircdens, data.frame(x=x, y=y)))
+        }
+
+        circ_dens_data <- by(plot_dat, list(sp, plots), calc_circ_dens)
+        plot_binned <- do.call(rbind, circ_dens_data)
+
+        ggplot_dist <- ggplot2::ggplot(plot_binned, aes(x=x, y=y, fill=sp)) +
+          ggplot2::geom_polygon(alpha = 1/3) +
+          ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
+          ggplot2::scale_fill_manual(values = colorvalues) +
+          ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
+          ggplot2::scale_y_continuous(name = name_y, expand = c(0,0)) +
+          ggplot2::coord_polar()
+
+        if (means) {
+
+          # FIXME Here include the code to produce ggplot_means on a circular coordinate grid
+
+          ggplot_means <- ...
+
+          ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ggplot_means, ncol = 2, widths = if (!legend) c(1, 1) else c(1, 1.3))
+        } else {
+          ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ncol = 1)
+        }
+
+
       } else {
         # FIXME Here put the code for the circular discrete plot (sunburst)
+
+        ...
+
+        ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ncol = 1)
       }
     }
 
