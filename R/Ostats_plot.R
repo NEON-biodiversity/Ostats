@@ -95,7 +95,7 @@ Ostats_plot<-function(plots,
                       alpha = 0.5,
                       adjust = 2,
                       bin_width = 1,
-                      limits_x = c(0.5, 1.5),
+                      limits_x = c(0.5, 1.5), # FIXME Default for discrete should be 1,1
                       legend = FALSE,
                       name_x = 'trait value',
                       name_y = 'probability density',
@@ -169,9 +169,9 @@ Ostats_plot<-function(plots,
                                    lab = paste('Overlap =', signif(ostat_norm[,i], 2)))
     }
 
-    if (!circular) {
+    x_limits <- limits_x * range(traits[, i], na.rm = TRUE)
 
-      x_limits <- limits_x * range(traits[, i], na.rm = TRUE)
+    if (!circular) {
 
       if (!discrete) {
         if (normalize) {
@@ -220,6 +220,8 @@ Ostats_plot<-function(plots,
 
     } else {
       if (!discrete) {
+        # FIXME currently we do not get different results for each trait.
+        # FIXME normalization is ignored currently. Must be added.
         calc_circ_dens <- function(dat) {
           xcirc <- do.call(circular::circular, c(list(x = dat[,i]), circular_args))
           xcircdens <- circular::density.circular(xcirc, bw = diff(x_limits))
@@ -239,6 +241,7 @@ Ostats_plot<-function(plots,
 
         if (means) {
 
+          # FIXME currently this returns an error.
           ggplot_means <- ggplot2::ggplot(taxon_mean) +
             ggplot2::geom_vline(ggplot2::aes_string(xintercept = dimnames(traits)[[2]][i], colour = 'sp', group='sp'), alpha = alpha, size=0.5, key_glyph = 'rect') +
             ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
