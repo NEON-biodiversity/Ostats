@@ -99,7 +99,7 @@ xcircdens_data <- with(xcircdens, data.frame(x=x, y=y))
 ## use by() to get for all plots and species
 calc_circ_dens <- function(dat) {
   xcirc <- circular(dat$time, units = 'hours')
-  xcircdens <- density(xcirc, bw = 24)
+  xcircdens <- density(xcirc, bw = max(x_limits))
   cbind(sp = dat$sp[1], plots = dat$plots[1], with(xcircdens, data.frame(x=x, y=y)))
 }
 

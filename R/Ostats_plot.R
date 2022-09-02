@@ -41,7 +41,8 @@
 #' \code{circular}. Default is \code{FALSE}.
 #' @param circular_args optional list of additional arguments to pass to
 #'  \code{\link[circular]{circular}}. Only used if \code{circular = TRUE} and
-#'  \code{discrete = FALSE}.
+#'  \code{discrete = FALSE}. If no arguments are provided, default arguments to
+#'  \code{\link[circular]{circular}} are used.
 #'
 #'@return Density plots of species trait distributions plotted together
 #'  for each community to show how they overlap each other. Each community
@@ -133,9 +134,8 @@ Ostats_plot<-function(plots,
 
   # Calculate mean value by taxon.
   if (circular) {
-    # FIXME Currently hardcoded hours. Need to fix.
     mean_fn <- function(x) {
-      xcirc <- circular(x, units = 'hours')
+      xcirc <- do.call(circular::circular, c(list(x = x), circular_args))
       mean(xcirc, na.rm = TRUE)
     }
   } else {
@@ -221,9 +221,8 @@ Ostats_plot<-function(plots,
     } else {
       if (!discrete) {
         calc_circ_dens <- function(dat) {
-          # FIXME hours and bandwidth 24 are hardcoded in. This must be cahnged.
-          xcirc <- circular::circular(dat[,i], units = 'hours')
-          xcircdens <- circular::density.circular(xcirc, bw = 24)
+          xcirc <- do.call(circular::circular, c(list(x = dat[,i]), circular_args))
+          xcircdens <- circular::density.circular(xcirc, bw = diff(x_limits))
           cbind(sp = dat$sp[1], plots = dat$plots[1], with(xcircdens, data.frame(x=x, y=y)))
         }
 
