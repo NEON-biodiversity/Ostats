@@ -87,7 +87,7 @@ plot_binned$Var1 <- plot_binned$Var1 + jitter_seq[plot_binned$sp]
 )
 
 
-### Use circular::density() to get kernel density estimate for continuous circular data and plot.
+### Use circular::density() to get kernel density estimate for circular data and plot.\
 ## test for one combination
 
 library(circular)
@@ -118,26 +118,6 @@ ggplot_dist <- ggplot2::ggplot(plot_binned, aes(x=x, y=y, fill=sp)) +
   ggplot2::coord_polar()
 )
 
-### Means plotted as radii for continuous circular data ggplot_means.
-calc_circ_mean <- function(x) {
-  xcirc <- circular(x, units = 'hours')
-  mean(xcirc, na.rm = TRUE)
-}
-
-taxon_mean <- stats::aggregate(traits, list(sp, plots), calc_circ_mean)
-names(taxon_mean) <- c('sp', 'plots', dimnames(traits)[[2]])
-taxon_mean <- taxon_mean[taxon_mean$plots %in% use_plots, ]
-
-(
-ggplot_means <- ggplot2::ggplot(taxon_mean) +
-  ggplot2::geom_vline(ggplot2::aes_string(xintercept = dimnames(traits)[[2]][i], colour = 'sp', group='sp'), alpha = alpha, size=0.5, key_glyph = 'rect') +
-  ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
-  ggplot2::scale_colour_manual(values = colorvalues) +
-  ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
-  ggplot2::scale_y_continuous(expand = c(0,0)) +
-  ggplot2::coord_polar() +
-  ggplot2::theme(legend.position = if (!legend) 'none' else 'right')
-)
 
 ### Discrete non-circular data (example)
 bin_width = 1

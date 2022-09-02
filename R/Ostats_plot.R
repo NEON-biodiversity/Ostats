@@ -132,7 +132,16 @@ Ostats_plot<-function(plots,
 
 
   # Calculate mean value by taxon.
-  taxon_mean <- stats::aggregate(traits, list(sp, plots), mean, na.rm = TRUE)
+  if (circular) {
+    # FIXME Currently hardcoded hours. Need to fix.
+    mean_fn <- function(x) {
+      xcirc <- circular(x, units = 'hours')
+      mean(xcirc, na.rm = TRUE)
+    }
+  } else {
+    mean_fn <- function(x) mean(x, na.rm = TRUE)
+  }
+  taxon_mean <- stats::aggregate(traits, list(sp, plots), mean_fn)
   names(taxon_mean) <- c('sp', 'plots', dimnames(traits)[[2]])
   taxon_mean <- taxon_mean[taxon_mean$plots %in% use_plots, ]
 
@@ -253,9 +262,14 @@ Ostats_plot<-function(plots,
 
         if (means) {
 
-          # FIXME Here include the code to produce ggplot_means on a circular coordinate grid
-
-          ggplot_means <- ...
+          ggplot_means <- ggplot2::ggplot(taxon_mean) +
+            ggplot2::geom_vline(ggplot2::aes_string(xintercept = dimnames(traits)[[2]][i], colour = 'sp', group='sp'), alpha = alpha, size=0.5, key_glyph = 'rect') +
+            ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
+            ggplot2::scale_colour_manual(values = colorvalues) +
+            ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
+            ggplot2::scale_y_continuous(expand = c(0,0)) +
+            ggplot2::coord_polar() +
+            ggplot2::theme(legend.position = if (!legend) 'none' else 'right')
 
           ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ggplot_means, ncol = 2, widths = if (!legend) c(1, 1) else c(1, 1.3))
         } else {
