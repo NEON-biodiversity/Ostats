@@ -152,28 +152,6 @@ Ostats_plot<-function(plots,
 
   names(colorvalues) <- unique(sp)
 
-  # If data are discrete and circular, generate bin counts manually (not necessary for discrete non-circular)
-  if (discrete & circular) {
-    # calculate manual jitter factor
-    # FIXME The jittering must also be done for each trait.
-    jitter_width <- 10/diff(x_limits)
-    jitter_seq <- seq(from = -jitter_width, to = jitter_width, length.out = length(unique(sp)))
-
-    # FIXME This currently hardcodes in "time" as the variable. It must be applied across multiple columns.
-    if (normalize) {
-      segment_heights <- by(plot_dat, list(sp, plots), function(x) cbind(sp = x$sp[1], plots = x$plots[1], as.data.frame.table(table(x$time)/sum(x$time), stringsAsFactors = FALSE)))
-    } else {
-      segment_heights <- by(plot_dat, list(sp, plots), function(x) cbind(sp = x$sp[1], plots = x$plots[1], as.data.frame.table(table(x$time), stringsAsFactors = FALSE)))
-    }
-
-    plot_binned <- do.call(rbind, segment_heights)
-    plot_binned$Var1 <- as.numeric(plot_binned$Var1)
-
-    # Jitter manually
-    plot_binned$Var1 <- plot_binned$Var1 + jitter_seq[plot_binned$sp]
-  }
-
-
   plot_list <- list()
 
   ggplot2::theme_set(
@@ -193,58 +171,58 @@ Ostats_plot<-function(plots,
 
     if (!circular) {
 
-    x_limits <- limits_x * range(traits[, i], na.rm = TRUE)
+      x_limits <- limits_x * range(traits[, i], na.rm = TRUE)
 
-    if (!discrete) {
-      if (normalize) {
-        ggplot_dist <- ggplot2::ggplot(plot_dat) +
-          ggplot2::geom_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], group = 'sp', fill = 'sp'), alpha = alpha, position = 'identity', color = NA)
+      if (!discrete) {
+        if (normalize) {
+          ggplot_dist <- ggplot2::ggplot(plot_dat) +
+            ggplot2::geom_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], group = 'sp', fill = 'sp'), alpha = alpha, position = 'identity', color = NA)
+        } else {
+          ggplot_dist <- ggplot2::ggplot(plot_dat) +
+            ggplot2::geom_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], y = 'ggplot2::after_stat(count)', group = 'sp', fill = 'sp'), alpha = alpha, position = 'identity', color = NA)
+        }
       } else {
-        ggplot_dist <- ggplot2::ggplot(plot_dat) +
-          ggplot2::geom_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], y = 'ggplot2::after_stat(count)', group = 'sp', fill = 'sp'), alpha = alpha, position = 'identity', color = NA)
+        if (normalize) {
+          ggplot_dist <- ggplot2::ggplot(plot_dat) +
+            ggplot2::geom_histogram(ggplot2::aes_string(x = dimnames(traits)[[2]][i], y = 'ggplot2::after_stat(density * width)', fill = 'sp'), alpha = alpha, position = 'identity', binwidth = bin_width)
+        } else {
+          ggplot_dist <- ggplot2::ggplot(plot_dat) +
+            ggplot2::geom_histogram(ggplot2::aes_string(x = dimnames(traits)[[2]][i], fill = 'sp'), alpha = alpha, position = 'identity', binwidth = bin_width)
+        }
       }
-    } else {
-      if (normalize) {
-        ggplot_dist <- ggplot2::ggplot(plot_dat) +
-          ggplot2::geom_histogram(ggplot2::aes_string(x = dimnames(traits)[[2]][i], y = 'ggplot2::after_stat(density * width)', fill = 'sp'), alpha = alpha, position = 'identity', binwidth = bin_width)
-      } else {
-        ggplot_dist <- ggplot2::ggplot(plot_dat) +
-          ggplot2::geom_histogram(ggplot2::aes_string(x = dimnames(traits)[[2]][i], fill = 'sp'), alpha = alpha, position = 'identity', binwidth = bin_width)
-      }
-    }
 
-    ggplot_dist <- ggplot_dist +
-      ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
-      ggplot2::scale_fill_manual(values = colorvalues) +
-      ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
-      ggplot2::scale_y_continuous(name = name_y, expand = c(0,0)) +
-      ggplot2::theme(legend.position = if (!legend | means) 'none' else 'right')
-
-    if (!is.null(overlap_dat)) {
       ggplot_dist <- ggplot_dist +
-        ggplot2::geom_text(ggplot2::aes_string(label = 'lab'), data = overlap_labels, x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1)
-    }
-
-
-    if (means) {
-      ggplot_means <- ggplot2::ggplot(taxon_mean) +
-        ggplot2::geom_vline(ggplot2::aes_string(xintercept = dimnames(traits)[[2]][i], colour = 'sp', group='sp'), alpha = alpha, size=0.5, key_glyph = 'rect') +
         ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
-        ggplot2::scale_colour_manual(values = colorvalues) +
+        ggplot2::scale_fill_manual(values = colorvalues) +
         ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
-        ggplot2::scale_y_continuous(expand = c(0,0)) +
-        ggplot2::theme(legend.position = if (!legend) 'none' else 'right')
+        ggplot2::scale_y_continuous(name = name_y, expand = c(0,0)) +
+        ggplot2::theme(legend.position = if (!legend | means) 'none' else 'right')
 
-      ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ggplot_means, ncol = 2, widths = if (!legend) c(1, 1) else c(1, 1.3))
-    } else {
-      ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ncol = 1)
-    }
+      if (!is.null(overlap_dat)) {
+        ggplot_dist <- ggplot_dist +
+          ggplot2::geom_text(ggplot2::aes_string(label = 'lab'), data = overlap_labels, x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1)
+      }
+
+
+      if (means) {
+        ggplot_means <- ggplot2::ggplot(taxon_mean) +
+          ggplot2::geom_vline(ggplot2::aes_string(xintercept = dimnames(traits)[[2]][i], colour = 'sp', group='sp'), alpha = alpha, size=0.5, key_glyph = 'rect') +
+          ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
+          ggplot2::scale_colour_manual(values = colorvalues) +
+          ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
+          ggplot2::scale_y_continuous(expand = c(0,0)) +
+          ggplot2::theme(legend.position = if (!legend) 'none' else 'right')
+
+        ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ggplot_means, ncol = 2, widths = if (!legend) c(1, 1) else c(1, 1.3))
+      } else {
+        ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ncol = 1)
+      }
 
     } else {
       if (!discrete) {
-        # FIXME This has time hard-coded in as the trait; it will need to be changed.
         calc_circ_dens <- function(dat) {
-          xcirc <- circular::circular(dat$time, units = 'hours')
+          # FIXME hours and bandwidth 24 are hardcoded in. This must be cahnged.
+          xcirc <- circular::circular(dat[,i], units = 'hours')
           xcircdens <- circular::density.circular(xcirc, bw = 24)
           cbind(sp = dat$sp[1], plots = dat$plots[1], with(xcircdens, data.frame(x=x, y=y)))
         }
@@ -278,9 +256,33 @@ Ostats_plot<-function(plots,
 
 
       } else {
-        # FIXME Here put the code for the circular discrete plot (sunburst)
 
-        ...
+        # If data are discrete and circular, generate bin counts manually (not necessary for discrete non-circular)
+
+        # calculate manual jitter factor
+        jitter_width <- 10/diff(x_limits)
+        jitter_seq <- seq(from = -jitter_width, to = jitter_width, length.out = length(unique(sp)))
+
+        if (normalize) {
+          segment_heights <- by(plot_dat, list(sp, plots), function(x) cbind(sp = x$sp[1], plots = x$plots[1], as.data.frame.table(table(x[,i])/sum(x[,i]), stringsAsFactors = FALSE)))
+        } else {
+          segment_heights <- by(plot_dat, list(sp, plots), function(x) cbind(sp = x$sp[1], plots = x$plots[1], as.data.frame.table(table(x[,i]), stringsAsFactors = FALSE)))
+        }
+
+        plot_binned <- do.call(rbind, segment_heights)
+        plot_binned$Var1 <- as.numeric(plot_binned$Var1)
+
+        # Jitter manually
+        plot_binned$Var1 <- plot_binned$Var1 + jitter_seq[plot_binned$sp]
+
+        ggplot_dist <- ggplot2::ggplot(plot_binned) +
+          ggplot2::geom_segment(aes(x = Var1, xend = Var1, y = 0, yend = Freq, group = sp, color = sp), alpha = 1/2, size = 1.2) +
+          ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
+          ggplot2::scale_color_manual(values = colorvalues) +
+          ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
+          ggplot2::scale_y_continuous(name = name_y) +
+          ggplot2::coord_polar() +
+          ggplot2::theme(legend.position = if (!legend | means) 'none' else 'right')
 
         ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ncol = 1)
       }

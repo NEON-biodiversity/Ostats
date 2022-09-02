@@ -76,14 +76,12 @@ plot_binned$Var1 <- plot_binned$Var1 + jitter_seq[plot_binned$sp]
 (
   ggplot_dist <- ggplot2::ggplot(plot_binned) +
     ggplot2::geom_segment(aes(x = Var1, xend = Var1, y = 0, yend = Freq, group = sp, color = sp), alpha = 1/2, size = 1.2) +
-   # ggplot2::geom_segment(aes(x = Var1, xend = Var1, y = 0, yend = Freq, group = sp, color = sp), alpha = 1/2, position = "identity", size = 1.5) +
-    #ggplot2::stat_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], group = 'sp', fill = 'sp'), alpha = alpha, geom='polygon', position = 'identity') +
     ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
     ggplot2::scale_color_manual(values = colorvalues) +
     ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
-    #ggplot2::scale_y_continuous(name = name_y, expand = c(0,0)) +
-    ggplot2::coord_polar()
-  #ggplot2::theme(legend.position = if (!legend | means) 'none' else 'right')
+    ggplot2::scale_y_continuous(name = name_y) +
+    ggplot2::coord_polar() +
+    ggplot2::theme(legend.position = if (!legend | means) 'none' else 'right')
 )
 
 
