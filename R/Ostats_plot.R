@@ -220,28 +220,29 @@ Ostats_plot<-function(plots,
 
     } else {
       if (!discrete) {
-        # FIXME currently we do not get different results for each trait.
-        # FIXME normalization is ignored currently. Must be added.
+
         calc_circ_dens <- function(dat) {
           xcirc <- do.call(circular::circular, c(list(x = dat[,i]), circular_args))
           xcircdens <- circular::density.circular(xcirc, bw = diff(x_limits))
-          cbind(sp = dat$sp[1], plots = dat$plots[1], with(xcircdens, data.frame(x=x, y=y)))
+          out <- cbind(sp = dat$sp[1], plots = dat$plots[1], with(xcircdens, data.frame(x=x, y=y)))
+          if (!normalize) out$y <- out$y * nrow(dat)
+          return(out)
         }
 
         circ_dens_data <- by(plot_dat, list(sp, plots), calc_circ_dens)
         plot_binned <- do.call(rbind, circ_dens_data)
 
         ggplot_dist <- ggplot2::ggplot(plot_binned, aes(x=x, y=y, fill=sp)) +
-          ggplot2::geom_polygon(alpha = 1/3) +
+          ggplot2::geom_polygon(alpha = alpha) +
           ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
           ggplot2::scale_fill_manual(values = colorvalues) +
           ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
           ggplot2::scale_y_continuous(name = name_y, expand = c(0,0)) +
-          ggplot2::coord_polar()
+          ggplot2::coord_polar() +
+          ggplot2::theme(legend.position = if (!legend | means) 'none' else 'right')
 
         if (means) {
 
-          # FIXME currently this returns an error.
           ggplot_means <- ggplot2::ggplot(taxon_mean) +
             ggplot2::geom_vline(ggplot2::aes_string(xintercept = dimnames(traits)[[2]][i], colour = 'sp', group='sp'), alpha = alpha, size=0.5, key_glyph = 'rect') +
             ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
@@ -261,8 +262,8 @@ Ostats_plot<-function(plots,
 
         # If data are discrete and circular, generate bin counts manually (not necessary for discrete non-circular)
 
-        # calculate manual jitter factor
-        jitter_width <- 10/diff(x_limits)
+        # calculate manual jitter factor (2% of data width)
+        jitter_width <- diff(x_limits) * 0.02
         jitter_seq <- seq(from = -jitter_width, to = jitter_width, length.out = length(unique(sp)))
 
         if (normalize) {

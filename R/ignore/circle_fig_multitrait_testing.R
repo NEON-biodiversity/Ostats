@@ -17,13 +17,16 @@ traits=ant_data[, c('time', 'time2', 'time3')]
 color_values <- RColorBrewer::brewer.pal(3, 'Set1')
 
 # Not circular
-Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = FALSE, normalize = TRUE, means = TRUE)
-Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = FALSE, normalize = FALSE, means = TRUE)
-Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = TRUE, normalize = TRUE, limits_x = c(1, 1))
-Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = TRUE, normalize = FALSE, limits_x = c(1, 1))
+Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = FALSE, normalize = TRUE, means = TRUE) # OK
+Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = FALSE, normalize = FALSE, means = TRUE) # OK
+Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = TRUE, normalize = TRUE, limits_x = c(1, 1)) # OK, fix lims default
+Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = TRUE, normalize = FALSE, limits_x = c(1, 1)) # OK, fix lims default
 
 # Circular
-Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = FALSE, normalize = TRUE, circular = TRUE)
-Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = FALSE, normalize = FALSE, circular = TRUE)
-Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = TRUE, normalize = TRUE, circular = TRUE, limits_x = c(1, 1))
-Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = TRUE, normalize = FALSE, circular = TRUE, limits_x = c(1, 1))
+pc1 <- Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = FALSE, normalize = TRUE, circular = TRUE)
+pc2 <- Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = FALSE, normalize = FALSE, circular = TRUE)
+pc3 <- Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = TRUE, normalize = TRUE, circular = TRUE, limits_x = c(1, 1))
+pc4 <- Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = TRUE, normalize = FALSE, circular = TRUE, limits_x = c(1, 1))
+
+pc5 <- Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = FALSE, normalize = TRUE, circular = TRUE, means = TRUE)
+pc6 <- Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = FALSE, normalize = FALSE, circular = TRUE, means = TRUE)
