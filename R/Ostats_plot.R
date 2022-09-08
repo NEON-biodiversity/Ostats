@@ -21,7 +21,9 @@
 #' Only used if \code{discrete = TRUE}.
 #'@param limits_x Vector of length 2, with multiplicative factor to apply to the minimum
 #' and maximum values of each trait to expand the limits of the x axis.
-#' Default is 0.5 times the minimum and 1.5 times the maximum value of each trait.
+#' Default is \code{c(0.5, 1.5)}, or 0.5 times the minimum and 1.5 times the maximum
+#' value of each trait, for continuous traits. For discrete traits the default is
+#' \code{c(1, 1)} or no expansion of limits.
 #'@param legend Whether to include a legend. Defaults to \code{FALSE}.
 #'@param scale If you want the scale of x, y or both x and y axis to be independent,
 #' set the argument to "free_x", "free_y" or "free" respectively.
@@ -95,7 +97,7 @@ Ostats_plot<-function(plots,
                       alpha = 0.5,
                       adjust = 2,
                       bin_width = 1,
-                      limits_x = c(0.5, 1.5), # FIXME Default for discrete should be 1,1
+                      limits_x = NULL,
                       legend = FALSE,
                       name_x = 'trait value',
                       name_y = 'probability density',
@@ -106,6 +108,9 @@ Ostats_plot<-function(plots,
                       circular_args = list()) {
 
   if (means & discrete) stop('Plotting trait means is not supported for discrete traits.')
+
+  if (missing(limits_x) & !discrete) limits_x <- c(0.5, 1.5)
+  if (missing(limits_x) & discrete) limits_x <- c(1, 1)
 
   # Unless a subset of sites is provided, use all sites in dataset.
   if (is.null(use_plots)) {
@@ -232,7 +237,7 @@ Ostats_plot<-function(plots,
         circ_dens_data <- by(plot_dat, list(sp, plots), calc_circ_dens)
         plot_binned <- do.call(rbind, circ_dens_data)
 
-        ggplot_dist <- ggplot2::ggplot(plot_binned, aes(x=x, y=y, fill=sp)) +
+        ggplot_dist <- ggplot2::ggplot(plot_binned, ggplot2::aes(x=x, y=y, fill=sp)) +
           ggplot2::geom_polygon(alpha = alpha) +
           ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
           ggplot2::scale_fill_manual(values = colorvalues) +
@@ -279,7 +284,7 @@ Ostats_plot<-function(plots,
         plot_binned$Var1 <- plot_binned$Var1 + jitter_seq[plot_binned$sp]
 
         ggplot_dist <- ggplot2::ggplot(plot_binned) +
-          ggplot2::geom_segment(aes(x = Var1, xend = Var1, y = 0, yend = Freq, group = sp, color = sp), alpha = 1/2, size = 1.2) +
+          ggplot2::geom_segment(ggplot2::aes(x = Var1, xend = Var1, y = 0, yend = Freq, group = sp, color = sp), alpha = 1/2, size = 1.2) +
           ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
           ggplot2::scale_color_manual(values = colorvalues) +
           ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
