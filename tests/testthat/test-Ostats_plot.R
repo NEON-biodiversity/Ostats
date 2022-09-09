@@ -7,6 +7,9 @@ context("Ostats_plot")
 # If multiple traits are plotted, test length(p) == number of traits
 # and all(sapply(p, inherits, "Ostats_plot_object"))
 
+# suppressWarnings() must be used to suppress a ggplot2 warning
+# that arises when setting limits on geom_histogram().
+
 # Set up data for test, making multiple trait columns from the ant data.
 data(ant_data)
 
@@ -16,12 +19,6 @@ ant_data$time3 <- ant_data$time %% 6
 sp <- ant_data$species
 plots <- ant_data$chamber
 traits <- ant_data[, c('time', 'time2', 'time3')]
-
-# Multiple traits:
-plist1 <- Ostats_plot(plots = plots, sp = sp, traits = traits, discrete = FALSE, normalize = FALSE, means = TRUE)
-plist2 <- Ostats_plot(plots = plots, sp = sp, traits = traits, discrete = TRUE, normalize = FALSE)
-plist3 <- Ostats_plot(plots = plots, sp = sp, traits = traits, discrete = FALSE, normalize = FALSE, circular = TRUE, means = TRUE)
-plist4 <- Ostats_plot(plots = plots, sp = sp, traits = traits, discrete = TRUE, normalize = FALSE, circular = TRUE)
 
 # Tests 1-4: single trait plots
 test_that(
@@ -60,6 +57,7 @@ test_that(
 test_that(
   "Multiple continuous trait plot with means panels returns valid output",
   {
+    plist1 <- Ostats_plot(plots = plots, sp = sp, traits = traits, discrete = FALSE, normalize = FALSE, means = TRUE)
     expect_true(length(plist1) == 3L & all(sapply(plist1, inherits, "Ostats_plot_object")))
   }
 )
@@ -67,6 +65,7 @@ test_that(
 test_that(
   "Multiple discrete trait plot returns valid output",
   {
+    plist2 <- Ostats_plot(plots = plots, sp = sp, traits = traits, discrete = TRUE, normalize = FALSE)
     expect_true(length(plist2) == 3L & all(sapply(plist2, inherits, "Ostats_plot_object")))
   }
 )
@@ -74,6 +73,7 @@ test_that(
 test_that(
   "Multiple continuous circular trait plot with means panels returns valid output",
   {
+    plist3 <- Ostats_plot(plots = plots, sp = sp, traits = traits, discrete = FALSE, normalize = FALSE, circular = TRUE, means = TRUE)
     expect_true(length(plist3) == 3L & all(sapply(plist3, inherits, "Ostats_plot_object")))
   }
 )
@@ -81,6 +81,7 @@ test_that(
 test_that(
   "Multiple discrete circular trait plot returns valid output",
   {
+    plist4 <- Ostats_plot(plots = plots, sp = sp, traits = traits, discrete = TRUE, normalize = FALSE, circular = TRUE)
     expect_true(length(plist4) == 3L & all(sapply(plist4, inherits, "Ostats_plot_object")))
   }
 )

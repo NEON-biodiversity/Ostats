@@ -18,7 +18,7 @@ color_values <- c("#E41A1C", "#377EB8", "#4DAF4A")
 # Not circular
 Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = FALSE, normalize = TRUE, means = TRUE) # OK
 Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = FALSE, normalize = FALSE, means = TRUE) # OK
-Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = TRUE, normalize = TRUE) # OK
+suppressWarnings(Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = TRUE, normalize = TRUE)) # OK
 Ostats_plot(plots = plots, sp = sp, traits = traits, colorvalues = color_values, discrete = TRUE, normalize = FALSE) # OK
 
 # Circular
