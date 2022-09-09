@@ -8,3 +8,4 @@ R/ignore/*
 ^docs$
 ^pkgdown$
 cran-comments.md
+tests/testthat/*.pdf
