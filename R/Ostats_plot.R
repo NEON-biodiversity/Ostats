@@ -16,10 +16,14 @@
 #' Defaults to a viridis palette if none provided.
 #'@param alpha defines the transparency level for the density polygons. Default is 0.5.
 #'@param adjust the bandwidth adjustment of the density polygons. Default is 2.
-#' See \code{\link[stats]{density}}.
+#' See \code{\link[stats]{density}}. Only used if \code{discrete = FALSE}.
+#'@param bin_width the width of each bin of the histograms. Default is 1.
+#' Only used if \code{discrete = TRUE}.
 #'@param limits_x Vector of length 2, with multiplicative factor to apply to the minimum
 #' and maximum values of each trait to expand the limits of the x axis.
-#' Default is 0.5 times the minimum and 1.5 times the maximum value of each trait.
+#' Default is \code{c(0.5, 1.5)}, or 0.5 times the minimum and 1.5 times the maximum
+#' value of each trait, for continuous traits. For discrete traits the default is
+#' \code{c(1, 1)} or no expansion of limits.
 #'@param legend Whether to include a legend. Defaults to \code{FALSE}.
 #'@param scale If you want the scale of x, y or both x and y axis to be independent,
 #' set the argument to "free_x", "free_y" or "free" respectively.
@@ -27,16 +31,36 @@
 #' See \code{\link[ggplot2]{facet_grid}}.
 #'@param name_x x-axis label. Default is 'trait value'
 #'@param name_y y-axis label. Default is 'probability density'
-#'@param means if TRUE, trait means for each species are plotted in an additional plot
-#' column next to the traits distribution plots for each site. Default is
+#'@param normalize if \code{TRUE}, areas of density plots are normalized to be equal
+#' across taxa; if \code{FALSE}, areas will be proportional to abundance.
+#' Default is \code{TRUE}.
+#'@param means if \code{TRUE}, trait means for each species are plotted in an additional plot
+#' column next to the traits distribution plots for each site. Default is \code{FALSE}.
+#'@param discrete if \code{TRUE}, plots histograms at discrete trait values instead
+#' of smooth kernel density plots. Default is \code{FALSE}.
+#'@param circular if \code{TRUE}, plots density plots or histograms using polar
+#' coordinates, and estimates density using method for objects of class
+#' \code{circular}. Default is \code{FALSE}.
+#' @param circular_args optional list of additional arguments to pass to
+#'  \code{\link[circular]{circular}}. Only used if \code{circular = TRUE} and
+#'  \code{discrete = FALSE}. If no arguments are provided, default arguments to
+#'  \code{\link[circular]{circular}} are used.
 #'
 #'@return Density plots of species trait distributions plotted together
-#'  for each community to show how they overlap each other.
+#'  for each community to show how they overlap each other. Each community
+#'  is plotted on a separate panel within a multipanel figure.
 #'  The overlap value obtained as output from \code{\link{Ostats}}
 #'  is labelled on each community graph, if provided by the user.
 #'
+#'  If trait values are discrete rather than continuous, histograms are
+#'  plotted instead of kernel density plots.
+#'
+#'  If trait values are circular, a circular kernel density estimate for
+#'  each species is plotted on a polar coordinate plot. If trait values are
+#'  both circular and discrete, a "sunburst" plot is returned.
+#'
 #'  The class of the returned object is \code{Ostats_plot_object}. Calling
-#'  \code{print} on this object will invoke a method to draw the plot using
+#'  \code{print} on this object will draw the plot using
 #'  \code{\link[grid]{grid.draw}}.
 #'
 #'  If more than one trait is provided, a list of objects of class
@@ -72,13 +96,21 @@ Ostats_plot<-function(plots,
                       colorvalues = NULL,
                       alpha = 0.5,
                       adjust = 2,
-                      limits_x = c(0.5, 1.5),
+                      bin_width = 1,
+                      limits_x = NULL,
                       legend = FALSE,
                       name_x = 'trait value',
                       name_y = 'probability density',
-                      means = FALSE) {
+                      normalize = TRUE,
+                      means = FALSE,
+                      circular = FALSE,
+                      discrete = FALSE,
+                      circular_args = list()) {
 
+  if (means & discrete) stop('Plotting trait means is not supported for discrete traits.')
 
+  if (missing(limits_x) & !discrete) limits_x <- c(0.5, 1.5)
+  if (missing(limits_x) & discrete) limits_x <- c(1, 1)
 
   # Unless a subset of sites is provided, use all sites in dataset.
   if (is.null(use_plots)) {
@@ -106,7 +138,15 @@ Ostats_plot<-function(plots,
 
 
   # Calculate mean value by taxon.
-  taxon_mean <- stats::aggregate(traits, list(sp, plots), mean, na.rm = TRUE)
+  if (circular) {
+    mean_fn <- function(x) {
+      xcirc <- do.call(circular::circular, c(list(x = x), circular_args))
+      mean(xcirc, na.rm = TRUE)
+    }
+  } else {
+    mean_fn <- function(x) mean(x, na.rm = TRUE)
+  }
+  taxon_mean <- stats::aggregate(traits, list(sp, plots), mean_fn)
   names(taxon_mean) <- c('sp', 'plots', dimnames(traits)[[2]])
   taxon_mean <- taxon_mean[taxon_mean$plots %in% use_plots, ]
 
@@ -136,32 +176,124 @@ Ostats_plot<-function(plots,
 
     x_limits <- limits_x * range(traits[, i], na.rm = TRUE)
 
-    ggplot_dist <- ggplot2::ggplot(plot_dat) +
-      ggplot2::stat_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], group = 'sp', fill = 'sp'), alpha = alpha, geom='polygon', position = 'identity') +
-      ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
-      ggplot2::scale_fill_manual(values = colorvalues) +
-      ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
-      ggplot2::scale_y_continuous(name = name_y, expand = c(0,0)) +
-      ggplot2::theme(legend.position = if (!legend | means) 'none' else 'right')
+    if (!circular) {
 
-    if (!is.null(overlap_dat)) {
+      if (!discrete) {
+        if (normalize) {
+          ggplot_dist <- ggplot2::ggplot(plot_dat) +
+            ggplot2::geom_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], group = 'sp', fill = 'sp'), alpha = alpha, position = 'identity', color = NA)
+        } else {
+          ggplot_dist <- ggplot2::ggplot(plot_dat) +
+            ggplot2::geom_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], y = 'ggplot2::after_stat(count)', group = 'sp', fill = 'sp'), alpha = alpha, position = 'identity', color = NA)
+        }
+      } else {
+        if (normalize) {
+          ggplot_dist <- ggplot2::ggplot(plot_dat) +
+            ggplot2::geom_histogram(ggplot2::aes_string(x = dimnames(traits)[[2]][i], y = 'ggplot2::after_stat(density * width)', fill = 'sp'), alpha = alpha, position = 'identity', binwidth = bin_width)
+        } else {
+          ggplot_dist <- ggplot2::ggplot(plot_dat) +
+            ggplot2::geom_histogram(ggplot2::aes_string(x = dimnames(traits)[[2]][i], fill = 'sp'), alpha = alpha, position = 'identity', binwidth = bin_width)
+        }
+      }
+
       ggplot_dist <- ggplot_dist +
-        ggplot2::geom_text(ggplot2::aes_string(label = 'lab'), data = overlap_labels, x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1)
-    }
-
-
-    if (means) {
-      ggplot_means <- ggplot2::ggplot(taxon_mean) +
-        ggplot2::geom_vline(ggplot2::aes_string(xintercept = dimnames(traits)[[2]][i], colour = 'sp', group='sp'), alpha = alpha, size=0.5, key_glyph = 'rect') +
         ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
-        ggplot2::scale_colour_manual(values = colorvalues) +
+        ggplot2::scale_fill_manual(values = colorvalues) +
         ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
-        ggplot2::scale_y_continuous(expand = c(0,0)) +
-        ggplot2::theme(legend.position = if (!legend) 'none' else 'right')
+        ggplot2::scale_y_continuous(name = name_y, expand = c(0,0)) +
+        ggplot2::theme(legend.position = if (!legend | means) 'none' else 'right')
 
-      ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ggplot_means, ncol = 2, widths = if (!legend) c(1, 1) else c(1, 1.3))
+      if (!is.null(overlap_dat)) {
+        ggplot_dist <- ggplot_dist +
+          ggplot2::geom_text(ggplot2::aes_string(label = 'lab'), data = overlap_labels, x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1)
+      }
+
+
+      if (means) {
+        ggplot_means <- ggplot2::ggplot(taxon_mean) +
+          ggplot2::geom_vline(ggplot2::aes_string(xintercept = dimnames(traits)[[2]][i], colour = 'sp', group='sp'), alpha = alpha, size=0.5, key_glyph = 'rect') +
+          ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
+          ggplot2::scale_colour_manual(values = colorvalues) +
+          ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
+          ggplot2::scale_y_continuous(expand = c(0,0)) +
+          ggplot2::theme(legend.position = if (!legend) 'none' else 'right')
+
+        ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ggplot_means, ncol = 2, widths = if (!legend) c(1, 1) else c(1, 1.3))
+      } else {
+        ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ncol = 1)
+      }
+
     } else {
-      ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ncol = 1)
+      if (!discrete) {
+
+        calc_circ_dens <- function(dat) {
+          xcirc <- do.call(circular::circular, c(list(x = dat[,i]), circular_args))
+          xcircdens <- circular::density.circular(xcirc, bw = diff(x_limits))
+          out <- cbind(sp = dat$sp[1], plots = dat$plots[1], with(xcircdens, data.frame(x=x, y=y)))
+          if (!normalize) out$y <- out$y * nrow(dat)
+          return(out)
+        }
+
+        circ_dens_data <- by(plot_dat, list(sp, plots), calc_circ_dens)
+        plot_binned <- do.call(rbind, circ_dens_data)
+
+        ggplot_dist <- ggplot2::ggplot(plot_binned, ggplot2::aes(x=x, y=y, fill=sp)) +
+          ggplot2::geom_polygon(alpha = alpha) +
+          ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
+          ggplot2::scale_fill_manual(values = colorvalues) +
+          ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
+          ggplot2::scale_y_continuous(name = name_y, expand = c(0,0)) +
+          ggplot2::coord_polar() +
+          ggplot2::theme(legend.position = if (!legend | means) 'none' else 'right')
+
+        if (means) {
+
+          ggplot_means <- ggplot2::ggplot(taxon_mean) +
+            ggplot2::geom_vline(ggplot2::aes_string(xintercept = dimnames(traits)[[2]][i], colour = 'sp', group='sp'), alpha = alpha, size=0.5, key_glyph = 'rect') +
+            ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
+            ggplot2::scale_colour_manual(values = colorvalues) +
+            ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
+            ggplot2::scale_y_continuous(expand = c(0,0)) +
+            ggplot2::coord_polar() +
+            ggplot2::theme(legend.position = if (!legend) 'none' else 'right')
+
+          ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ggplot_means, ncol = 2, widths = if (!legend) c(1, 1) else c(1, 1.3))
+        } else {
+          ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ncol = 1)
+        }
+
+
+      } else {
+
+        # If data are discrete and circular, generate bin counts manually (not necessary for discrete non-circular)
+
+        # calculate manual jitter factor (2% of data width)
+        jitter_width <- diff(x_limits) * 0.02
+        jitter_seq <- seq(from = -jitter_width, to = jitter_width, length.out = length(unique(sp)))
+
+        if (normalize) {
+          segment_heights <- by(plot_dat, list(sp, plots), function(x) cbind(sp = x$sp[1], plots = x$plots[1], as.data.frame.table(table(x[,i])/sum(x[,i]), stringsAsFactors = FALSE)))
+        } else {
+          segment_heights <- by(plot_dat, list(sp, plots), function(x) cbind(sp = x$sp[1], plots = x$plots[1], as.data.frame.table(table(x[,i]), stringsAsFactors = FALSE)))
+        }
+
+        plot_binned <- do.call(rbind, segment_heights)
+        plot_binned$Var1 <- as.numeric(plot_binned$Var1)
+
+        # Jitter manually
+        plot_binned$Var1 <- plot_binned$Var1 + jitter_seq[plot_binned$sp]
+
+        ggplot_dist <- ggplot2::ggplot(plot_binned) +
+          ggplot2::geom_segment(ggplot2::aes(x = Var1, xend = Var1, y = 0, yend = Freq, group = sp, color = sp), alpha = 1/2, size = 1.2) +
+          ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
+          ggplot2::scale_color_manual(values = colorvalues) +
+          ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
+          ggplot2::scale_y_continuous(name = name_y) +
+          ggplot2::coord_polar() +
+          ggplot2::theme(legend.position = if (!legend | means) 'none' else 'right')
+
+        ggplot_dist <- gridExtra::arrangeGrob(ggplot_dist, ncol = 1)
+      }
     }
 
     # Assign class attribute Ostats_plot_object so that the plot has a default print method.
