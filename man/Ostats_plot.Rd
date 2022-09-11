@@ -15,11 +15,16 @@ Ostats_plot(
   colorvalues = NULL,
   alpha = 0.5,
   adjust = 2,
-  limits_x = c(0.5, 1.5),
+  bin_width = 1,
+  limits_x = NULL,
   legend = FALSE,
   name_x = "trait value",
   name_y = "probability density",
-  means = FALSE
+  normalize = TRUE,
+  means = FALSE,
+  circular = FALSE,
+  discrete = FALSE,
+  circular_args = list()
 )
 }
 \arguments{
@@ -48,11 +53,16 @@ Defaults to a viridis palette if none provided.}
 \item{alpha}{defines the transparency level for the density polygons. Default is 0.5.}
 
 \item{adjust}{the bandwidth adjustment of the density polygons. Default is 2.
-See \code{\link[stats]{density}}.}
+See \code{\link[stats]{density}}. Only used if \code{discrete = FALSE}.}
+
+\item{bin_width}{the width of each bin of the histograms. Default is 1.
+Only used if \code{discrete = TRUE}.}
 
 \item{limits_x}{Vector of length 2, with multiplicative factor to apply to the minimum
 and maximum values of each trait to expand the limits of the x axis.
-Default is 0.5 times the minimum and 1.5 times the maximum value of each trait.}
+Default is \code{c(0.5, 1.5)}, or 0.5 times the minimum and 1.5 times the maximum
+value of each trait, for continuous traits. For discrete traits the default is
+\code{c(1, 1)} or no expansion of limits.}
 
 \item{legend}{Whether to include a legend. Defaults to \code{FALSE}.}
 
@@ -60,17 +70,41 @@ Default is 0.5 times the minimum and 1.5 times the maximum value of each trait.}
 
 \item{name_y}{y-axis label. Default is 'probability density'}
 
-\item{means}{if TRUE, trait means for each species are plotted in an additional plot
-column next to the traits distribution plots for each site. Default is}
+\item{normalize}{if \code{TRUE}, areas of density plots are normalized to be equal
+across taxa; if \code{FALSE}, areas will be proportional to abundance.
+Default is \code{TRUE}.}
+
+\item{means}{if \code{TRUE}, trait means for each species are plotted in an additional plot
+column next to the traits distribution plots for each site. Default is \code{FALSE}.}
+
+\item{circular}{if \code{TRUE}, plots density plots or histograms using polar
+coordinates, and estimates density using method for objects of class
+\code{circular}. Default is \code{FALSE}.}
+
+\item{discrete}{if \code{TRUE}, plots histograms at discrete trait values instead
+of smooth kernel density plots. Default is \code{FALSE}.}
+
+\item{circular_args}{optional list of additional arguments to pass to
+\code{\link[circular]{circular}}. Only used if \code{circular = TRUE} and
+\code{discrete = FALSE}. If no arguments are provided, default arguments to
+\code{\link[circular]{circular}} are used.}
 }
 \value{
 Density plots of species trait distributions plotted together
- for each community to show how they overlap each other.
+ for each community to show how they overlap each other. Each community
+ is plotted on a separate panel within a multipanel figure.
  The overlap value obtained as output from \code{\link{Ostats}}
  is labelled on each community graph, if provided by the user.
 
+ If trait values are discrete rather than continuous, histograms are
+ plotted instead of kernel density plots.
+
+ If trait values are circular, a circular kernel density estimate for
+ each species is plotted on a polar coordinate plot. If trait values are
+ both circular and discrete, a "sunburst" plot is returned.
+
  The class of the returned object is \code{Ostats_plot_object}. Calling
- \code{print} on this object will invoke a method to draw the plot using
+ \code{print} on this object will draw the plot using
  \code{\link[grid]{grid.draw}}.
 
  If more than one trait is provided, a list of objects of class

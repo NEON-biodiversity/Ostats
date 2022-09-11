@@ -1,11 +1,11 @@
-pandoc: 2.16.1
-pkgdown: 1.6.1
+pandoc: '2.18'
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   Ostats-introduction: Ostats-introduction.html
   Ostats-multivariate: Ostats-multivariate.html
-last_built: 2021-11-17T00:09Z
+last_built: 2022-09-11T18:45Z
 urls:
-  reference: https://neon-biodiversity.github.io/Ostats//reference
-  article: https://neon-biodiversity.github.io/Ostats//articles
+  reference: https://neon-biodiversity.github.io/Ostats/reference
+  article: https://neon-biodiversity.github.io/Ostats/articles
 
