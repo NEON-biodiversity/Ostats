@@ -87,3 +87,10 @@ Many features added to plotting function, along with documentation and unit test
 
 - R 4.1.2, Windows 10
 - R 4.1.1, Red Hat Enterprise Linux 8
+
+# Comments on second submission of version 0.2.0
+
+Fixes two notes on earlier submission.
+
+- Replaced one occurrence of class(x) == y with inherits(x, y)
+- Wrapped long-running example in \dontrun
