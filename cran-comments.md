@@ -76,3 +76,14 @@ The only remaining note is an indication that the maintainer's email address has
 ## R CMD check results
 
 0 errors | 0 warnings | 1 note
+
+# Comments on submission of version 0.2.0
+
+Submitted to CRAN on 12 September 2022
+
+Many features added to plotting function, along with documentation and unit tests.
+
+## Test environments
+
+- R 4.1.2, Windows 10
+- R 4.1.1, Red Hat Enterprise Linux 8
