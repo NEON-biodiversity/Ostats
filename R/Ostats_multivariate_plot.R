@@ -170,7 +170,7 @@ Ostats_multivariate_plot <- function(plots,
     }
 
     # Generate contours for all hypervolumes
-    contours_list <- lapply(hv_list, function(hv) if (class(hv) == 'Hypervolume') get_contours(hv, trait_combs, contour_buffer_factor, contour_level) else NA)
+    contours_list <- lapply(hv_list, function(hv) if (inherits(hv, 'Hypervolume')) get_contours(hv, trait_combs, contour_buffer_factor, contour_level) else NA)
     # Join contours to data frame
     for (i in 1:length(contours_list)) contours_list[[i]][, 'sp'] = sp_in_plot[i]
     contours_df <- do.call(rbind, contours_list)

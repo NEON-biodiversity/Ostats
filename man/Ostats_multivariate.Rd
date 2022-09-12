@@ -117,6 +117,7 @@ This function calculates multivariate O-statistics and optionally evaluates them
   using the mean and standard deviation of the null distribution.
 }
 \examples{
+\dontrun{
 # overlap statistic between populations of pitcher plants at two different sites
 
 # Select two sites and three dimensions and scale data
@@ -134,6 +135,7 @@ Ostats_multi_example <- Ostats_multivariate(traits = dat,
                                             hypervolume_args = list(method = 'box'),
                                             hypervolume_set_args = list(num.points.max = 100)
 )
+}
 
 }
 \references{

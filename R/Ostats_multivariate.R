@@ -86,6 +86,7 @@
 #' each community.
 #'
 #' @examples
+#' \dontrun{
 #' # overlap statistic between populations of pitcher plants at two different sites
 #'
 #' # Select two sites and three dimensions and scale data
@@ -103,6 +104,7 @@
 #'                                             hypervolume_args = list(method = 'box'),
 #'                                             hypervolume_set_args = list(num.points.max = 100)
 #' )
+#' }
 #'
 #' @export
 #'
