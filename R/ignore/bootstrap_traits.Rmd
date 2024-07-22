@@ -1,0 +1,88 @@
+---
+title: "Bootstrap O-statistics"
+author: "QDR"
+date: "2024-07-22"
+output: html_document
+---
+
+This is an illustration of how to bootstrap O-statistics using the example data from the vignette (small mammal body weights from HARV and JORN only). It is written without any tidyverse packages, other than ggplot2, to not add any new dependencies if this is incorporated as a vignette to the Ostats package.
+
+The code to load a small example dataset (two sites of NEON small mammal body weights) is copied from the introduction vignette.
+
+```{r}
+library(Ostats)
+library(ggplot2)
+
+### Code copied from vignette to load a small example dataset and calculate O-stats on the observed dataset.
+dat <- small_mammal_data[small_mammal_data$siteID %in% c('HARV', 'JORN'),
+                         c('siteID', 'taxonID', 'weight')]
+dat <- dat[!is.na(dat$weight), ]
+dat$log_weight <- log10(dat$weight)
+```
+
+Next, calculate O-stats on the dataset (don't do the null model, just calculate the observed overlap statistic). Then pull the normalized overlap out into a data frame for plotting later.
+
+```{r}
+Ostats_example <- Ostats(traits = as.matrix(dat[,'log_weight', drop = FALSE]),
+                         sp = factor(dat$taxonID),
+                         plots = factor(dat$siteID),
+                         run_null_model = FALSE)
+
+# Convert observed normalized overlap to a data frame for plotting
+Ostats_observed <- with(Ostats_example, data.frame(siteID = dimnames(overlaps_norm)[[1]], overlap_norm = round(overlaps_norm[,1], 4)))
+```
+
+Define a custom function to do the bootstrap. Following the suggestion of Maitner et al., we sample with replacement from each species' traits within each community proportional to that species' relative abundance in that community. We use the nonparametric bootstrap approach. In other words we are sampling directly from the raw data, instead of fitting a distribution and sampling from that (that would be parametric because we would be using the parameters of a fitted distribution to generate bootstrap samples).
+
+```{r}
+boot_fn <- function(i) {
+  # Bootstrap sample of same size as the data, within each community each row is sampled with replacement with equal probability
+  # This means the proportion of individuals of each species in the bootstrap sample will be similar to the observed data.
+  # Commented out version uses dplyr, the uncommented version uses base R code to get the same result.
+  
+  # bsample <- dat %>%
+  #   group_by(siteID) %>%
+  #   slice_sample(prop = 1, replace = TRUE)
+  
+  bsample <- by(dat, dat$siteID, function(sitedat) sitedat[sample(1:nrow(sitedat), replace = TRUE), ])
+  bsample <- do.call(rbind, bsample)
+
+  Ostats_bsample <- Ostats(traits = as.matrix(bsample[,'log_weight', drop = FALSE]),
+                           sp = factor(bsample$taxonID),
+                           plots = factor(bsample$siteID),
+                           run_null_model = FALSE)
+
+  # Extract only normalized overlap
+  with(Ostats_bsample, data.frame(rep = i, data.frame(siteID = dimnames(overlaps_norm)[[1]], overlap_norm = overlaps_norm[,1])))
+}
+```
+
+Run the bootstrap function 100 times, each time sampling the observed data with replacement within each community. Put the results together into a data frame.
+
+```{r, message = FALSE}
+n_boot <- 100
+set.seed(1)
+
+Ostats_boot <- lapply(1:n_boot, boot_fn)
+Ostats_boot <- do.call(rbind, Ostats_boot)
+```
+
+Plot the results. In the plot, the solid line is the observed O-stat and the histogram is the bootstrap distribution.
+
+```{r}
+ggplot(Ostats_boot, aes(x = overlap_norm, group = siteID, color = siteID, fill = siteID)) +
+  geom_histogram(position = 'identity', alpha = 0.5, color = NA) +
+  geom_vline(aes(xintercept = overlap_norm, color = siteID), data = Ostats_observed, linewidth = 1) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.01))) +
+  scale_color_manual(values = unname(palette.colors(3))[-1], aesthetics = c('colour', 'fill')) + # Colorblind accessible
+  theme_bw()
+```
+
+Calculate median 95% quantile interval of the bootstrap distribution of O-stats. Display alongside the observed. No tidyverse was harmed in the making of this code.
+
+```{r}
+Ostats_boot_summary_stats <- with(Ostats_boot, aggregate(overlap_norm ~ siteID, FUN = function(x) round(quantile(x, probs = c(.5, .025, .975)), 4)))
+
+merge(Ostats_observed, Ostats_boot_summary_stats, by = 'siteID')
+```
+
