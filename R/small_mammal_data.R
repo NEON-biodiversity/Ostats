@@ -3,7 +3,7 @@
 #' This is a sample dataset with small mammal data from all available
 #' NEON sites in 2015.
 #' Each row represents an individual small mammal that was
-#' trapped and weighed, with its species identity, body weight in grams,
+#' trapped and weighed, with its species identity, body mass in grams,
 #' sex, and life stage provided.
 #' Site name, site code, and sampling plot ID are provided.
 #' This dataset is adapted from one published by Read et al. (2018).

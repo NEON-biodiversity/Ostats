@@ -50,19 +50,19 @@ The function `Ostats()` is the primary function in this package. This function f
 
 In this example, the input of `Ostats()` is taken from a data frame with a column for species identification, a column that indicates which community the individual belongs to, and a column with trait measurements, often log-transformed. The code chunk below generates an input dataset for `Ostats()`, used to calculate the O-statistics for sites Harvard Forest (HARV) and Jornada (JORN) from the National Ecological Observatory Network (NEON) (Read et al., 2018). [NEON](https://www.neonscience.org/) is a National Science Foundation-funded network of 81 terrestrial and aquatic field sites strategically located across climatic domains in the United States where standardized protocols are used to sample a variety of ecological observations including small mammal body sizes. [Harvard Forest](https://www.neonscience.org/field-sites/harv) is located in the northeastern U.S. (Massachusetts) and encompasses a temperate hardwood forest ecosystem. [Jornada](https://www.neonscience.org/field-sites/jorn) is located in the southwestern U.S. (New Mexico) and encompasses a desert ecosystem.
 
-In the following code chunk we subset the data frame, remove incomplete observations, and log-transform the `weight` column so that we can compare body size distributions on a multiplicative scale.
+In the following code chunk we subset the data frame, remove incomplete observations, and log-transform the `mass` column (body mass in grams) so that we can compare body size distributions on a multiplicative scale.
 
 ```{r}
 # Load the Ostats package. 
 library(Ostats)
 
 dat <- small_mammal_data[small_mammal_data$siteID %in% c('HARV', 'JORN'), 
-                         c('siteID', 'taxonID', 'weight')]
-dat <- dat[!is.na(dat$weight), ]
-dat$log_weight <- log10(dat$weight)
+                         c('siteID', 'taxonID', 'mass')]
+dat <- dat[!is.na(dat$mass), ]
+dat$log_mass <- log10(dat$mass)
 ```
 
-Below is a subset of the input dataset. Each row represents an individual small mammal that was trapped and weighed, with the site where it was captured (`siteID`), species identity (`taxonID`), body mass in grams (`weight`), and the log of the body mass in grams (`log_weight`).
+Below is a subset of the input dataset. Each row represents an individual small mammal that was trapped and weighed, with the site where it was captured (`siteID`), species identity (`taxonID`), body mass in grams (`mass`), and the log of the body mass in grams (`log_mass`).
 Here we show only a single row from each species at each site.
 
 ```{r}
@@ -97,7 +97,7 @@ To explore the drivers of variation in body size overlap, `Ostats()` can impleme
 Running the function may take several minutes, depending on the size of the dataset and the number of null model permutations. A progress bar is provided to help the user monitor the time until the function completes the job. Note that in the code chunk below, the `traits` argument is a matrix with one column and as many rows as there are individuals in the dataset. The `sp` and `plots` arguments are each factor vectors with length equal to the number of individuals in the dataset. In this example, since the data are body sizes as measured by mass in grams, the data are considered linear for the argument `data_type`.
 
 ```{r echo = T, results='hide'}
- Ostats_example <- Ostats(traits = as.matrix(dat[,'log_weight', drop = FALSE]),
+ Ostats_example <- Ostats(traits = as.matrix(dat[,'log_mass', drop = FALSE]),
                     sp = factor(dat$taxonID),
                     plots = factor(dat$siteID),
                     random_seed = 517)
@@ -106,7 +106,7 @@ Running the function may take several minutes, depending on the size of the data
 The below code chunk shows an example of how the `density_args` inputs could be changed if so desired:
 
 ```{r eval=FALSE}
-Ostats_example2 <- Ostats(traits = as.matrix(dat[,'log_weight', drop = FALSE]),
+Ostats_example2 <- Ostats(traits = as.matrix(dat[,'log_mass', drop = FALSE]),
                     sp = factor(dat$taxonID),
                     plots = factor(dat$siteID), 
                     density_args=list(bw = 'nrd0', adjust = 2, n=200),
@@ -211,7 +211,7 @@ The following example plots the NEON small mammal data, showing only Harvard For
 ```{r out.width="80%", warning=FALSE, error=FALSE, fig.align="center", fig.height=4.5, fig.width=7}
 siteID <- small_mammal_data$siteID
 taxonID <- small_mammal_data$taxonID
-trait <- log10(small_mammal_data$weight)
+trait <- log10(small_mammal_data$mass)
 
 sites2use<- c('HARV','JORN') 
 
@@ -220,12 +220,11 @@ Ostats_plot(plots = siteID,
             traits = trait, 
             overlap_dat = small_mammal_Ostats, 
             use_plots = sites2use, 
-            name_x = 'log10 Body Weight (g)', 
+            name_x = expression(paste('log'[10], ' body mass (g)')), 
             means = TRUE)
-
 ```
 
-The graphs to the left show the intraspecific trait variation as illustrated by density curves, and the graphs to the right show mean trait values. For all graphs probability density is shown on the y-axis and log-transformed body weight on the x-axis. Each color represents a different species and colors are consistent across graphs. The top row illustrates trait values for HARV (Harvard Forest), whereas the bottom row illustrates trait values for JORN (Jornada). The left column of graphs also show the raw O-statistic for the entire community. Note that there is more overlap in body weight for HARV than for JORN. 
+The graphs to the left show the intraspecific trait variation as illustrated by density curves, and the graphs to the right show mean trait values. For all graphs probability density is shown on the y-axis and log-transformed body mass on the x-axis. Each color represents a different species and colors are consistent across graphs. The top row illustrates trait values for HARV (Harvard Forest), whereas the bottom row illustrates trait values for JORN (Jornada). The left column of graphs also show the raw O-statistic for the entire community. Note that there is more overlap in body mass for HARV than for JORN. 
 
 Note that currently there is no functionality within the `Ostats` package to graph the outputs of `Ostats()` when it is applied to circular data.
 
