@@ -181,18 +181,18 @@ Ostats_plot<-function(plots,
       if (!discrete) {
         if (normalize) {
           ggplot_dist <- ggplot2::ggplot(plot_dat) +
-            ggplot2::geom_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], group = 'sp', fill = 'sp'), alpha = alpha, position = 'identity', color = NA)
+            ggplot2::geom_density(adjust = adjust, ggplot2::aes(x = .data[[dimnames(traits)[[2]][i]]], group = sp, fill = sp), alpha = alpha, position = 'identity', color = NA)
         } else {
           ggplot_dist <- ggplot2::ggplot(plot_dat) +
-            ggplot2::geom_density(adjust = adjust, ggplot2::aes_string(x = dimnames(traits)[[2]][i], y = 'ggplot2::after_stat(count)', group = 'sp', fill = 'sp'), alpha = alpha, position = 'identity', color = NA)
+            ggplot2::geom_density(adjust = adjust, ggplot2::aes(x = .data[[dimnames(traits)[[2]][i]]], y = ggplot2::after_stat(count), group = sp, fill = sp), alpha = alpha, position = 'identity', color = NA)
         }
       } else {
         if (normalize) {
           ggplot_dist <- ggplot2::ggplot(plot_dat) +
-            ggplot2::geom_histogram(ggplot2::aes_string(x = dimnames(traits)[[2]][i], y = 'ggplot2::after_stat(density * width)', fill = 'sp'), alpha = alpha, position = 'identity', binwidth = bin_width)
+            ggplot2::geom_histogram(ggplot2::aes(x = .data[[dimnames(traits)[[2]][i]]], y = ggplot2::after_stat(density * width), fill = sp), alpha = alpha, position = 'identity', binwidth = bin_width)
         } else {
           ggplot_dist <- ggplot2::ggplot(plot_dat) +
-            ggplot2::geom_histogram(ggplot2::aes_string(x = dimnames(traits)[[2]][i], fill = 'sp'), alpha = alpha, position = 'identity', binwidth = bin_width)
+            ggplot2::geom_histogram(ggplot2::aes(x = .data[[dimnames(traits)[[2]][i]]], fill = sp), alpha = alpha, position = 'identity', binwidth = bin_width)
         }
       }
 
@@ -205,13 +205,13 @@ Ostats_plot<-function(plots,
 
       if (!is.null(overlap_dat)) {
         ggplot_dist <- ggplot_dist +
-          ggplot2::geom_text(ggplot2::aes_string(label = 'lab'), data = overlap_labels, x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1)
+          ggplot2::geom_text(ggplot2::aes(label = lab), data = overlap_labels, x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1)
       }
 
 
       if (means) {
         ggplot_means <- ggplot2::ggplot(taxon_mean) +
-          ggplot2::geom_vline(ggplot2::aes_string(xintercept = dimnames(traits)[[2]][i], colour = 'sp', group='sp'), alpha = alpha, size=0.5, key_glyph = 'rect') +
+          ggplot2::geom_vline(ggplot2::aes(xintercept = .data[[dimnames(traits)[[2]][i]]], colour = sp, group = sp), alpha = alpha, linewidth = 0.5, key_glyph = 'rect') +
           ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
           ggplot2::scale_colour_manual(values = colorvalues) +
           ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
@@ -249,7 +249,7 @@ Ostats_plot<-function(plots,
         if (means) {
 
           ggplot_means <- ggplot2::ggplot(taxon_mean) +
-            ggplot2::geom_vline(ggplot2::aes_string(xintercept = dimnames(traits)[[2]][i], colour = 'sp', group='sp'), alpha = alpha, size=0.5, key_glyph = 'rect') +
+            ggplot2::geom_vline(ggplot2::aes(xintercept = .data[[dimnames(traits)[[2]][i]]], colour = sp, group = sp), alpha = alpha, linewidth = 0.5, key_glyph = 'rect') +
             ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
             ggplot2::scale_colour_manual(values = colorvalues) +
             ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +
@@ -284,7 +284,7 @@ Ostats_plot<-function(plots,
         plot_binned$Var1 <- plot_binned$Var1 + jitter_seq[plot_binned$sp]
 
         ggplot_dist <- ggplot2::ggplot(plot_binned) +
-          ggplot2::geom_segment(ggplot2::aes(x = Var1, xend = Var1, y = 0, yend = Freq, group = sp, color = sp), alpha = 1/2, size = 1.2) +
+          ggplot2::geom_segment(ggplot2::aes(x = Var1, xend = Var1, y = 0, yend = Freq, group = sp, color = sp), alpha = 1/2, linewidth = 1.2) +
           ggplot2::facet_wrap(~ plots, ncol = n_col, scales = scale) +
           ggplot2::scale_color_manual(values = colorvalues) +
           ggplot2::scale_x_continuous(name = name_x, limits = x_limits) +

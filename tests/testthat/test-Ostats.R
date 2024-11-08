@@ -5,15 +5,15 @@ context("Ostats")
 # Use small mammal data from the vignette.
 
 dat <- small_mammal_data[small_mammal_data$siteID %in% c('HARV', 'JORN'),
-                         c('siteID', 'taxonID', 'weight')]
-dat <- dat[!is.na(dat$weight), ]
-dat$log_weight <- log10(dat$weight)
+                         c('siteID', 'taxonID', 'mass')]
+dat <- dat[!is.na(dat$mass), ]
+dat$log_mass <- log10(dat$mass)
 
 # Test 1: one community with multiple species
 test_that (
   "Ostats returns expected output",
   {
-    result1 <- Ostats(traits = as.matrix(dat[, 'log_weight', drop = FALSE]), plots = factor(dat$siteID), sp = factor(dat$taxonID), run_null_model = FALSE)$overlaps_norm
+    result1 <- Ostats(traits = as.matrix(dat[, 'log_mass', drop = FALSE]), plots = factor(dat$siteID), sp = factor(dat$taxonID), run_null_model = FALSE)$overlaps_norm
     expected1 <- matrix(c(0.8946, 0.0183), nrow = 2)
     expect_equivalent(result1, expected1, tolerance = 0.001)
   }
@@ -24,7 +24,7 @@ test_that (
   "Ostats deals with communities with only one species",
   {
     dat2 <- dat[dat$siteID %in% 'HARV' | dat$taxonID %in% 'CHPE', ]
-    result2 <- Ostats(traits = as.matrix(dat2[, 'log_weight', drop = FALSE]), plots = factor(dat2$siteID), sp = factor(dat2$taxonID), run_null_model = FALSE)$overlaps_norm
+    result2 <- Ostats(traits = as.matrix(dat2[, 'log_mass', drop = FALSE]), plots = factor(dat2$siteID), sp = factor(dat2$taxonID), run_null_model = FALSE)$overlaps_norm
     expected2 <- matrix(c(0.8946, NA), nrow = 2)
     expect_equivalent(result2, expected2, tolerance = 0.001)
   }
@@ -37,7 +37,7 @@ test_that (
   {
     dat3 <- do.call(rbind, lapply(split(dat, interaction(dat$siteID, dat$taxonID), drop = TRUE),
                                   function(x) x[1,]))
-    result3 <- Ostats(traits = as.matrix(dat3[, 'log_weight', drop = FALSE]), plots = factor(dat3$siteID), sp = factor(dat3$taxonID), run_null_model = FALSE)$overlaps_norm
+    result3 <- Ostats(traits = as.matrix(dat3[, 'log_mass', drop = FALSE]), plots = factor(dat3$siteID), sp = factor(dat3$taxonID), run_null_model = FALSE)$overlaps_norm
     expected3 <- matrix(c(NA, NA), nrow = 2)
     expect_equivalent(result3, expected3, tolerance = 0.001)
   }
@@ -48,7 +48,7 @@ test_that (
 test_that (
   "Ostats handles the different density arguments correctly",
   {
-    result4 <- Ostats(traits = as.matrix(dat[,'log_weight', drop = FALSE]),
+    result4 <- Ostats(traits = as.matrix(dat[,'log_mass', drop = FALSE]),
                       sp = factor(dat$taxonID),
                       plots = factor(dat$siteID),
                       run_null_model = FALSE,

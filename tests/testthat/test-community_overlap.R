@@ -6,11 +6,11 @@ context("community_overlap")
 # For this test we will only use HARV.
 
 dat <- small_mammal_data[small_mammal_data$siteID %in% c('HARV', 'JORN'),
-                         c('siteID', 'taxonID', 'weight')]
-dat <- dat[!is.na(dat$weight), ]
-dat$log_weight <- log10(dat$weight)
+                         c('siteID', 'taxonID', 'mass')]
+dat <- dat[!is.na(dat$mass), ]
+dat$log_mass <- log10(dat$mass)
 
-trait_harv <- as.matrix(dat[dat$siteID %in% 'HARV', 'log_weight', drop = FALSE])
+trait_harv <- as.matrix(dat[dat$siteID %in% 'HARV', 'log_mass', drop = FALSE])
 spp_harv <- factor(dat$taxonID[dat$siteID %in% 'HARV'])
 
 # Test 1. Verify correct output format if raw = FALSE
