@@ -6,11 +6,11 @@
 #'
 #'@details This is an internal function not intended to be called directly.
 #'
-#'@seealso \code{\link{Ostats}} to calculate O-statistics (community-level
-#'  pairwise niche overlap statistics)
+#'@seealso \code{\link{Ostats}} to calculate O-statistics (pairwise niche overlap
+#' statistics)
 #'
 #'@param o a matrix containing the observed local O-stats for each
-#'  community
+#'  community or set of populations
 #'@param o_n an array object containing the the null distributions of O-stats
 #'@param qs quantiles of the null distribution to extract
 #'

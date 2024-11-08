@@ -1,4 +1,4 @@
-#' Sample Data for Ostats_regional
+#' Sample Data for Univariate Ostats on linear data
 #'
 #' This is a sample dataset with small mammal data from the NEON sites Bartlett
 #' (BART) and Harvard Forest (HARV) for all available years.

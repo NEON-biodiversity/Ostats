@@ -1,11 +1,11 @@
-#' Plot multivariate community overlap
+#' Plot multivariate overlap
 #'
 #' @description This function plots the overlap of traits among
-#'  species for each community in multivariate space, showing
-#'  projections of trait hypervolumes into two-dimensional space for
-#'  all pairs of traits.
+#'  species for each community (or individuals for each population) in 
+#'  multivariate space, showing projections of trait hypervolumes into 
+#'  two-dimensional space for all pairs of traits.
 #'
-#' @param plots Site identity: a vector of names of each community.
+#' @param plots Site identity: a vector of names of each community (or population).
 #' @param sp Taxon identity: a vector of species or taxa names.
 #' @param traits A matrix or data frame with rows representing individuals
 #'   and columns representing traits.
@@ -35,15 +35,15 @@
 #'   \code{\link[hypervolume:plot.Hypervolume]{plot.HypervolumeList}}.
 #'
 #' @return Two-dimensional projections of species trait hypervolumes for each pair of traits,
-#'  plotted together for each community to show how they overlap each other.
+#'  plotted together for each community (or population) to show how they overlap each other.
 #'  The overlap value obtained as output from \code{\link{Ostats_multivariate}}
-#'  is labelled on each community graph, if provided by the user.
+#'  is labelled on each graph, if provided by the user.
 #'
 #'  The class of the returned object is \code{Ostats_plot_object}. Calling
 #'  \code{print} on this object will invoke a method to draw the plot using
 #'  \code{\link[grid]{grid.draw}}.
 #'
-#'  If more than one community is provided, a list of objects of class
+#'  If more than one community (or population) is provided, a list of objects of class
 #'  \code{Ostats_plot_object} will be returned.
 #'
 #' @seealso \code{\link{Ostats_multivariate}} for generating multivariate O-statistics

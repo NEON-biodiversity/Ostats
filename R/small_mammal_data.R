@@ -1,4 +1,4 @@
-#' Sample Continuous Trait Data (NEON Small Mammals 2015)
+#' Sample Continuous Linear Univariate Trait Data (NEON Small Mammals 2015)
 #'
 #' This is a sample dataset with small mammal data from all available
 #' NEON sites in 2015.

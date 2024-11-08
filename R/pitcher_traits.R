@@ -2,7 +2,7 @@
 #'
 #' These data represent a subset of trait information collected on carnivorous pitchers of the Northern Pitcher plant, *Sarracenia purpurea*,
 #' across the species' native North American latitudinal range 30.197°N-53.722°N (Freedman et al. 2021).
-#' We provide data from 5 sites out of the 36 sites sampled.
+#' We provide data from 5 sites out of the 36 sites (i.e., populations) sampled.
 #'
 #' Pitcher traits measured include:
 #'

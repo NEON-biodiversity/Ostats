@@ -1,10 +1,10 @@
-#'@title  Plot community trait overlap
+#'@title  Plot univariate trait overlap
 #'
-#'@description This function plots the overlap of traits among
-#'  species for each community. If there are multiple traits,
+#'@description This function plots the overlap of a univariate trait among
+#'  species for each community (or individual for each population). If there are multiple traits,
 #'  each trait is plotted separately in one-dimensional space.
 #'
-#'@param plots Site identity: a vector of names of each community.
+#'@param plots Site identity: a vector of names of each community (or population).
 #'@param sp Taxon identity: a vector of species or taxa names.
 #'@param traits A vector of trait measurements for each individual, or a matrix
 #' or data frame with rows representing individuals and columns representing traits.
@@ -34,7 +34,7 @@
 #'@param normalize if \code{TRUE}, areas of density plots are normalized to be equal
 #' across taxa; if \code{FALSE}, areas will be proportional to abundance.
 #' Default is \code{TRUE}.
-#'@param means if \code{TRUE}, trait means for each species are plotted in an additional plot
+#'@param means if \code{TRUE}, trait means for each species (or population) are plotted in an additional plot
 #' column next to the traits distribution plots for each site. Default is \code{FALSE}.
 #'@param discrete if \code{TRUE}, plots histograms at discrete trait values instead
 #' of smooth kernel density plots. Default is \code{FALSE}.
@@ -47,10 +47,10 @@
 #'  \code{\link[circular]{circular}} are used.
 #'
 #'@return Density plots of species trait distributions plotted together
-#'  for each community to show how they overlap each other. Each community
+#'  for each community to show how they overlap each other. Each community (or population)
 #'  is plotted on a separate panel within a multipanel figure.
 #'  The overlap value obtained as output from \code{\link{Ostats}}
-#'  is labelled on each community graph, if provided by the user.
+#'  is labelled on each graph, if provided by the user.
 #'
 #'  If trait values are discrete rather than continuous, histograms are
 #'  plotted instead of kernel density plots.
@@ -73,7 +73,7 @@
 #'# set the arguments:
 #'plots <- small_mammal_data$siteID
 #'sp <- small_mammal_data$taxonID
-#'traits <- log10(small_mammal_data$weight)
+#'traits <- log10(small_mammal_data$mass)
 #'
 #'# to plot only selected sites:
 #'use_plots <- c('BART','KONZ','JORN')

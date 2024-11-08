@@ -1,5 +1,5 @@
 ---
-title: "O-stats: pairwise community-level niche overlap statistics"
+title: "O-stats: Example 1 - Univariate O-statistics"
 author: 'Arya Yue, Quentin D. Read, Isadora Essig Fluck, Benjamin Baiser, John M. Grady, Phoebe L. Zarnetske, Sydne Record'
 date: '`r Sys.Date()`'
 output:
@@ -42,9 +42,9 @@ The `Ostats` package can be used to do the following:
 
 # Step-by-step Examples
 
-## Calculating the overlap statistics for linear data against a local null model
+## Univariate linear example - NEON small mammal communities: Calculating the overlap statistics for linear data against a local null model
 
-The function `Ostats()` is the primary function in this package. This function first generates density estimates for species trait distributions and calculates the intersection of two density functions to produce pairwise overlap values. `Ostats()` then calculates a community overlap value from the pairwise overlap values of all species pairs in the community. Finally, `Ostats()` calculates effect sizes relative to a null model (z‐scores) to test whether the degree of overlap among species is greater than or less than expected by chance, allowing the user to explore the drivers of variation in body size overlap.
+The function `Ostats()` is the primary function in this package. This function first generates density estimates for species trait distributions and calculates the intersection of two density functions to produce pairwise overlap values. `Ostats()` then calculates a community overlap value from the pairwise overlap values of all species pairs in the community. Finally, `Ostats()` calculates effect sizes relative to a null model (z‐scores) to test whether the degree of overlap among species is greater than or less than expected by chance, allowing the user to explore the drivers of variation in body size (i.e., mass) overlap.
 
 ### EXAMPLE: How to find the degree of overlap in body sizes for all small mammal species present in a particular community, and compare it with other communities?
 
@@ -144,7 +144,7 @@ To specify circular trait data, set the argument `discrete = FALSE` and `circula
 
 ### EXAMPLE: How to find the degree of overlap in time occurences for ant species present in a chamber, and compare across chambers of different conditions?
 
-To illustrate the calculation of overlap statistics applied to discrete, circular data the `Ostats` package provides a sample dataset called `ant_data`. This is a subset of the data analysed in Stuble et al. (2014). Stuble and colleagues measured the daily activity patterns of ants in chambers with different air temperatures to explore the effects of increased temperature on seed dispersal by ants. The `ant_data` dataframe consists of three columns: `species` (given as genus and species with a space between the two names), `chamber` (chamber ID 1 or 2), and `time` (integer values ranging from 0-23 to represent the 24 hours in a day).   
+To illustrate the calculation of overlap statistics applied to discrete, circular data the `Ostats` package provides a sample dataset called `ant_data`. This is a subset of the data analysed in Stuble et al. (2014). Stuble and colleagues measured the daily activity patterns of ants in chambers with different air temperatures to explore the effects of increased temperature on seed dispersal by ants. The `ant_data` dataframe consists of three columns: `species` (given as genus and species with a space between the two names), `chamber` (chamber ID 1 or 2), and `time` (integer values ranging from 0-23 to represent the 24 hours in a day). Chamber 1 was warmed 2.5 degrees Celsius, whereas Chamber 2 was kept at ambient temperature.   
 
 ```{r}
 head(ant_data)
@@ -179,10 +179,10 @@ Regardless of whether the normalized or non-normalized overlap values are consid
 The graphing function `Ostats_plot()` depends on `ggplot2` and can be used to visualize species trait overlaps of each community for multiple communities. 
 
 The input dataset needs to have these information: 
-* `plots` community or site identity: a vector of names to indicate which community or site the individual belongs to. 
+* `plots` community or site identity: a vector of names to indicate which community or site (i.e., population in a population-level analysis) the individual belongs to. 
 * `sp` taxon identification: a vector of species or taxa names.
 * `traits` trait measurements: a vector of trait measurements for each individual, or a matrix with rows representing individuals and columns representing traits.
-* `overlap_dat`  This input information is optional. It is an object containing the output of `Ostats` for the same data. If provided, it is used to label the plot panels with the community overlap values.
+* `overlap_dat`  This input information is optional. It is an object containing the output of `Ostats` for the same data. If provided, it is used to label the plot panels with the overlap values scaled up to be across species within a community or populations within a species.
 
 There are various arguments to fine-tune the plot you produce:
 
@@ -206,6 +206,8 @@ There are various arguments to fine-tune the plot you produce:
 
 * `means` is a logical variable. If set to `FALSE`, which is the default value, then a single column of graphs is generated that illustrates the trait probability density curves for each species. If set to `TRUE`, then graphs of mean trait values are plotted in a second column for comparison of means with trait density curves. Note that setting means to `TRUE` is only recommended when you are plotting a few illustrative sites. If too many sites are plotted with mean set to `TRUE` then the graphs become small and difficult to read.
 
+###Example: Plotting Univariate Linear O-Statistics
+
 The following example plots the NEON small mammal data, showing only Harvard Forest and Jornada.
 
 ```{r out.width="80%", warning=FALSE, error=FALSE, fig.align="center", fig.height=4.5, fig.width=7}
@@ -220,13 +222,121 @@ Ostats_plot(plots = siteID,
             traits = trait, 
             overlap_dat = small_mammal_Ostats, 
             use_plots = sites2use, 
-            name_x = expression(paste('log'[10], ' body mass (g)')), 
+            name_x = 'log10 Body Mass (g)', 
             means = TRUE)
 ```
 
 The graphs to the left show the intraspecific trait variation as illustrated by density curves, and the graphs to the right show mean trait values. For all graphs probability density is shown on the y-axis and log-transformed body mass on the x-axis. Each color represents a different species and colors are consistent across graphs. The top row illustrates trait values for HARV (Harvard Forest), whereas the bottom row illustrates trait values for JORN (Jornada). The left column of graphs also show the raw O-statistic for the entire community. Note that there is more overlap in body mass for HARV than for JORN. 
 
-Note that currently there is no functionality within the `Ostats` package to graph the outputs of `Ostats()` when it is applied to circular data.
+###Example: Plotting Univariate Circular O-Statistics
+
+If trait values are circular, a circular kernel density estimate for
+each species is plotted on a polar coordinate plot. If trait values are
+both circular and discrete, a "sunburst" plot is returned.
+
+The following example plots the ant data for chambers 1 and 2. Note that when plotting circular data for the ant example, the arguments 'circular' and 'discrete' should be set to TRUE because ant behavioral traits are measured with periodic units of discrete time (i.e., hours in a day). 
+
+```{r out.width="80%", warning=FALSE, error=FALSE, fig.align="center", fig.height=4.5, fig.width=7}
+siteID <- factor(ant_data$chamber)
+taxonID <- factor(ant_data$species)
+trait <-  as.matrix(ant_data[, 'time', drop = FALSE])
+
+
+Ostats_plot(plots = siteID, 
+            sp = taxonID, 
+            traits = trait, 
+            overlap_dat = circular_example, 
+            name_x = 'Time (hours)', 
+            circular = TRUE,
+            discrete = TRUE)
+```
+
+
+## Boostrapping
+
+### Example for generating bootstrap of linear univariate O-statistics
+
+This is an illustration of how to bootstrap O-statistics using the example data on small mammal body mass from Harvard Forest (HARV) and Jornada (JORN). It is written without any tidyverse packages, other than ggplot2, to not add any new dependencies.
+
+The code to load a small example dataset (two sites of NEON small mammal body weights) is copied from the above in the vignette in case users are working through examples separately.
+
+```{r}
+library(Ostats)
+library(ggplot2)
+
+### Code copied from vignette to load a small example dataset and calculate O-stats on the observed dataset.
+dat <- small_mammal_data[small_mammal_data$siteID %in% c('HARV', 'JORN'),
+                         c('siteID', 'taxonID', 'mass')]
+dat <- dat[!is.na(dat$mass), ]
+dat$log_mass <- log10(dat$mass)
+```
+
+Next, calculate O-stats on the dataset (don't do the null model, just calculate the observed overlap statistic). Then pull the normalized overlap out into a data frame for plotting later.
+
+```{r}
+Ostats_example <- Ostats(traits = as.matrix(dat[,'log_mass', drop = FALSE]),
+                         sp = factor(dat$taxonID),
+                         plots = factor(dat$siteID),
+                         run_null_model = FALSE)
+
+# Convert observed normalized overlap to a data frame for plotting
+Ostats_observed <- with(Ostats_example, data.frame(siteID = dimnames(overlaps_norm)[[1]], overlap_norm = round(overlaps_norm[,1], 4)))
+```
+
+Define a custom function to do the bootstrap. Following the suggestion of Maitner et al. (2023), we sample with replacement from each species' traits within each community proportional to that species' relative abundance in that community. We use the nonparametric bootstrap approach. In other words, we are sampling directly from the raw data, instead of fitting a distribution and sampling from that, which would be parametric because we would be using the parameters of a fitted distribution to generate bootstrap samples.
+
+```{r}
+boot_fn <- function(i) {
+  # Bootstrap sample of same size as the data, within each community each row is sampled with replacement with equal probability
+  # This means the proportion of individuals of each species in the bootstrap sample will be similar to the observed data.
+  # Commented out version uses dplyr, the uncommented version uses base R code to get the same result.
+  
+  # bsample <- dat %>%
+  #   group_by(siteID) %>%
+  #   slice_sample(prop = 1, replace = TRUE)
+  
+  bsample <- by(dat, dat$siteID, function(sitedat) sitedat[sample(1:nrow(sitedat), replace = TRUE), ])
+  bsample <- do.call(rbind, bsample)
+
+  Ostats_bsample <- Ostats(traits = as.matrix(bsample[,'log_mass', drop = FALSE]),
+                           sp = factor(bsample$taxonID),
+                           plots = factor(bsample$siteID),
+                           run_null_model = FALSE)
+
+  # Extract only normalized overlap
+  with(Ostats_bsample, data.frame(rep = i, data.frame(siteID = dimnames(overlaps_norm)[[1]], overlap_norm = overlaps_norm[,1])))
+}
+```
+
+Run the bootstrap function 100 times, each time sampling the observed data with replacement within each community. Put the results together into a data frame.
+
+```{r, message = FALSE}
+n_boot <- 100
+set.seed(1)
+
+Ostats_boot <- lapply(1:n_boot, boot_fn)
+Ostats_boot <- do.call(rbind, Ostats_boot)
+```
+
+Plot the results. In the plot, the solid line is the observed O-stat and the histogram is the bootstrap distribution.
+
+```{r}
+ggplot(Ostats_boot, aes(x = overlap_norm, group = siteID, color = siteID, fill = siteID)) +
+  geom_histogram(position = 'identity', alpha = 0.5, color = NA) +
+  geom_vline(aes(xintercept = overlap_norm, color = siteID), data = Ostats_observed, linewidth = 1) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.01))) +
+  scale_color_manual(values = unname(palette.colors(3))[-1], aesthetics = c('colour', 'fill')) + # Colorblind accessible
+  theme_bw()
+```
+
+Calculate median 95% quantile interval of the bootstrap distribution of O-stats. Display alongside the observed. 
+
+```{r}
+Ostats_boot_summary_stats <- with(Ostats_boot, aggregate(overlap_norm ~ siteID, FUN = function(x) round(quantile(x, probs = c(.5, .025, .975)), 4)))
+
+merge(Ostats_observed, Ostats_boot_summary_stats, by = 'siteID')
+```
+
 
 # Bibliography 
 
@@ -236,7 +346,9 @@ Geange, S.W., S. Pledger, K.C. Burns, and J.S. Shima. 2011. A unified analysis o
 
 Grady, J.M., Q.D. Read, S. Record, P.L. Zarnetske, B. Baiser, K. Thorne, and J. Belmaker. 2018. Size, niches, and the latitudinal diversity gradient. *Teaching Issues and Experiments in Ecology* 14: Figure Set #1.
 
-Mouillot, D., W. Stubbs, M. Faure, O. Dumay, J.A. Tomasini, J.B. Wilson, and T. Do Chi. 2005. Niche overlap estimated based on quantitative functional traits: A new family of non-parametric indices. *Oecologia* 145(3):345-353. https://doi.org/10.1007/s00442-005-0151-z 
+Maitner, B.S., A.H. Halbritter, R.J. Telford, T. Strydom, J. Chacon, C. Lamanna, L.L. Sloat, A.J. Kerkhoff, J. Messier, N. Rasmussen, F. Pomati, E. Merz, V. Vandvik, and B.J. Enquist. 2023. Bootstrapping outperforms community-weighted approaches for estimating the shapes of phenotypic distributions. *Methods in Ecology and Evolution* 14:2592-2610.https://doi.org/10.1111/2041-210X.14160
+
+Mouillot, D., W. Stubbs, M. Faure, O. Dumay, J.A. Tomasini, J.B. Wilson, and T. Do Chi. 2005. Niche overlap *estimated based on quantitative functional traits: A new family of non-parametric indices. *Oecologia* 145(3):345-353. https://doi.org/10.1007/s00442-005-0151-z 
 
 Read, Q.D., J.M. Grady, P.L. Zarnetske, S. Record, B. Baiser, J. Belmaker, M.-N. Tuanmu, A. Strecker, L. Beaudrot, and K.M. Thibault. 2018. Among-species overlap in rodent body size distributions predicts species richness along a temperature gradient. *Ecography* 41(10):1718–1727. https://doi.org/10.1111/ecog.03641
 

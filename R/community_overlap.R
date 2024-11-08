@@ -1,8 +1,10 @@
-#' Community Overlap Calculation
+#' Community overlap Calculation
 #'
-#' This function calculates the median or mean of pairwise overlaps between density
-#' estimates of trait distributions of all species within a community, which can
-#' be weighted by species abundances.
+#' This function calculates the median or mean of pairwise overlaps between 
+#' density estimates of trait distributions of all species within a community 
+#' for a community-level analysis and of all populations within a species for a 
+#' population-level analysis, which can be weighted by species or population
+#' abundances, respectively.
 #'
 #' @param traits a vector of trait measurements in the univariate case, or a
 #'   matrix in the multivariate case where each column is a trait.
@@ -43,7 +45,7 @@
 #' \code{weight_type = "mean"}, arithmetic means of abundances are used as weights. To change the
 #' output to mean, specify the argument \code{output = "mean"}.
 #'
-#' @return The function returns the O-statistic for the community as a numeric value. If
+#' @return The function returns the O-statistic for the community or set of populations as a numeric value. If
 #' \code{raw = TRUE}, instead a list is returned, where the first element \code{value} is
 #' the numeric value, and the second element \code{raw} is a data frame with all the raw
 #' pairwise overlaps.
@@ -55,12 +57,12 @@
 #' @examples
 #' # Keep only the relevant part of small mammal data
 #' dat <- small_mammal_data[small_mammal_data$siteID %in% c('HARV','JORN'), ]
-#' dat <- dat[!is.na(dat$weight), ]
-#' dat$log_weight <- log10(dat$weight)
+#' dat <- dat[!is.na(dat$mass), ]
+#' dat$log_mass <- log10(dat$mass)
 #'
 #' # Calculate median of pairwise overlaps for the community,weighted by harmonic means
 #' # of abundances
-#' community_overlap(traits = as.matrix(dat$log_weight),
+#' community_overlap(traits = as.matrix(dat$log_mass),
 #'    sp = factor(dat$taxonID))
 #'
 #' @export

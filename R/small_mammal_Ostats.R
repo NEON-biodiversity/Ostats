@@ -1,4 +1,4 @@
-#' Pre-calculated Overlap Statistics for NEON Small Mammals 2015
+#' Pre-calculated Univariate Overlap Statistics for NEON Small Mammals 2015
 #'
 #' This is the pre-calculated output of the Ostats() function run on the
 #' \code{\link{small_mammal_data}} dataset, after log-transforming the body masses.
