@@ -222,7 +222,7 @@ Ostats_plot(plots = siteID,
             traits = trait, 
             overlap_dat = small_mammal_Ostats, 
             use_plots = sites2use, 
-            name_x = 'log10 Body Mass (g)', 
+            name_x = expression(paste('log'[10], ' body mass (g)')), 
             means = TRUE)
 ```
 
@@ -256,9 +256,7 @@ Ostats_plot(plots = siteID,
 
 ### Example for generating bootstrap of linear univariate O-statistics
 
-This is an illustration of how to bootstrap O-statistics using the example data on small mammal body mass from Harvard Forest (HARV) and Jornada (JORN). It is written without any tidyverse packages, other than ggplot2, to not add any new dependencies.
-
-The code to load a small example dataset (two sites of NEON small mammal body weights) is copied from the above in the vignette in case users are working through examples separately.
+This is an illustration of how to bootstrap O-statistics using the example data on small mammal body mass from Harvard Forest (HARV) and Jornada (JORN). The code to load a small example dataset (two sites of NEON small mammal body weights) is copied from the above in the vignette in case users are working through examples separately.
 
 ```{r}
 library(Ostats)
@@ -289,12 +287,7 @@ Define a custom function to do the bootstrap. Following the suggestion of Maitne
 boot_fn <- function(i) {
   # Bootstrap sample of same size as the data, within each community each row is sampled with replacement with equal probability
   # This means the proportion of individuals of each species in the bootstrap sample will be similar to the observed data.
-  # Commented out version uses dplyr, the uncommented version uses base R code to get the same result.
-  
-  # bsample <- dat %>%
-  #   group_by(siteID) %>%
-  #   slice_sample(prop = 1, replace = TRUE)
-  
+
   bsample <- by(dat, dat$siteID, function(sitedat) sitedat[sample(1:nrow(sitedat), replace = TRUE), ])
   bsample <- do.call(rbind, bsample)
 

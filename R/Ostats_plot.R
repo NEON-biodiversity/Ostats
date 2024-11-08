@@ -1,4 +1,4 @@
-#'@title  Plot univariate trait overlap
+#'@title  Plot univariate community trait overlap
 #'
 #'@description This function plots the overlap of a univariate trait among
 #'  species for each community (or individual for each population). If there are multiple traits,

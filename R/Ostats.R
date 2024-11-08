@@ -1,4 +1,4 @@
-#' @title Calculate univariate O-statistics 
+#' @title Calculate Univariate O-statistics (community-level pairwise niche overlap statistics)
 #'
 #' @description This is the primary function in the Ostats package. It calculates 
 #' univariate O-statistics by finding the trait density overlap among all pairs 

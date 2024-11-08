@@ -26,7 +26,7 @@ data(pitcher_traits)
 
 # Overview
 
-This vignette on multivariate trait overlap statistics is intended for users who are already familiar with the univariate O-statistics we introduce in the [first package vignette](Ostats-univariate.html).
+This vignette on multivariate community-level trait overlap statistics is intended for users who are already familiar with the univariate O-statistics we introduce in the [first package vignette](Ostats-univariate.html).
 
 We decided to include functions in our package to estimate overlap statistics (O-statistics) in multivariate space because of ecologists' long-standing interest in how species' niches take shape across multiple dimensions. Since the niche of a species can be determined by several abiotic and biotic variables, Hutchinson (1957) introduced the mathematical formulation of a niche as an *n*-dimensional hypervolume. Since then, many approaches have been developed to measure the multivariate niche of a species (Green 1971; Swanson et al. 2015). Quantifying the niche in multiple dimensions can help understand how life strategy trade-offs and interactions among multiple traits shape organisms' structure and function.
 

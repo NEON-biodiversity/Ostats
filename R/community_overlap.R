@@ -1,4 +1,4 @@
-#' Community overlap Calculation
+#' Community overlap calculation
 #'
 #' This function calculates the median or mean of pairwise overlaps between 
 #' density estimates of trait distributions of all species within a community 

@@ -1,4 +1,4 @@
-#' Plot multivariate overlap
+#' Plot multivariate community overlap
 #'
 #' @description This function plots the overlap of traits among
 #'  species for each community (or individuals for each population) in 
