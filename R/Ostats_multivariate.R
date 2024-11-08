@@ -1,17 +1,18 @@
 #' @title Calculate multivariate O-statistics
 #'
 #' @description This function calculates a single O-statistic across multiple traits
-#' by estimating hypervolumes for each species in multivariate trait space that
-#' contain the trait values for all the individuals in each species. It uses a
-#' stochastic estimation procedure implemented in the R package hypervolume. The
-#' community-level O-statistics estimated from the hypervolume overlaps can be
-#' evaluated against a null model.
+#' by estimating hypervolumes for each species in a community-level analysis 
+#' (or population in a population-level analysis within a species) in 
+#' multivariate trait space that contain the trait values for all the individuals 
+#' in each species. It uses a stochastic estimation procedure implemented in 
+#' the R package hypervolume. The O-statistics estimated from  the hypervolume 
+#' overlaps can be evaluated against a null model.
 #'
 #' @param traits matrix of trait measurements. The number of rows in the matrix
 #'   is the number of individuals,
 #'   and the number of columns of the matrix is the number of traits.
 #' @param plots a factor with length equal to nrow(traits) that indicates the
-#'   community each individual belongs to.
+#'   community (or population) each individual belongs to.
 #' @param sp a factor with length equal to nrow(traits) that indicates the taxon
 #'   of each individual.
 #' @param output specifies whether median or mean is calculated.

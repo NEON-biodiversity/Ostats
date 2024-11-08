@@ -1,15 +1,16 @@
-#' @title Calculate O-statistics (community-level pairwise niche overlap statistics)
+#' @title Calculate Univariate O-statistics (community-level pairwise niche overlap statistics)
 #'
-#' @description This is the primary function in the Ostats package. It calculates O-statistics
-#' by finding the trait density overlap among all pairs of species in each
-#' community and taking the mean or median. Next it optionally evaluates the
-#' O-statistics against a local null model. This is done separately for each trait.
+#' @description This is the primary function in the Ostats package. It calculates 
+#' univariate O-statistics by finding the trait density overlap among all pairs 
+#' of species in each community (or all pairs of populations within a species) 
+#' and taking the mean or median. Next it optionally evaluates the O-statistics 
+#' against a local null model. This is done separately for each trait.
 #'
 #' @param traits a numeric vector or matrix of trait measurements. The number of elements
 #'   in the vector or number of rows in the matrix is the number of individuals,
 #'   and the number of columns of the matrix is the number of traits.
 #' @param plots a factor with length equal to \code{nrow(traits)} that indicates the
-#'   community each individual belongs to.
+#'   community or population each individual belongs to.
 #' @param sp a factor with length equal to \code{nrow(traits)} that indicates the taxon
 #'   of each individual.
 #' @param discrete whether trait data may take continuous or discrete values. Defaults to
@@ -111,12 +112,12 @@
 #'
 #' # Keep only the relevant part of data
 #' dat <- small_mammal_data[small_mammal_data$siteID %in% c('HARV','JORN'), ]
-#' dat <- dat[!is.na(dat$weight), ]
-#' dat$log_weight <- log10(dat$weight)
+#' dat <- dat[!is.na(dat$mass), ]
+#' dat$log_mass <- log10(dat$mass)
 #'
 #'
 #' #Run O-stats on the data with only a few null model iterations
-#' Ostats_example <- Ostats(traits = as.matrix(dat[,'log_weight']),
+#' Ostats_example <- Ostats(traits = as.matrix(dat[,'log_mass']),
 #'                    sp = factor(dat$taxonID),
 #'                    plots = factor(dat$siteID),
 #'                    nperm = 10)
