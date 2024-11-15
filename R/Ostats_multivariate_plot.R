@@ -1,8 +1,8 @@
 #' Plot multivariate community overlap
 #'
 #' @description This function plots the overlap of traits among
-#'  species for each community (or individuals for each population) in 
-#'  multivariate space, showing projections of trait hypervolumes into 
+#'  species for each community (or individuals for each population) in
+#'  multivariate space, showing projections of trait hypervolumes into
 #'  two-dimensional space for all pairs of traits.
 #'
 #' @param plots Site identity: a vector of names of each community (or population).
@@ -112,8 +112,8 @@ Ostats_multivariate_plot <- function(plots,
   # Create triangular layout
   layout_mat <- matrix(as.numeric(NA), ncol(traits) - 1, ncol(traits) - 1)
   layout_mat[lower.tri(layout_mat, diag = TRUE)] <- 1:ncol(trait_combs)
-  layout_mat <- layout_mat[nrow(layout_mat):1, ncol(layout_mat):1]
-  layout_mat[nrow(layout_mat), 1] <- ncol(trait_combs) + 1 # Location of legend
+  layout_mat <- layout_mat[nrow(layout_mat):1, ncol(layout_mat):1, drop = FALSE]
+  if (ncol(traits) > 2) layout_mat[nrow(layout_mat), 1] <- ncol(trait_combs) + 1
 
   # If no color values are provided, produce default colors.
   if (is.null(colorvalues)) {
@@ -121,7 +121,6 @@ Ostats_multivariate_plot <- function(plots,
   }
 
   sp_names <- rev(sort(unique(sp)))
-  color_scale <- ggplot2::scale_color_manual(values = stats::setNames(colorvalues, sp_names))
 
   plot_theme <- ggplot2::theme_bw() +
     ggplot2::theme(legend.position = 'none')
@@ -136,6 +135,8 @@ Ostats_multivariate_plot <- function(plots,
     } else {
       plot_label <- paste0(p, ': (overlap = ', round(ostat_norm[which(unique(plots) == p)], 2), ')')
     }
+
+    color_scale <- ggplot2::scale_color_manual(values = stats::setNames(colorvalues, sp_names), name = plot_label)
 
     # Generate legend for plot by drawing colored points.
     legend_panel <- ggplot2::ggplot(data.frame(x = 0.05, y = seq_along(sp_names), sp = sp_names),
@@ -183,7 +184,7 @@ Ostats_multivariate_plot <- function(plots,
       dat_polygons <- contours_df[contours_df$trait_x == trait_combs[1, i] & contours_df$trait_y == trait_combs[2, i], ]
 
       plot_i <- ggplot2::ggplot() +
-        ggplot2::geom_polygon(data = dat_polygons, ggplot2::aes(x = x, y = y, group = interaction(sp, polygon_id), color = sp), fill = 'transparent') +
+        ggplot2::geom_polygon(data = dat_polygons, ggplot2::aes(x = x, y = y, group = interaction(sp, polygon_id), color = sp), fill = 'transparent', key_glyph = 'point') +
         ggplot2::coord_cartesian(xlim = range(contours_df$x[contours_df$trait_x == trait_combs[1, i]]),
                                  ylim = range(contours_df$y[contours_df$trait_y == trait_combs[2, i]])) +
         ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = axis_expansion)) +
@@ -193,6 +194,9 @@ Ostats_multivariate_plot <- function(plots,
         ggplot2::labs(x = trait_combs[1, i], y = trait_combs[2, i])
 
       if (plot_points) plot_i <- plot_i + ggplot2::geom_point(data = dat_points, ggplot2::aes(x = x, y = y, group = sp, color = sp))
+
+      if (ncol(trait_combs) == 1) plot_i <- plot_i +
+        ggplot2::theme(legend.position = 'bottom')
 
       trait_pairs_plot_list[[i]] <- plot_i
 
