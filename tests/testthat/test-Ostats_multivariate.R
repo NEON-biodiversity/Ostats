@@ -37,3 +37,21 @@ test_that (
     expect_equal(result3, expected3, tolerance = 0.01)
   }
 )
+
+# Test 4: Does Ostats_multivariate_plot return an object of class Ostats_plot_object when there are >2 traits?
+test_that (
+  "Ostats_multivariate_plot returns an object of class Ostats_plot_object when there are >2 traits",
+  {
+    plot4 <- Ostats_multivariate_plot(plots = rep(1, nrow(iris)), sp = iris$Species, traits = iris_traits)
+    expect_s3_class(plot4, 'Ostats_plot_object')
+  }
+)
+
+# Test 5: Does Ostats_multivariate_plot return an object of class Ostats_plot_object when there are exactly 2 traits?
+test_that (
+  "Ostats_multivariate_plot returns an object of class Ostats_plot_object when there are exactly 2 traits",
+  {
+    plot5 <- Ostats_multivariate_plot(plots = rep(1, nrow(iris)), sp = iris$Species, traits = iris_traits[, 1:2])
+    expect_s3_class(plot5, 'Ostats_plot_object')
+  }
+)
