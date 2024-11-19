@@ -91,3 +91,13 @@ test_that (
     expect_equivalent(result6, expected6, tolerance = 0.001)
   }
 )
+
+# Test 7: Null model returns identical output if identical random seed is set.
+test_that (
+  "Ostats null model returns identical output if identical random seed is set",
+  {
+    result7 <- Ostats(traits = as.matrix(dat[, 'log_mass', drop = FALSE]), plots = factor(dat$siteID), sp = factor(dat$taxonID), run_null_model = TRUE, nperm = 10, random_seed = 1)
+    result7b <- Ostats(traits = as.matrix(dat[, 'log_mass', drop = FALSE]), plots = factor(dat$siteID), sp = factor(dat$taxonID), run_null_model = TRUE, nperm = 10, random_seed = 1)
+    expect_equivalent(result7, result7b)
+  }
+)

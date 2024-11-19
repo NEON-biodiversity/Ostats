@@ -38,20 +38,30 @@ test_that (
   }
 )
 
-# Test 4: Does Ostats_multivariate_plot return an object of class Ostats_plot_object when there are >2 traits?
+# Test 4: Does null model return identical output if identical random seed is set?
 test_that (
-  "Ostats_multivariate_plot returns an object of class Ostats_plot_object when there are >2 traits",
+  "Ostats_multivariate null model returns identical output if identical random seed is set",
   {
-    plot4 <- Ostats_multivariate_plot(plots = rep(1, nrow(iris)), sp = iris$Species, traits = iris_traits)
-    expect_s3_class(plot4, 'Ostats_plot_object')
+    result4 <- Ostats_multivariate(traits = iris_traits, plots = factor(rep(c('a','b'),times=75)), sp = iris$Species, random_seed = 111, run_null_model = TRUE, nperm = 10, hypervolume_args = list(method = 'box'), hypervolume_set_args = list(num.points.max = 1000))
+    result4b <- Ostats_multivariate(traits = iris_traits, plots = factor(rep(c('a','b'),times=75)), sp = iris$Species, random_seed = 111, run_null_model = TRUE, nperm = 10, hypervolume_args = list(method = 'box'), hypervolume_set_args = list(num.points.max = 1000))
+    expect_equivalent(result4, result4b)
   }
 )
 
-# Test 5: Does Ostats_multivariate_plot return an object of class Ostats_plot_object when there are exactly 2 traits?
+# Test 5: Does Ostats_multivariate_plot return an object of class Ostats_plot_object when there are >2 traits?
+test_that (
+  "Ostats_multivariate_plot returns an object of class Ostats_plot_object when there are >2 traits",
+  {
+    plot5 <- Ostats_multivariate_plot(plots = rep(1, nrow(iris)), sp = iris$Species, traits = iris_traits)
+    expect_s3_class(plot5, 'Ostats_plot_object')
+  }
+)
+
+# Test 6: Does Ostats_multivariate_plot return an object of class Ostats_plot_object when there are exactly 2 traits?
 test_that (
   "Ostats_multivariate_plot returns an object of class Ostats_plot_object when there are exactly 2 traits",
   {
-    plot5 <- Ostats_multivariate_plot(plots = rep(1, nrow(iris)), sp = iris$Species, traits = iris_traits[, 1:2])
-    expect_s3_class(plot5, 'Ostats_plot_object')
+    plot6 <- Ostats_multivariate_plot(plots = rep(1, nrow(iris)), sp = iris$Species, traits = iris_traits[, 1:2])
+    expect_s3_class(plot6, 'Ostats_plot_object')
   }
 )
